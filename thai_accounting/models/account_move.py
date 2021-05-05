@@ -4,7 +4,6 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 import math
-from datetime import datetime, date
 
 
 class account_move(models.Model):
@@ -15,6 +14,10 @@ class account_move(models.Model):
     tax_inv_generated = fields.Boolean(string='Tax Invoice Generated',copy=False)
     tax_invoice_date = fields.Date(string='Tax Invoice Date',copy=False)
     tax_inv_number = fields.Char(string='Tax Invoice Number',copy=False)
+    sale_ids = fields.Many2many('sale.order', string='Sales Orders', compute='_compute_sale_orders')
+    ref_new = fields.Char(string='อ้างอิง' ,copy=False)
+
+
     adjust_move_id = fields.Many2one('account.move', string="Tax Journal Entry", copy=False)
     ####### Additional field for Invoice - JA - 20/07/2020 ############
 
@@ -24,7 +27,7 @@ class account_move(models.Model):
     invoice_date = fields.Date(string="Invoice/Bill Date", readonly=True, states={'draft': [('readonly', False)]})
     # remark = fields.Char(string="Payment Remark")
     # wht_personal_company = fields.Selection([('personal', 'ภงด3'), ('company', 'ภงด53'),('50-1', 'ภงด1')],string="WHT Type")
-    is_closing_month = fields.Boolean(string='Closing Month')
+    # is_closing_month = fields.Boolean(string='Closing Month')
     # Temporary remove by JA - 20/07/020 #################################
 
 
@@ -45,81 +48,134 @@ class account_move(models.Model):
     is_manual_partner = fields.Boolean(string='Partner Manual')
 
 
+## Move to Itaas_gen_tax_invoice_date By Jeng 10-02-2021
+    # def action_invoice_generate_tax_invoice(self):
+    #     if self.type in ('out_invoice','out_refund'):
+    #         if not self.tax_inv_number and self.journal_id.tax_invoice_sequence_id:
+    #             if not self.tax_invoice_date:
+    #                 self.tax_invoice_date = fields.Date.today()
+    #             self.tax_inv_number = self.journal_id.tax_invoice_sequence_id.next_by_id(sequence_date=self.tax_invoice_date)
+    #             self.tax_inv_generated = True
+    #             self.create_reverse_tax()
+    #         elif not self.tax_inv_number and not self.journal_id.tax_invoice_sequence_id:
+    #             raise UserError(_("Please setup tax invoice/receipt sequence number"))
+    #
+    #     else:
+    #         ######### This is purchase side########
+    #         self.create_reverse_tax()
 
-    def action_invoice_generate_tax_invoice(self):
-        if self.type in ('out_invoice','out_refund'):
-            if not self.tax_inv_number and self.journal_id.tax_invoice_sequence_id:
-                if not self.tax_invoice_date:
-                    self.tax_invoice_date = fields.Date.today()
-                self.tax_inv_number = self.journal_id.tax_invoice_sequence_id.next_by_id(sequence_date=self.tax_invoice_date)
-                self.tax_inv_generated = True
-                self.create_reverse_tax()
-        else:
-            ######### This is purchase side########
-            self.create_reverse_tax()
 
+    # def create_reverse_tax(self):
+    #     line_ids = []
+    #     for line in self.line_ids.filtered('tax_repartition_line_id'):
+    #         if self.type in ('out_invoice', 'out_refund'):
+    #             if not line.account_id.sale_tax_report:
+    #                 tax_account_id = self.env['account.account'].search([('sale_tax_report','=',True)],limit=1)
+    #                 if not self.journal_id.adj_journal:
+    #                     raise UserError(_("Please setup journal to reverse tax on invoice journal"))
+    #             else:
+    #                 continue
+    #         else:
+    #             if not line.account_id.purchase_tax_report:
+    #                 tax_account_id = self.env['account.account'].search([('purchase_tax_report', '=', True)], limit=1)
+    #                 if not self.journal_id.adj_journal:
+    #                     raise UserError(_("Please setup journal to reverse tax on invoice journal"))
+    #             else:
+    #                 continue
+    #
+    #         original_tax_line = {
+    #             'name': line.name,
+    #             'amount_currency': line.amount_currency if line.currency_id else 0.0,
+    #             'currency_id': line.currency_id.id or False,
+    #             'debit': line.credit,
+    #             'credit': line.debit,
+    #             'date_maturity': self.tax_invoice_date,
+    #             'partner_id': line.partner_id.id,
+    #             'account_id': line.account_id.id,
+    #             'payment_id': False,
+    #         }
+    #         new_tax_line = {
+    #             'name': tax_account_id.name,
+    #             'amount_currency': line.amount_currency if line.currency_id else 0.0,
+    #             'currency_id': line.currency_id.id or False,
+    #             'debit': line.debit,
+    #             'credit': line.credit,
+    #             'date_maturity': self.tax_invoice_date,
+    #             'partner_id': line.partner_id.id,
+    #             'account_id': tax_account_id.id,
+    #             'payment_id': False,
+    #         }
+    #         line_ids.append((0, 0, original_tax_line))
+    #         line_ids.append((0, 0, new_tax_line))
+    #
+    #     if line_ids:
+    #         print ('LINE')
+    #         print (line_ids)
+    #         move_vals = {
+    #             'type': 'entry',
+    #             'date': self.tax_invoice_date,
+    #             'ref': self.name,
+    #             'journal_id': self.journal_id.adj_journal.id,
+    #             'currency_id': self.currency_id.id or self.journal_id.currency_id.id or self.company_id.currency_id.id,
+    #             'partner_id': self.partner_id.id,
+    #             'line_ids': line_ids
+    #         }
+    #
+    #         move_id = self.env['account.move'].create(move_vals)
+    #         move_id.post()
+    #         self.adjust_move_id = move_id
 
-    def create_reverse_tax(self):
-        line_ids = []
-        for line in self.line_ids.filtered('tax_repartition_line_id'):
-            if self.type in ('out_invoice', 'out_refund'):
-                if not line.account_id.sale_tax_report:
-                    tax_account_id = self.env['account.account'].search([('sale_tax_report','=',True)],limit=1)
-                    if not self.journal_id.adj_journal:
-                        raise UserError(_("Please setup journal to reverse tax on invoice journal"))
-                else:
-                    continue
-            else:
-                if not line.account_id.purchase_tax_report:
-                    tax_account_id = self.env['account.account'].search([('purchase_tax_report', '=', True)], limit=1)
-                    if not self.journal_id.adj_journal:
-                        raise UserError(_("Please setup journal to reverse tax on invoice journal"))
-                else:
-                    continue
-
-            original_tax_line = {
-                'name': line.name,
-                'amount_currency': line.amount_currency if line.currency_id else 0.0,
-                'currency_id': line.currency_id.id or False,
-                'debit': line.credit,
-                'credit': line.debit,
-                'date_maturity': self.tax_invoice_date,
-                'partner_id': line.partner_id.id,
-                'account_id': line.account_id.id,
-                'payment_id': False,
-                'tax_base_amount': line.tax_base_amount,
-            }
-            new_tax_line = {
-                'name': tax_account_id.name,
-                'amount_currency': line.amount_currency if line.currency_id else 0.0,
-                'currency_id': line.currency_id.id or False,
-                'debit': line.debit,
-                'credit': line.credit,
-                'date_maturity': self.tax_invoice_date,
-                'partner_id': line.partner_id.id,
-                'account_id': tax_account_id.id,
-                'payment_id': False,
-                'tax_base_amount': line.tax_base_amount,
-            }
-            line_ids.append((0, 0, original_tax_line))
-            line_ids.append((0, 0, new_tax_line))
-
+    def action_gen_wht(self):
+        line_ids = self.line_ids.filtered(lambda m: m.wht_type)
         if line_ids:
-            print ('LINE')
-            print (line_ids)
-            move_vals = {
-                'type': 'entry',
-                'date': self.tax_invoice_date or date.today(),
-                'ref': self.name,
-                'journal_id': self.journal_id.adj_journal.id,
-                'currency_id': self.currency_id.id or self.journal_id.currency_id.id or self.company_id.currency_id.id,
-                'partner_id': self.partner_id.id,
-                'line_ids': line_ids
-            }
+            print('action_gen_wht')
+            print('contextxxxxxxxxxxxxxxxxxx', self._context)
+            print('==========================')
+            print(self.env.context.get('active_model'))
+            print(self.env.context)
+            print('===========================')
+            default_type = self._context.get('active_model')
+            print('default_type:', default_type)
+            wht_type = line_ids.mapped('wht_type')
+            for wht_t in wht_type:
+                wht_line_ids = line_ids.filtered(lambda m: m.wht_type == wht_t)
+                if wht_line_ids:
+                    wht_reference = ""
 
-            move_id = self.env['account.move'].create(move_vals)
-            move_id.post()
-            self.adjust_move_id = move_id
+                    company_id = self.env.company
+                    if wht_line_ids.wht_type.name == 'company':
+                        sequence_id = self.env['ir.sequence'].search([('code', '=', 'wht53.no'),('company_id','=',company_id.id)])
+                    elif wht_line_ids.wht_type.name == 'company_ภงด2':
+                        sequence_id = self.env['ir.sequence'].search([('code', '=', 'wht2.no'),('company_id','=',company_id.id)])
+                    else:
+                        sequence_id = self.env['ir.sequence'].search([('code', '=', 'wht3.no'),('company_id','=',company_id.id)])
+                    print('sequence_id:',sequence_id)
+                    if sequence_id:
+
+                        # wht_reference = sequence_id.next_by_id()
+                        if default_type == None:
+                            if self.tax_invoice_date:
+                                date = self.tax_invoice_date
+                            else:
+                                date = wht_line_ids[0].date
+                            wht_reference = sequence_id.with_context(ir_sequence_date=date).next_by_id()
+                            print('wht_reference:',wht_reference)
+                        elif default_type == 'account.move':
+                            date = wht_line_ids[0].date
+                            wht_reference = sequence_id.with_context(ir_sequence_date=date).next_by_id()
+                        else:
+                            wht_reference = sequence_id.next_by_id()
+
+                    for wht_l in wht_line_ids:
+                        wht_l.update({
+                            'wht_reference': wht_reference,
+                        })
+    def post(self):
+        res = super(account_move, self).post()
+        self.action_gen_wht()
+
+        return res
+
 
     # Temporary remove by JA - 20/07/020 #################################
     # @api.multi
@@ -196,6 +252,10 @@ class account_wht_type(models.Model):
     _description = "Account WHT Type"
 
     name = fields.Char(string='WHT Type')
+        # sequence_id = fields.Many2one('ir.sequence', string='Entry Sequence',
+    #                               help="This field contains the information related to the numbering of the journal entries of this journal.",
+    #                               required=True, copy=False)
+
 
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
@@ -212,9 +272,11 @@ class AccountMoveLine(models.Model):
     # sale_tax_report = fields.Boolean(string='รายงานภาษีขาย', related='account_id.sale_tax_report')
     # purchase_tax_report = fields.Boolean(string='รายงานภาษีซื้อ', related='account_id.purchase_tax_report')
     amount_before_tax = fields.Float(string='Amt Before Tax')
-    is_closing_month = fields.Boolean(string='Closing Month', related='move_id.is_closing_month', store=True)
+    # is_closing_month = fields.Boolean(string='Closing Month', related='move_id.is_closing_month', store=True)
     is_debit = fields.Boolean(string='Is Debit', compute='get_is_debit_credit', store=True)
     # wht_payment_type = fields.Selection([('1','1'),('2','2')],string='WHT Payment Type',default='1')
+
+    sale_line_ids = fields.Many2many('sale.order.line',string='Sale Line')
 
     @api.depends('debit', 'credit')
     def get_is_debit_credit(self):

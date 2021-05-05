@@ -43,7 +43,7 @@ class account_cheque_statement(models.Model):
     _inherit = 'account.cheque.statement'
 
     def action_single_validate(self,validate_date,destination_account_id):
-        # print ("action_validate")
+        print ("action_validate")
         total_debit = 0
         all_label = ""
         all_ref = ""
@@ -55,6 +55,9 @@ class account_cheque_statement(models.Model):
         for cheque in self:
             if cheque.journal_id:
                 journal_id = cheque.journal_id
+
+            if destination_account_id:
+                cheque.account_id = destination_account_id
 
             move_line_vals = cheque.cheque_move_line_reverse_get()
             for move_line in move_line_vals:

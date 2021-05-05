@@ -72,6 +72,7 @@ class account_register_payment(models.Model):
     current_account_id = fields.Many2one('account.account', string='Current Account', compute='get_current_account_id')
     is_change_account = fields.Boolean(string='Change Account')
     payment_account_id = fields.Many2one('account.account', string='New Account')
+    communication = fields.Char(string='Memo')
 
     @api.model
     def default_get(self, fields):
@@ -98,10 +99,8 @@ class account_register_payment(models.Model):
         if 'journal_id' not in rec:
             rec['journal_id'] = self.env['account.journal'].search([('company_id', '=', self.env.company.id), ('type', 'in', ('bank', 'cash'))], limit=1).id
         if 'payment_method_id' not in rec:
-            amount = self.env['account.payment']._compute_payment_amount(invoices, invoices[0].currency_id,
-                                                                         invoices[0].journal_id,
-                                                                         datetime.today().date())
-            if amount >= 0:
+
+            if invoices[0].is_inbound():
                 domain = [('payment_type', '=', 'inbound')]
                 rec['payment_type'] = 'inbound'
             else:
@@ -138,6 +137,7 @@ class account_register_payment(models.Model):
         '''
         # amount = self.env['account.payment']._compute_payment_amount(invoices, invoices[0].currency_id, self.journal_id, self.payment_date)
         amount = self.amount
+
         writeoff_multi_ids = []
         for writeoff_multi in self.writeoff_multi_acc_ids:
             writeoff_multi_ids.append(writeoff_multi.id)
@@ -187,9 +187,13 @@ class account_register_payment(models.Model):
         grouped = defaultdict(lambda: self.env["account.move"])
         for inv in self.invoice_ids:
             if self.group_payment:
-                grouped[(inv.commercial_partner_id, inv.currency_id, inv.invoice_partner_bank_id, MAP_INVOICE_TYPE_PARTNER_TYPE[inv.type])] += inv
+                grouped[(inv.commercial_partner_id, inv.currency_id,MAP_INVOICE_TYPE_PARTNER_TYPE[inv.type])] += inv
             else:
                 grouped[inv.id] += inv
+
+        # print ('GROUP VALUE')
+        # print (grouped.values())
+        # print (x)
         return [self._prepare_payment_vals(invoices) for invoices in grouped.values()]
 
     def create_payments(self):
@@ -204,18 +208,31 @@ class account_register_payment(models.Model):
         '''
         Payment = self.env['account.payment']
         detail = self.get_payments_vals()
-        print ('--DETAIL---')
-        print (detail)
+        # print ('--DETAIL---')
+        # print (detail)
         payments = Payment.create(self.get_payments_vals())
-        payments.post()
+        print ('--Payments')
+        print (payments)
+        multi = False
+        if len(payments) > 1:
+            multi = True
+        for payment in payments:
+            payment.with_context(multi=multi).post()
+        print ('END--')
+        print(payments)
 
         action_vals = {
             'name': _('Payments'),
-            'domain': [('id', 'in', payments.ids), ('state', '=', 'posted')],
+            'domain': [('id', 'in', payments.ids)],
             'res_model': 'account.payment',
             'view_id': False,
             'type': 'ir.actions.act_window',
         }
+
+        # 'domain': [('id', 'in', payments.ids), ('state', '=', 'posted')],
+
+        # print (len(payments))
+        # print(x)
         if len(payments) == 1:
             action_vals.update({'res_id': payments[0].id, 'view_mode': 'form'})
         else:
@@ -285,6 +302,7 @@ class account_register_payment(models.Model):
 #     # calculate writeoff amount
     @api.onchange('writeoff_multi_acc_ids')
     def onchange_writeoff_multi_accounts(self):
+        print ('---writeoff_multi_acc_ids')
         diff_amount = 0
         context = dict(self._context or {})
         active_model = context.get('active_model')
@@ -303,7 +321,7 @@ class account_register_payment(models.Model):
 
             self.amount = abs(total_invoice_amount) - diff_amount
         else:
-
+            print (invoice_ids)
             total_invoice_amount = self.env['account.payment']._compute_payment_amount(invoice_ids,
                                                                                        invoice_ids[0].currency_id,
                                                                                        self.journal_id,

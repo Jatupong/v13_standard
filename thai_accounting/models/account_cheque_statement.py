@@ -45,7 +45,7 @@ class AccountChequeStatement(models.Model):
 
     #for technical
     journal_id = fields.Many2one('account.journal',string='Journal')
-    move_id = fields.Many2one('account.move',compute="get_move_id",string='Original Transaction')
+    move_id = fields.Many2one('account.move',string='Original Transaction')
     move_new_id = fields.Many2one('account.move', string='New Transaction')
     payment_id = fields.Many2one('account.payment',string='Payment')
     company_id = fields.Many2one('res.company', related='journal_id.company_id', string='Company',readonly=True)
@@ -88,7 +88,7 @@ class AccountChequeStatement(models.Model):
     # @api.multi
     def reject_cheque(self):
         # print "reject_cheque"
-        self.payment_id.cancel()
+        # self.payment_id.cancel()
         self.write({'state': 'reject'})
         self.validate_date = date.today()
 
@@ -97,8 +97,12 @@ class AccountChequeStatement(models.Model):
     # @api.one
     @api.onchange('payment_id.move_line_ids')
     def get_move_id(self):
-        if self.payment_id.move_line_ids:
-            self.move_id = self.payment_id.move_line_ids[0].move_id.id
+        for i in self:
+            if i.payment_id.state != 'cancelled':
+                if self.payment_id.move_line_ids:
+                    self.move_id = self.payment_id.move_line_ids[0].move_id.id
+            else:
+                self.move_id = False
 
 
     @api.model
@@ -130,6 +134,7 @@ class AccountChequeStatement(models.Model):
             # If invoice is actually refund and journal has a refund_sequence then use that one or use the regular one
             sequence_id = journal_id.sequence_id
             new_name = sequence_id.with_context(ir_sequence_date=self.validate_date).next_by_id()
+            # new_name = sequence_id.with_context(ir_sequence_date=self.issue_date).next_by_id()
             # print "new_new"
             # print new_name
         else:
@@ -281,5 +286,6 @@ class account_payment(models.Model):
                     'payment_id': payment.id,
                 }
                 self.cheque_reg_id = self.env['account.cheque.statement'].create(vals_cheque_rec).id
-                self.cheque_reg_id.get_move_id()
+                if self.move_line_ids:
+                    self.cheque_reg_id.move_id = self.move_line_ids[0].move_id.id
         return res
