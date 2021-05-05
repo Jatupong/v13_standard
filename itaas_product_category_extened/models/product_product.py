@@ -15,14 +15,19 @@ import uuid
 from datetime import datetime, timedelta
 
 
-class categorywrite(models.Model):
-    _inherit = "product.category"
+class product_product(models.Model):
+    _inherit = "product.product"
 
+    main_categ_id = fields.Many2one('product.category', string='Main Category',compute='get_main_category',store=True)
 
-    #super(models.model) to not allow system do other write in any inherit model
-    def write(self, vals):
-        return super(models.Model, self).write(vals)
-
+    @api.depends('categ_id','categ_id.parent_id')
+    def get_main_category(self):
+        for product in self:
+            if product.categ_id:
+                if product.categ_id.parent_id:
+                    product.main_categ_id = product.categ_id.parent_id
+                else:
+                    product.main_categ_id = product.categ_id
 
 
 
