@@ -1,0 +1,9 @@
+13.0.0.1 ==> migrated module and solved invoice issues.
+13.0.0.2 ==>fixed issue of sale side invoice with order line discount method.
+13.0.0.3 ==> Fixed issue of wrong tax calculated in invoice when untaxed amount is selected. 
+13.0.0.4 ==> Resolved traceback issue generated while changing cost of the product.
+13.0.0.5 ==> Fixed discount calculation issue for global discount in purchase. 
+13.0.0.6==>1. fixed issue of " If we have installed the Account_accountant app then while configuring sale discount and purchase discount  then it throws error ".
+2." If the tax is configured with "included in price" then the global dicount is not calculating correctly ."
+13.0.0.7 ==> fixed issue of amount due in vendor bill.
+13.0.0.8 ==> fixed issue of to total amount in untax when tax is given and method is not given in order line method.

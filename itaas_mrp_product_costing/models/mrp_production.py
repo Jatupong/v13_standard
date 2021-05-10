@@ -38,8 +38,9 @@ class MrpProduction(models.Model):
             move_finished_ids = production_id.move_finished_ids.filtered(lambda x: x.state == 'done' and x.quantity_done > 0)
             # all_stock_move = move_raw_ids + move_finished_ids
             fg_value = 0
+            # print (move_raw_ids)
             for stock_move in move_raw_ids:
-                fg_value += abs(stock_move.stock_valuation_layer_ids.value)
+                fg_value += abs(stock_move.stock_valuation_layer_ids[0].value)
                 stock_move.delete_account_entry_action_done()
                 stock_move.update_account_entry_action_done()
 
@@ -53,11 +54,77 @@ class MrpProduction(models.Model):
                 stock_move.update_account_entry_action_done()
 
 
+            production_id._direct_cost_postings()
+
+
     def post_inventory(self):
         for order in self:
             # print (x)
             order.consume_material_to_wip()
+            order._direct_cost_postings()
             super(MrpProduction, order).post_inventory()
+        return True
+
+
+    def _direct_cost_postings(self):
+        print ('--_direct_cost_postings---')
+        move_raw_ids = self.move_raw_ids.filtered(lambda x: x.state == 'done' and x.quantity_done > 0 and x.product_type == 'consu')
+        for record in move_raw_ids:
+            # print ('ST1')
+            desc_wo = record.product_id.name
+
+            amount = round(record.stock_valuation_layer_ids[0].value, 2)
+            if amount:
+                id_created_header = self.env['account.move'].create({
+                    'journal_id' : record.product_id.categ_id.property_stock_journal.id,
+                    'date': fields.datetime.today(),
+                    'ref' : desc_wo,
+                    'stock_move_id': record.id,
+                    'company_id': record.production_id.company_id.id,
+                })
+                # print('ST11')
+                account_id = record.product_id.categ_id.property_stock_account_output_categ_id
+
+                val_id_credit_item = {
+                    'move_id' : id_created_header.id,
+                    'account_id': account_id.id,
+                    'product_id': self.product_id.id,
+                    'name' : desc_wo,
+                    'quantity': record.product_uom_qty,
+                    'product_uom_id': record.product_uom.id,
+                    'credit': abs(amount) if amount < 0 else 0.00,
+                    'debit': abs(amount) if amount > 0 else 0.00,
+                    'manufacture_order_id': self.id,
+
+                }
+
+                id_credit_item = self.env['account.move.line'].with_context(check_move_validity=False).create(val_id_credit_item)
+
+                account_id = self.product_id.property_stock_production.with_context(force_company=record.production_id.company_id.id).valuation_in_account_id
+
+                if not account_id:
+                    account_id = self.product_id.categ_id.property_stock_account_input_categ_id
+
+                print ('ACCOUNT')
+                print (amount)
+                print (account_id)
+                val_id_debit_item = {
+                    'move_id' : id_created_header.id,
+                    'account_id': account_id.id,
+                    'product_id': self.product_id.id,
+                    'name' : desc_wo,
+                    'quantity': record.product_uom_qty,
+                    'product_uom_id': record.product_uom.id,
+                    'debit': abs(amount) if amount < 0 else 0.00,
+                    'credit': abs(amount) if amount > 0 else 0.00,
+                    'manufacture_order_id': self.id,
+                }
+                print ('DEBIT - CREDIT')
+                print (val_id_credit_item)
+                print (val_id_debit_item)
+                id_debit_item= self.env['account.move.line'].with_context(check_move_validity=False).create(val_id_debit_item)
+
+                id_created_header.post()
         return True
 
     def _cal_price(self, consumed_moves):
