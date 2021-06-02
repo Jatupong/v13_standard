@@ -1,0 +1,34 @@
+<odoo>
+    <record id="material_purchase_requisition_form" model="ir.ui.view">
+        <field name="name">material.purchase.requisition.form.type</field>
+        <field name="model">material.purchase.requisition</field>
+        <field name="inherit_id" ref="bi_material_purchase_requisitions.material_purchase_requisition_form_view"/>
+        <field name="arch" type="xml">
+            <field name="employee_id" position="after">
+                <field name="type_request_id" required="1" options="{'no_create': True}"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="type_request_type_form" model="ir.ui.view">
+        <field name="name">type.request.form.type</field>
+        <field name="model">type.request</field>
+        <field name="arch" type="xml">
+            <form string="Type">
+                <sheet>
+                    <group>
+                        <field name="name" required="1"/>
+                    </group>
+                    <group>
+                        <field name="users_ids"/>
+                    </group>
+                </sheet>
+            </form>
+
+
+
+
+        </field>
+    </record>
+
+</odoo>
