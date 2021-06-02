@@ -5,13 +5,12 @@
         <field name="model">res.company</field>
         <field name="inherit_id" ref="base.view_company_form"/>
         <field name="arch" type="xml">
-
-            <xpath expr="//sheet/div" position="inside">
+            <field name="name" position="after">
                 <label for="eng_name" class="oe_edit_only"/>
                 <h1>
                     <field name="eng_name"/>
                 </h1>
-            </xpath>
+            </field>
 
             <xpath expr="//notebook/page/group/group[2]" position="inside">
                 <field name="fax"/>
