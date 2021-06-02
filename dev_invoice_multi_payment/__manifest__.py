@@ -1,15 +1,11 @@
 # -*- coding: utf-8 -*-
-##############################################################################
-#
-#    OpenERP, Open Source Management Solution
-#    Copyright (C) 2015 DevIntelle Consulting Service Pvt.Ltd (<http://www.devintellecs.com>).
-#
-#    For Module Support : devintelle@gmail.com  or Skype : devintelle 
-#
-##############################################################################
+#13.0.1.3 - 20/04/2021
+#13.0.1.4 - 05/05/2021
+# fix same partner multiple invoice with not group need to really not group in payment
+# fix bill partial paymnt (sum amount have to alway positive)
 {
     'name': 'Multiple Invoice Payment',
-    'version': '13.0.1.2',
+    'version': '13.0.1.4',
     'sequence':1,
     'description': """
 
@@ -84,11 +80,11 @@ Odoo Manage Invoice Payment Journal Entry
     "category": 'Generic Modules/Accounting',
     'author': 'DevIntelle Consulting Service Pvt.Ltd',
     'website': 'http://www.devintellecs.com',
-    'depends': ['sale_management','account'],
+    'depends': ['sale_management','account','thai_accounting'],
     'data': [
         'security/ir.model.access.csv',
         'views/account_payment.xml',
-        'wizard/bulk_invoice_payment.xml',
+        'wizard/account_register_payment.xml',
     ],
     'demo': [],
     'test': [],

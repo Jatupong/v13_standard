@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+
+<odoo>
+   <record id="itaas_mrp_production_costing_figures_form_view" model="ir.ui.view">
+         <field name="name">itaas.cost.mrp.production.form</field>
+         <field name="model">mrp.production</field>
+         <field name="type">form</field>
+         <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+         <field name="arch" type="xml">
+
+             <button name="action_cancel" position="after">
+<!--                 <button name="consume_material_to_wip" type="object" string="Create WIP"  confirm="Are you sure to create WIP ?"/>-->
+                 <button name="update_accounting_entry" type="object" string="update FG"/>
+             </button>
+         </field>
+   </record>
+
+    <record id="mrp_production_form_view" model="ir.ui.view">
+        <field name="name">mrp.production.form</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
+                <button
+                    name="%(action_mrp_account_moves)d"
+                    type="action"
+                    string="Account Moves"
+                    class="oe_stat_button"
+                    icon="fa-list"
+                    attrs="{'invisible': [('state', 'not in', ('planned', 'to_close','progress', 'done'))]}"
+                />
+            </xpath>
+        </field>
+    </record>
+
+
+</odoo>
+

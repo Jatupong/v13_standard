@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- purchase.request : inherit views -->
+    <record id="view_purchase_request_form_uom" model="ir.ui.view">
+        <field name="name">view.purchase.request.form.uom</field>
+        <field name="model">purchase.request</field>
+        <field name="inherit_id" ref="purchase_request.view_purchase_request_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='line_ids']/tree/field[@name='product_id']" position="after">
+                <field name="product_uom_category_id" invisible="1"/>
+                <field name="uom_class_ids" options="{'no_create': True}" widget="many2many_tags" invisible="1"/>
+            </xpath>
+
+            <xpath expr="//field[@name='line_ids']/form//field[@name='product_id']" position="after">
+                <field name="product_uom_category_id" invisible="0"/>
+                <field name="uom_class_ids" options="{'no_create': True}" widget="many2many_tags" invisible="0"/>
+            </xpath>
+
+            <xpath expr="//field[@name='line_ids']/form//field[@name='product_uom_id']" position="attributes">
+                <attribute name="options">{'no_create': True}</attribute>
+                <attribute name="domain">[('id', 'in', uom_class_ids)]</attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

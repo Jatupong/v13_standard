@@ -21,5 +21,3 @@ class res_company(models.Model):
 
 
 
-
-

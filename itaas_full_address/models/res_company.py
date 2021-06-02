@@ -23,7 +23,7 @@ class res_company(models.Model):
         # <span t-esc="' '.join([ address for address in company_address ])"/>
         if self.country_id.code == 'TH':
             if self.house_number:
-                address.append('เลขที่' + str(self.house_number))
+                address.append(str(self.house_number))
             if self.building:
                 address.append('อาคาร' + str(self.building))
             if self.roomnumber:
@@ -33,7 +33,7 @@ class res_company(models.Model):
             if self.village:
                 address.append('หมู่บ้าน' + str(self.village))
             if self.moo_number:
-                address.append('หมู่ที่'  + str(self.moo_number))
+                address.append('หมู่'  + str(self.moo_number))
             if self.soi_number:
                 address.append('ซอย' + str(self.soi_number))
             if self.street:
@@ -46,14 +46,15 @@ class res_company(models.Model):
                     address.append('แขวง' + str(self.tumbon))
                 if self.city:
                     address.append('เขต' + str(self.city))
-
-                address.append(str(self.state_id.name))
+                if self.state_id:
+                    address.append(str(self.state_id.name))
             else:
                 if self.tumbon:
                     address.append('ตำบล' + str(self.tumbon))
                 if self.city:
                     address.append('อำเภอ' + str(self.city))
-                address.append('จังหวัด' + str(self.state_id.name))
+                if self.state_id:
+                    address.append('จังหวัด' + str(self.state_id.name))
         else:
             if self.building:
                 address.append(str(self.building))

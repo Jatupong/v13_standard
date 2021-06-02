@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- material.purchase.requisition : inherit views -->
+    <record id="view_material_purchase_requisition_form_uom" model="ir.ui.view">
+        <field name="name">view.material.purchase.requisition.form.uom</field>
+        <field name="model">material.purchase.requisition</field>
+        <field name="inherit_id" ref="bi_material_purchase_requisitions.material_purchase_requisition_form_view"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='requisition_line_ids']/tree/field[@name='product_id']" position="after">
+                <field name="uom_class_ids" groups="uom.group_uom" options="{'no_create': True}" widget="many2many_tags" invisible="1"/>
+            </xpath>
+
+            <xpath expr="//field[@name='requisition_line_ids']/tree/field[@name='uom_id']" position="attributes">
+                <attribute name="options">{'no_create': True}</attribute>
+                <attribute name="domain">[('id', 'in', uom_class_ids)]</attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

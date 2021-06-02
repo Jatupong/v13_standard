@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <template id="purchase_tax_report_id">
+
         <t t-if="data['date_to']">
             <t t-set="date" t-value="time.strptime(data['date_to'],'%Y-%m-%d' )"/>
         </t>
@@ -111,30 +112,30 @@
                                 <t t-if="not operating_unit_id">
                                     <t t-if="company_id.branch_no == '00000'">
                                         <font style="font-size: 22px;">
-                                            &amp;#9746;
+                                            <![CDATA[&#9746;]]>
                                         </font>
                                         <font style="font-size: 16px;">
-                                            <span>สำนักงานใหญ่</span>&amp;emsp;
+                                            <span>สำนักงานใหญ่</span><![CDATA[&emsp;]]>
                                         </font>
                                         <font style="font-size: 22px;">
-                                            &amp;#9744;
+                                            <![CDATA[&#9744;]]>
                                         </font>
                                         <font style="font-size: 16px;">
-                                            <span>สาขาที่</span>&amp;ensp;
+                                            <span>สาขาที่</span><![CDATA[&ensp;]]>
                                         </font>
                                     </t>
                                     <t t-if="company_id.branch_no != '00000'">
                                         <font style="font-size: 22px;">
-                                            &amp;#9744;
+                                            <![CDATA[&#9744;]]>
                                         </font>
                                         <font style="font-size: 16px;">
-                                            <span>สำนักงานใหญ่</span>&amp;emsp;
+                                            <span>สำนักงานใหญ่</span><![CDATA[&emsp;]]>
                                         </font>
                                         <font style="font-size: 22px;">
-                                            &amp;#9746;
+                                            <![CDATA[&#9746;]]>
                                         </font>
                                         <font style="font-size: 16px;">
-                                            <span>สาขาที่</span>&amp;ensp;
+                                            <span>สาขาที่</span><![CDATA[&ensp;]]>
                                             <span t-esc="company_id.branch_no"/>
                                         </font>
                                     </t>
@@ -143,30 +144,30 @@
                                 <t t-if="operating_unit_id">
                                     <t t-if="operating_unit_id.partner_id.branch_no == '00000'">
                                         <font style="font-size: 22px;">
-                                            &amp;#9746;
+                                            <![CDATA[&#9746;]]>
                                         </font>
                                         <font style="font-size: 16px;">
-                                            <span>สำนักงานใหญ่</span>&amp;emsp;
+                                            <span>สำนักงานใหญ่</span><![CDATA[&emsp;]]>
                                         </font>
                                         <font style="font-size: 22px;">
-                                            &amp;#9744;
+                                            <![CDATA[&#9744;]]>
                                         </font>
                                         <font style="font-size: 16px;">
-                                            <span>สาขาที่</span>&amp;ensp;
+                                            <span>สาขาที่</span><![CDATA[&ensp;]]>
                                         </font>
                                     </t>
                                     <t t-if="operating_unit_id.partner_id.branch_no != '00000'">
                                         <font style="font-size: 22px;">
-                                            &amp;#9744;
+                                            <![CDATA[&#9744;]]>
                                         </font>
                                         <font style="font-size: 16px;">
-                                            <span>สำนักงานใหญ่</span>&amp;emsp;
+                                            <span>สำนักงานใหญ่</span><![CDATA[&emsp;]]>
                                         </font>
                                         <font style="font-size: 22px;">
-                                            &amp;#9746;
+                                            <![CDATA[&#9746;]]>
                                         </font>
                                         <font style="font-size: 16px;">
-                                            <span>สาขาที่</span>&amp;ensp;
+                                            <span>สาขาที่</span><![CDATA[&ensp;]]>
                                             <span t-esc="operating_unit_id.partner_id.branch_no"/>
                                         </font>
                                     </t>
@@ -181,9 +182,18 @@
                             </td>
                             <td colspan="2" style="text-align: left;">
                                 <font style="font-size: 16px;">
-                                    <t t-if="company_id">
-                                        <span t-esc="company_id.get_company_full_address_text()"/>
-
+                                    <t t-if="operating_unit_id">
+                                        <t t-if="operating_unit_id.partner_id.street"><span t-field="operating_unit_id.partner_id.street"/>&amp;nbsp;</t>
+                                        <t t-if="operating_unit_id.partner_id.street2"><span t-field="operating_unit_id.partner_id.street2"/>&amp;nbsp;</t>
+                                        <span t-if="operating_unit_id.partner_id.sub_district_id.name and operating_unit_id.partner_id.state_id.code == 'BKK'">แขวง<span t-field="operating_unit_id.partner_id.sub_district_id.name"/>&amp;nbsp;</span>
+                                        <span t-if="operating_unit_id.partner_id.sub_district_id.name and operating_unit_id.partner_id.state_id.code != 'BKK'">ต.<span t-field="operating_unit_id.partner_id.sub_district_id.name"/>&amp;nbsp;</span>
+                                        <span t-if="operating_unit_id.partner_id.district_id.name and operating_unit_id.partner_id.state_id.code == 'BKK'">เขต<span t-field="operating_unit_id.partner_id.district_id.name"/>&amp;nbsp;</span>
+                                        <span t-if="operating_unit_id.partner_id.district_id.name and operating_unit_id.partner_id.state_id.code != 'BKK'">อ.<span t-field="operating_unit_id.partner_id.district_id.name"/>&amp;nbsp;</span>
+                                        <!--<span t-if="operating_unit_id.partner_id.city and operating_unit_id.partner_id.state_id and operating_unit_id.partner_id.state_id.code == 'BKK'">เขต<span t-field="operating_unit_id.partner_id.city"/></span>-->
+                                        <!--<span t-if="operating_unit_id.partner_id.city and operating_unit_id.partner_id.state_id and operating_unit_id.partner_id.state_id.code != 'BKK'">อ.<span t-field="operating_unit_id.partner_id.city"/></span>-->
+                                        <span t-if="operating_unit_id.partner_id.state_id.name and operating_unit_id.partner_id.state_id.code == 'BKK'"><span t-field="operating_unit_id.partner_id.state_id.name"/>&amp;nbsp;</span>
+                                        <span t-if="operating_unit_id.partner_id.state_id.name and operating_unit_id.partner_id.state_id.code != 'BKK'">จ.<span t-field="operating_unit_id.partner_id.state_id.name"/>&amp;nbsp;</span>
+                                        <t t-if="operating_unit_id.partner_id.zip"><span t-esc="operating_unit_id.partner_id.zip"/>&amp;nbsp;</t>
                                     </t>
                                 </font>
                             </td>
@@ -204,7 +214,7 @@
                 <t t-set="width1" t-value="50"/>
                 <t t-set="width2" t-value="75"/>
                 <t t-set="width3" t-value="120"/>
-                <!--                <t t-set="width4" t-value="120"/>-->
+<!--                <t t-set="width4" t-value="120"/>-->
                 <t t-set="width5" t-value="170"/>
                 <t t-set="width6" t-value="120"/>
                 <t t-set="width7" t-value="70"/>
@@ -273,11 +283,11 @@
                                 <th colspan="2">
                                     <span>ใบกำกับภาษี</span>
                                 </th>
-                                <!--                                <th rowspan="2">-->
-                                <!--                                    <div class="box4">-->
-                                <!--                                        <span>เลขที่เอกสาร</span>-->
-                                <!--                                    </div>-->
-                                <!--                                </th>-->
+<!--                                <th rowspan="2">-->
+<!--                                    <div class="box4">-->
+<!--                                        <span>เลขที่เอกสาร</span>-->
+<!--                                    </div>-->
+<!--                                </th>-->
                                 <th rowspan="2">
                                     <div class="box5">
                                         <span>ชื่อผู้ซื้อสินค้า/ผู้รับบริการ</span>
@@ -316,7 +326,7 @@
                             </tr>
                             <tr>
                                 <th>
-                                    <div class="box2">
+                                    <div class="box3">
                                         <span>วัน เดือน ปี</span>
                                     </div>
                                 </th>
@@ -341,8 +351,7 @@
                             <t t-set="sum_total" t-value="0.00"/>
 
                             <t t-foreach="docs" t-as="o">
-                                <t t-set="amount_tax" t-value="0"/>
-                                <t t-set="sum_tax" t-value="sum_tax + o['debit'] - o['credit']"/>
+                                <t t-set="sum_tax" t-value="sum_tax + o.debit - o.credit"/>
                                 <t t-set="amount_total" t-value="0.00"/>
                                 <tr>
                                     <td align="center">
@@ -352,187 +361,180 @@
                                     </td>
                                     <t t-set="i" t-value="i+1"/>
                                     <td>
-                                        <div class="box2">
-                                            <span t-esc="o['date']"/>
-                                            <!--                                            <span t-esc="datetime.datetime.strptime(str(o['date']),'%Y-%m-%d').strftime('%d/%m/%Y')"/>-->
-
+                                        <div class="box3">
+                                            <!--                                            <t t-if="o.invoice_date">-->
+                                            <!--                                                <t t-set="date" t-value="time.strptime(o.invoice_date,'%Y-%m-%d')"/>-->
+                                            <!--                                            </t>-->
+                                            <!--                                            <t t-if="not o.invoice_date">-->
+                                            <!--                                                <t t-set="date" t-value="time.strptime(o.date,'%Y-%m-%d')"/>-->
+                                            <!--                                            </t>-->
+                                            <!--                                            <span t-esc="date.tm_mday"/>/<span t-esc="date.tm_mon"/>/<span t-esc="date.tm_year"/>-->
+                                            <span t-field="o.date"/>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="box3">
-                                            <span t-esc="o['ref']"/>
+                                            <span t-field="o.ref"/>
                                         </div>
                                     </td>
 
                                     <td>
                                         <div class="box5">
-                                            <span t-esc="o['partner'].name"/>
+                                            <t t-if="o.partner_id">
+                                                <t t-if="not o.partner_id.parent_id">
+                                                    <span t-esc="o.partner_id.name"/>
+                                                </t>
+                                                <t t-if="o.partner_id.parent_id">
+                                                    <span t-esc="o.partner_id.parent_id.name"/>
+                                                </t>
+                                            </t>
+                                            <t t-if="not o.partner_id and o.move_id.supplier_name_text">
+                                                <span t-esc="o.move_id.supplier_name_text"/>
+                                            </t>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="box6">
-                                            <span t-esc="o['vat']"/>
+                                            <t t-if="o.partner_id">
+                                                <span t-esc="o.partner_id.vat"/>
+                                            </t>
+                                            <t t-if="not o.partner_id and o.move_id.supplier_taxid_text">
+                                                <span t-esc="o.move_id.supplier_taxid_text"/>
+                                            </t>
                                         </div>
                                     </td>
-                                    <t t-if="o['branch'] == '00000'">
-                                        <td align="right">
+                                    <t t-if="o.partner_id.branch_no == '00000'">
+                                        <td>
                                             <div class="box7">
-                                                <span t-esc="o['branch']"/>
+                                                <t t-if="o.partner_id">
+                                                    <span t-esc="o.partner_id.branch_no"/>
+                                                </t>
+                                                <t t-if="not o.partner_id and o.move_id.supplier_branch_text">
+                                                    <span t-esc="o.move_id.supplier_branch_text"/>
+                                                </t>
                                             </div>
                                         </td>
                                         <td><div class="box8"><br/></div></td>
                                     </t>
-                                    <t t-if="o['branch'] != '00000'">
+                                    <t t-if="o.partner_id.branch_no != '00000'">
                                         <td><div class="box7"><br/></div></td>
-                                        <td align="right">
+                                        <td>
                                             <div class="box8">
-                                                <span t-esc="o['branch']"/>
+                                                <t t-if="o.partner_id and o.partner_id.branch_no">
+                                                    <span t-esc="o.partner_id.branch_no"/>
+                                                </t>
                                             </div>
                                         </td>
                                     </t>
                                     <td align="right">
-                                        <div class="box9" align="right">
-                                            <t t-if="o['type'] == 'in_refund'">
-                                                <t t-if="o['amount_untaxed']">
-                                                    <t t-if="o['debit']">
-                                                        <span t-esc="'{0:,.2f}'.format(float(o['amount_untaxed'] * (-1)))"/>
-                                                        <t t-set="sum_untaxed" t-value="sum_untaxed - o['amount_untaxed']"/>
-                                                    </t>
-                                                    <t t-if="o['credit']">
-                                                        <span t-esc="'{0:,.2f}'.format(float(o['amount_untaxed'] * (-1)))"/>
-                                                        <t t-set="sum_untaxed" t-value="sum_untaxed - o['amount_untaxed']"/>
-                                                    </t>
-                                                </t>
+                                        <div class="box9">
+                                            <t t-if="o.debit">
+                                                <span t-esc="'{0:,.2f}'.format(float(o.tax_base_amount))"/>
+                                                <t t-set="sum_untaxed" t-value="sum_untaxed + (o.tax_base_amount)"/>
+<!--                                                <t t-if="o.amount_before_tax">-->
+<!--                                                    <span t-esc="'{0:,.2f}'.format(float(o.amount_before_tax))"/>-->
+<!--                                                    <t t-set="sum_untaxed" t-value="sum_untaxed + (o.amount_before_tax)"/>-->
+<!--                                                </t>-->
+<!--                                                <t t-if="not o.amount_before_tax and o.invoice_id and o.invoice_id.amount_tax">-->
+<!--                                                    <span t-esc="'{0:,.2f}'.format(float(o.invoice_id.amount_untaxed - o.invoice_id.discounted_amount))"/>-->
+<!--                                                    <t t-set="sum_untaxed" t-value="sum_untaxed + (o.invoice_id.amount_untaxed - o.invoice_id.discounted_amount)"/>-->
+<!--                                                </t>-->
+<!--                                                <t t-if="not o.amount_before_tax and o.invoice_id and not o.invoice_id.amount_tax">-->
+<!--                                                    <span t-esc="'{0:,.2f}'.format(float(o.debit * 100 / 7))"/>-->
+<!--                                                    <t t-set="sum_untaxed" t-value="sum_untaxed + (o.debit * 100 / 7)"/>-->
+<!--                                                </t>-->
+<!--                                                <t t-if="not o.amount_before_tax and not o.invoice_id">-->
+<!--                                                    <span t-esc="'{0:,.2f}'.format(float(o.debit * 100 / 7))"/>-->
+<!--                                                    <t t-set="sum_untaxed" t-value="sum_untaxed + (o.debit * 100 / 7)"/>-->
+<!--                                                </t>-->
                                             </t>
-                                            <t t-if="o['type'] != 'in_refund'">
-                                                <t t-if="o['amount_untaxed']">
-                                                    <t t-if="o['debit']">
-                                                        <span t-esc="'{0:,.2f}'.format(float(o['amount_untaxed']))"/>
-                                                        <t t-set="sum_untaxed" t-value="sum_untaxed + o['amount_untaxed']"/>
-                                                    </t>
-                                                    <t t-if="o['credit']">
-                                                        <span t-esc="'{0:,.2f}'.format(float(o['amount_untaxed']))"/>
-                                                        <t t-set="sum_untaxed" t-value="sum_untaxed - o['amount_untaxed']"/>
-                                                    </t>
-                                                </t>
-                                            </t>
-                                            <t t-if="o['type'] == 'in_refund'">
-                                                <t t-if="not o['amount_untaxed']">
-                                                    <t t-if="o['debit']">
-                                                        <t t-set="amount_tax" t-value="(o['debit'] / 0.07) * (-1)"/>
-                                                        <span t-esc="'{0:,.2f}'.format(float(amount_tax))"/>
-                                                        <t t-set="sum_untaxed" t-value="sum_untaxed - amount_tax"/>
-                                                    </t>
-                                                    <t t-if="o['credit']">
-                                                        <t t-set="amount_tax" t-value="(o['credit'] / 0.07) * (-1)"/>
-                                                        <span t-esc="'{0:,.2f}'.format(float(amount_tax))"/>
-                                                        <t t-set="sum_untaxed" t-value="sum_untaxed - (amount_tax)"/>
-                                                    </t>
-                                                </t>
-                                            </t>
-                                            <t t-if="o['type'] != 'in_refund'">
-                                                <t t-if="not o['amount_untaxed']">
-                                                    <t t-if="o['debit']">
-                                                        <t t-set="amount_tax" t-value="o['debit'] / 0.07"/>
-                                                        <span t-esc="'{0:,.2f}'.format(float(amount_tax))"/>
-                                                        <t t-set="sum_untaxed" t-value="sum_untaxed + (amount_tax)"/>
-                                                    </t>
-                                                    <t t-if="o['credit']">
-                                                        <t t-set="amount_tax" t-value="o['credit'] / 0.07"/>
-                                                        <span t-esc="'{0:,.2f}'.format(float(amount_tax))"/>
-                                                        <t t-set="sum_untaxed" t-value="sum_untaxed + (amount_tax)"/>
-                                                    </t>
-                                                </t>
+                                            <t t-if="o.credit">
+                                                <span t-esc="'{0:,.2f}'.format(float(o.tax_base_amount * (-1)))"/>
+                                                <t t-set="sum_untaxed" t-value="sum_untaxed - (o.tax_base_amount)"/>
+<!--                                                <t t-if="o.amount_before_tax">-->
+<!--                                                    <span t-esc="'{0:,.2f}'.format(float(o.amount_before_tax)*(-1))"/>-->
+<!--                                                    <t t-set="sum_untaxed" t-value="sum_untaxed + (o.amount_before_tax)*(-1)"/>-->
+<!--                                                </t>-->
+<!--                                                <t t-if="not o.amount_before_tax and o.invoice_id and o.invoice_id.amount_tax">-->
+<!--                                                    <span t-esc="'{0:,.2f}'.format(float(o.invoice_id.amount_untaxed - o.invoice_id.discounted_amount)*(-1))"/>-->
+<!--                                                    <t t-set="sum_untaxed" t-value="sum_untaxed + (o.invoice_id.amount_untaxed - o.invoice_id.discounted_amount)*(-1)"/>-->
+<!--                                                </t>-->
+<!--                                                <t t-if="not o.amount_before_tax and not o.invoice_id">-->
+<!--                                                    <span t-esc="'{0:,.2f}'.format(float(o.credit * 100 / 7) * (-1))"/>-->
+<!--                                                    <t t-set="sum_untaxed" t-value="sum_untaxed + (o.credit * 100 / 7) * (-1)"/>-->
+<!--                                                </t>-->
+<!--                                                <t t-if="not o.amount_before_tax and o.invoice_id and not o.invoice_id.amount_tax">-->
+<!--                                                    <span t-esc="'{0:,.2f}'.format(float(o.credit * (-100 / 7)))"/>-->
+<!--                                                    <t t-set="sum_untaxed" t-value="sum_untaxed + (o.credit * 100 / 7) * (-1)"/>-->
+<!--                                                </t>-->
                                             </t>
                                         </div>
-
                                     </td>
-                                    <t t-if="o['type'] == 'in_refund'">
-                                        <td align="right">
-                                            <div class="box10" align="right">
-                                                <t t-if="o['debit']">
-                                                    <span t-esc="'{0:,.2f}'.format(float(o['debit'] *  (-1)))"/>
-                                                </t>
-                                                <t t-if="o['credit']">
-                                                    <span t-esc="'{0:,.2f}'.format(float(o['credit'] * (-1)))"/>
-                                                </t>
-                                            </div>
-                                        </td>
-                                    </t>
-                                    <t t-if="o['type'] != 'in_refund'">
-                                        <td align="right">
-                                            <div class="box10" align="right">
-                                                <t t-if="o['debit']">
-                                                    <span t-esc="'{0:,.2f}'.format(float(o['debit']))"/>
-                                                </t>
-                                                <t t-if="o['credit']">
-                                                    <span t-esc="'{0:,.2f}'.format(float(o['credit']))"/>
-                                                </t>
-                                            </div>
-                                        </td>
-                                    </t>
+                                    <td style="text-align: right;">
+                                        <div class="box10">
+                                            <t t-if="o.debit">
+                                                <span t-esc="'{0:,.2f}'.format(float(o.debit))"/>
+                                            </t>
+                                            <t t-if="o.credit">
+                                                <span t-esc="'{0:,.2f}'.format(float(o.credit * (-1)))"/>
+                                            </t>
+                                        </div>
+                                    </td>
 
-                                    <t t-if="o['type'] == 'in_refund'">
-                                        <td align="right">
-                                            <div class="box11" align="right">
-                                                <t t-if="o['amount_untaxed']">
-                                                    <t t-if="o['debit']">
-                                                        <span t-esc="'{0:,.2f}'.format(float((o['amount_untaxed'] + o['debit']) * (-1)))"/>
-                                                        <t t-set="sum_total" t-value="sum_total - (o['amount_untaxed'] + o['debit'])"/>
-                                                    </t>
-                                                    <t t-if="o['credit']">
-                                                        <span t-esc="'{0:,.2f}'.format(float((o['amount_untaxed'] + o['credit']) * (-1)))"/>
-                                                        <t t-set="sum_total" t-value="sum_total - (o['amount_untaxed'] + o['credit'])"/>
-                                                    </t>
-                                                </t>
-                                                <t t-if="not o['amount_untaxed']">
-                                                    <t t-if="o['debit']">
-                                                        <span t-esc="'{0:,.2f}'.format(float((amount_tax + o['debit']) * (-1)))"/>
-                                                        <t t-set="sum_total" t-value="sum_total - (amount_tax + o['debit'])"/>
-                                                    </t>
-                                                    <t t-if="o['credit']">
-                                                        <span t-esc="'{0:,.2f}'.format(float((amount_tax + o['credit']) * (-1)))"/>
-                                                        <t t-set="sum_total" t-value="sum_total - (amount_tax + o['credit'])"/>
-                                                    </t>
-                                                </t>
+                                    <td style="text-align: right;">
+                                        <div class="box11">
+                                            <t t-if="o.debit">
+                                                <span t-esc="'{0:,.2f}'.format(float(o.tax_base_amount + o.debit))"/>
+                                                <t t-set="sum_total" t-value="sum_total + o.tax_base_amount + o.debit"/>
 
-                                            </div>
-                                        </td>
-                                    </t>
-                                    <t t-if="o['type'] != 'in_refund'">
-                                        <td align="right">
-                                            <div class="box11" align="right">
-                                                <t t-if="o['amount_untaxed']">
-                                                    <t t-if="o['debit']">
-                                                        <span t-esc="'{0:,.2f}'.format(float(o['amount_untaxed'] + o['debit']))"/>
-                                                        <t t-set="sum_total" t-value="sum_total + o['amount_untaxed'] + o['debit']"/>
-                                                    </t>
-                                                    <t t-if="o['credit']">
-                                                        <span t-esc="'{0:,.2f}'.format(float((o['amount_untaxed'] + o['credit'])))"/>
-                                                        <t t-set="sum_total" t-value="sum_total + (o['amount_untaxed'] + o['credit'])"/>
-                                                    </t>
-                                                </t>
-                                                <t t-if="not o['amount_untaxed']">
-                                                    <t t-if="o['debit']">
-                                                        <span t-esc="'{0:,.2f}'.format(float(amount_tax + o['debit']))"/>
-                                                        <t t-set="sum_total" t-value="sum_total + (amount_tax + o['debit'])"/>
-                                                    </t>
-                                                    <t t-if="o['credit']">
-                                                        <t t-set="sum_total" t-value="sum_total + (amount_tax + o['credit'])"/>
-                                                    </t>
-                                                </t>
-
-                                            </div>
-                                        </td>
-                                    </t>
-
+<!--                                                <t t-if="o.amount_before_tax">-->
+<!--                                                    <span t-esc="'{0:,.2f}'.format(float(o.amount_before_tax + o.debit))"/>-->
+<!--                                                    <t t-set="sum_total" t-value="sum_total + (o.amount_before_tax + o.debit)"/>-->
+<!--                                                </t>-->
+<!--                                                <t t-if="not o.amount_before_tax and o.invoice_id and o.invoice_id.amount_tax">-->
+<!--                                                    <span t-esc="'{0:,.2f}'.format(float(o.invoice_id.amount_total))"/>-->
+<!--                                                    <t t-set="sum_total" t-value="sum_total + (o.invoice_id.amount_total)"/>-->
+<!--                                                </t>-->
+<!--                                                <t t-if="not o.amount_before_tax and not o.invoice_id">-->
+<!--                                                    <span t-esc="'{0:,.2f}'.format(float((o.debit * 100 / 7) + o.debit))"/>-->
+<!--                                                    <t t-set="sum_total" t-value="sum_total + (o.debit * 100 / 7) + o.debit"/>-->
+<!--                                                </t>-->
+<!--                                                <t t-if="not o.amount_before_tax and o.invoice_id and not o.invoice_id.amount_tax">-->
+<!--                                                    <span t-esc="'{0:,.2f}'.format(float((o.debit * 100 / 7) + o.debit))"/>-->
+<!--                                                    <t t-set="sum_total" t-value="sum_total + (o.debit * 100 / 7) + o.debit"/>-->
+<!--                                                </t>-->
+                                            </t>
+                                            <t t-if="o.credit">
+                                                <span t-esc="'{0:,.2f}'.format(float((o.tax_base_amount + o.credit) * (-1)))"/>
+                                                <t t-set="sum_total" t-value="sum_total - (o.tax_base_amount + o.credit)"/>
+<!--                                                <t t-if="o.amount_before_tax">-->
+<!--                                                    <span t-esc="'{0:,.2f}'.format(float(o.amount_before_tax)*(-1))"/>-->
+<!--                                                    <t t-set="sum_total" t-value="sum_total + (o.amount_before_tax)*(-1) + o.credit * (-1)"/>-->
+<!--                                                </t>-->
+<!--                                                <t t-if="not o.amount_before_tax and o.invoice_id and o.invoice_id.amount_tax">-->
+<!--                                                    <span t-esc="'{0:,.2f}'.format(float(o.invoice_id.amount_total)*(-1))"/>-->
+<!--                                                    <t t-set="sum_total" t-value="sum_total + (o.invoice_id.amount_total)*(-1)"/>-->
+<!--                                                </t>-->
+<!--                                                <t t-if="not o.amount_before_tax and not o.invoice_id">-->
+<!--                                                    <span t-esc="'{0:,.2f}'.format(float(o.credit * 100 / 7)*(-1) + (o.credit * (-1)))"/>-->
+<!--                                                    <t t-set="sum_total" t-value="sum_total + (o.credit * 100 / 7) *(-1) + (o.credit * (-1))"/>-->
+<!--                                                </t>-->
+<!--                                                <t t-if="not o.amount_before_tax and o.invoice_id and not o.invoice_id.amount_tax">-->
+<!--                                                    <span t-esc="'{0:,.2f}'.format(float(o.credit * 100 / 7)*(-1) + (o.credit * (-1)))"/>-->
+<!--                                                    <t t-set="sum_total" t-value="sum_total + (o.credit * 100 / 7) *(-1) + (o.credit * (-1))"/>-->
+<!--                                                </t>-->
+                                            </t>
+                                        </div>
+                                    </td>
 
                                     <td>
                                         <div class="box12">
-                                            <span t-esc="o['note']"/><br/>
+                                            <!--<span>อ้างอิง:</span>-->
+                                            <!--<span t-esc="o.origin"/><br/>-->
+                                            <!--                                            <span t-esc="o.number"/>-->
+                                            <span></span>
                                         </div>
                                     </td>
-
                                 </tr>
                             </t>
                         </tbody>

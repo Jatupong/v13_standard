@@ -5,4 +5,3 @@ from . import report_tax
 from . import report_pnd3
 from . import report_pnd53
 from . import account_tax
-from . import account_journal

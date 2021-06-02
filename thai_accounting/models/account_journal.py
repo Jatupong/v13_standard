@@ -23,6 +23,8 @@ class account_journal(models.Model):
     #########more sequence for tax_invoice and payment ###########
     tax_invoice_sequence_id = fields.Many2one('ir.sequence', string='Tax Invoice Sequence')
     payment_sequence_id = fields.Many2one('ir.sequence', string='Payment Sequence')
+    sequence_billing = fields.Many2one('ir.sequence', string="Billing Sequence")
+    is_tax = fields.Many2one(string='Tax Report',default=False)
 
 
 

@@ -357,10 +357,6 @@ class PurchaseRequestLine(models.Model):
 
     @api.model
     def _calc_new_qty(self, request_line, po_line=None, new_pr_line=False):
-        print ('_calc_new_qty')
-        print (po_line)
-        print (new_pr_line)
-
         purchase_uom = po_line.product_uom or request_line.product_id.uom_po_id
         # TODO: Not implemented yet.
         #  Make sure we use the minimum quantity of the partner corresponding
@@ -374,20 +370,14 @@ class PurchaseRequestLine(models.Model):
         rl_qty = 0.0
         # Recompute quantity by adding existing running procurements.
         if new_pr_line:
-            print ('--new_pr_line')
             rl_qty = po_line.product_uom_qty
         else:
-            print('--else')
             for prl in po_line.purchase_request_lines:
                 for alloc in prl.purchase_request_allocation_ids:
                     rl_qty += alloc.product_uom_id._compute_quantity(
                         alloc.requested_product_uom_qty, purchase_uom
                     )
-
-            print (rl_qty)
         qty = max(rl_qty, supplierinfo_min_qty)
-        print ('RETURN QTY')
-        print (qty)
         return qty
 
     def _can_be_deleted(self):

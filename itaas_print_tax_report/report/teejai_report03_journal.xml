@@ -2,6 +2,7 @@
 <openerp>
     <data>
         <template id="teejai03_report_journal_id">
+
             <t t-call="web.basic_layout">
                 <t t-foreach="docs" t-as="o">
                     <t t-set="vat_id" t-value="o.company_id.vat"/>
@@ -15,7 +16,7 @@
                     <div class="page" t-attf-style="background-image:url('/itaas_print_tax_report/static/whithoding.jpg'); background-size:360mm 520mm; width:360mm; height:520mm;">
                         <div style="text-align:center; position: absolute;left: 1200px;top: 150px;">
                             <font style="font-size: 20px;">
-<!--                                <span t-field="o.wht_reference"/>-->
+                                <span t-field="o.wht_reference"/>
                             </font>
                         </div>
                         <div>
@@ -137,9 +138,9 @@
                         <t t-set="i" t-value="0"/>
                         <t t-set="description_new" t-value="''"/>
                         <t t-set="pay_date" t-value="o.date"/>
-<!--                        <t t-if="o.date" >-->
-<!--                            <t t-set="date" t-value="time.strptime(o.date,'%Y-%m-%d' )"/>-->
-<!--                        </t>-->
+                        <t t-if="o.date" >
+                            <t t-set="date" t-value="time.strptime(o.date,'%Y-%m-%d' )"/>
+                        </t>
                         <t t-foreach="o.line_ids" t-as="k">
                             <t t-if="k.account_id.wht">
                                 <t t-set="i" t-value="i+1"/>

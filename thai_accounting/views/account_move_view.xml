@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="account.view_move_form"/>
         <field name="arch" type="xml">
             <button name="button_draft" position="after">
-                <button name="action_invoice_generate_tax_invoice" type="object" class="oe_highlight" attrs="{'invisible': ['|', '|', ('state', '!=', 'posted'), ('invoice_payment_state', '=', 'paid'), ('type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt'))]}" string="Generate Tax/Reverse Tax" groups="account.group_account_invoice"/>
+                <button name="action_invoice_generate_tax_invoice" type="object" class="oe_highlight" attrs="{'invisible': ['|', '|', ('state', '!=', 'posted'), ('invoice_payment_state', '=', 'paid'), ('type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt'))]}" string="Generate Tax Invoice" groups="account.group_account_invoice"/>
             </button>
 
             <field name="name" position="after">
@@ -28,9 +28,9 @@
             <!--                    <attribute name="attrs">{'readonly': [('state','!=','draft')]}</attribute>-->
             <!--                </field>-->
 
-                            <field name="auto_post" position="after">
-                                <field name="is_closing_month"/>
-                            </field>
+            <!--                <field name="date" position="after">-->
+            <!--                    <field name="is_closing_month"/>-->
+            <!--                </field>-->
 
             <field name="invoice_date" position="after">
                 <field name="tax_invoice_date"/>
@@ -287,8 +287,5 @@
     <menuitem id="account_wht_type_menu" parent="account.account_account_menu" action="account_wht_type_action" groups="account.group_account_manager"/>
 
 
-    <record id="account.action_move_out_invoice_type" model="ir.actions.act_window">
-        <field name="domain">[('type', 'in', ('out_invoice','out_refund'))]</field>
-    </record>
 
 </odoo>

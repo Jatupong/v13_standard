@@ -6,11 +6,11 @@
             <field name="default" eval="False"/>
             <field name="format">A4</field>
             <field name="orientation">Landscape</field>
-            <field name="margin_top">45</field>
+            <field name="margin_top">40</field>
             <field name="margin_bottom">10</field>
             <field name="margin_left">5</field>
             <field name="margin_right">5</field>
-            <field name="header_spacing">40</field>
+            <field name="header_spacing">30</field>
             <field name="dpi">90</field>
         </record>
 
@@ -120,27 +120,16 @@
                 name="itaas_print_tax_report.sale_tax_report_id"
                 file="itaas_print_tax_report.sale_tax_report_id"
         />
-        <report
-                id="action_tax_30_report_id"
-                model="account.move"
-                menu="False"
-                report_type="qweb-pdf"
-                paperformat="itaas_print_tax_report.paperformat_A4_Zero_Margin_WHT_02"
-                string="กพ.30 Report"
-                name="itaas_print_tax_report.report_pnd30_id"
-                file="itaas_print_tax_report.report_pnd30_id"
-        />
-
-        <!--        <report-->
-        <!--                id="teejai_report"-->
-        <!--                model="account.move"-->
-        <!--                menu="True"-->
-        <!--                report_type="qweb-pdf"-->
-        <!--                paperformat="itaas_print_tax_report.paperformat_A4_Zero_Margin_ACC_Teejai"-->
-        <!--                string="หนังสือรับรองการหัก ณ ที่จ่าย ภ.ง.ด.53"-->
-        <!--                name="itaas_print_tax_report.teejai_report_id"-->
-        <!--                file="itaas_print_tax_report.teejai_report_id"-->
-        <!--        />-->
+<!--        <report-->
+<!--                id="teejai_report"-->
+<!--                model="account.move"-->
+<!--                menu="True"-->
+<!--                report_type="qweb-pdf"-->
+<!--                paperformat="itaas_print_tax_report.paperformat_A4_Zero_Margin_ACC_Teejai"-->
+<!--                string="หนังสือรับรองการหัก ณ ที่จ่าย ภ.ง.ด.53"-->
+<!--                name="itaas_print_tax_report.teejai_report_id"-->
+<!--                file="itaas_print_tax_report.teejai_report_id"-->
+<!--        />-->
 
         <report
                 id="teejai_report_journal"
@@ -148,42 +137,26 @@
                 menu="True"
                 report_type="qweb-pdf"
                 paperformat="itaas_print_tax_report.paperformat_A4_Zero_Margin_ACC_Teejai"
-                string="หนังสือรับรองการหัก ณ ที่จ่าย ภ.ง.ด.53 (Invoice)"
+                string="หนังสือรับรองการหัก ณ ที่จ่าย ภ.ง.ด.53"
                 name="itaas_print_tax_report.teejai_report_journal_id"
                 file="itaas_print_tax_report.teejai_report_journal_id"
         />
-
-        <report
-                id="teejai_report_journal_01"
-                model="account.move"
-                menu="True"
-                report_type="qweb-pdf"
-                paperformat="itaas_print_tax_report.paperformat_A4_Zero_Margin_ACC_Teejai"
-                string="หนังสือรับรองการหัก ณ ที่จ่าย ภ.ง.ด.53 (Journal)"
-                name="itaas_print_tax_report.teejai02_report_journal_id_journal"
-                file="itaas_print_tax_report.teejai02_report_journal_id_journal"
-        />
-
-
-        <report
-                id="teejai02_report_journal_01"
-                model="account.move"
-                menu="True"
-                report_type="qweb-pdf"
-                string="หนังสือรับรองการหัก ณ ที่จ่าย ภ.ง.ด.3 (Journal)"
-                paperformat="itaas_print_tax_report.paperformat_A4_Zero_Margin_ACC_Teejai"
-                name="itaas_print_tax_report.teejai_report_journal_id_journal"
-                file="itaas_print_tax_report.teejai_report_journal_id_journal"
-        />
-
-
-
+<!--        <report-->
+<!--                id="teejai02_report"-->
+<!--                model="account.move"-->
+<!--                menu="True"-->
+<!--                report_type="qweb-pdf"-->
+<!--                string="หนังสือรับรองการหัก ณ ที่จ่าย ภ.ง.ด.3"-->
+<!--                paperformat="itaas_print_tax_report.paperformat_A4_Zero_Margin_ACC_Teejai"-->
+<!--                name="itaas_print_tax_report.teejai02_report_id"-->
+<!--                file="itaas_print_tax_report.teejai02_report_id"-->
+<!--        />-->
         <report
                 id="teejai02_report_journal"
                 model="account.move"
                 menu="True"
                 report_type="qweb-pdf"
-                string="หนังสือรับรองการหัก ณ ที่จ่าย ภ.ง.ด.3 (Invoice)"
+                string="หนังสือรับรองการหัก ณ ที่จ่าย ภ.ง.ด.3"
                 paperformat="itaas_print_tax_report.paperformat_A4_Zero_Margin_ACC_Teejai"
                 name="itaas_print_tax_report.teejai02_report_journal_id"
                 file="itaas_print_tax_report.teejai02_report_journal_id"

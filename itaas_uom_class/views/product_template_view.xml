@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- product.template : inherit views -->
+    <record id="view_product_template_form_uom" model="ir.ui.view">
+        <field name="name">view.product.template.form.uom</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+
+            <field name="uom_po_id" position="after">
+                <field name="uom_category_id"/>
+                <field name="uom_class_ids" groups="uom.group_uom" options="{'no_create': True}" widget="many2many_tags"/>
+            </field>
+
+        </field>
+    </record>
+
+</odoo>

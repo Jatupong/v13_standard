@@ -4,7 +4,6 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 import math
-from datetime import datetime, date
 
 
 class account_move(models.Model):
@@ -15,6 +14,7 @@ class account_move(models.Model):
     tax_inv_generated = fields.Boolean(string='Tax Invoice Generated',copy=False)
     tax_invoice_date = fields.Date(string='Tax Invoice Date',copy=False)
     tax_inv_number = fields.Char(string='Tax Invoice Number',copy=False)
+
     adjust_move_id = fields.Many2one('account.move', string="Tax Journal Entry", copy=False)
     ####### Additional field for Invoice - JA - 20/07/2020 ############
 
@@ -24,7 +24,7 @@ class account_move(models.Model):
     invoice_date = fields.Date(string="Invoice/Bill Date", readonly=True, states={'draft': [('readonly', False)]})
     # remark = fields.Char(string="Payment Remark")
     # wht_personal_company = fields.Selection([('personal', 'ภงด3'), ('company', 'ภงด53'),('50-1', 'ภงด1')],string="WHT Type")
-    is_closing_month = fields.Boolean(string='Closing Month')
+    # is_closing_month = fields.Boolean(string='Closing Month')
     # Temporary remove by JA - 20/07/020 #################################
 
 
@@ -54,6 +54,9 @@ class account_move(models.Model):
                 self.tax_inv_number = self.journal_id.tax_invoice_sequence_id.next_by_id(sequence_date=self.tax_invoice_date)
                 self.tax_inv_generated = True
                 self.create_reverse_tax()
+            elif not self.tax_inv_number and not self.journal_id.tax_invoice_sequence_id:
+                raise UserError(_("Please setup tax invoice/receipt sequence number"))
+
         else:
             ######### This is purchase side########
             self.create_reverse_tax()
@@ -87,7 +90,6 @@ class account_move(models.Model):
                 'partner_id': line.partner_id.id,
                 'account_id': line.account_id.id,
                 'payment_id': False,
-                'tax_base_amount': line.tax_base_amount,
             }
             new_tax_line = {
                 'name': tax_account_id.name,
@@ -99,7 +101,6 @@ class account_move(models.Model):
                 'partner_id': line.partner_id.id,
                 'account_id': tax_account_id.id,
                 'payment_id': False,
-                'tax_base_amount': line.tax_base_amount,
             }
             line_ids.append((0, 0, original_tax_line))
             line_ids.append((0, 0, new_tax_line))
@@ -109,7 +110,7 @@ class account_move(models.Model):
             print (line_ids)
             move_vals = {
                 'type': 'entry',
-                'date': self.tax_invoice_date or date.today(),
+                'date': self.tax_invoice_date,
                 'ref': self.name,
                 'journal_id': self.journal_id.adj_journal.id,
                 'currency_id': self.currency_id.id or self.journal_id.currency_id.id or self.company_id.currency_id.id,
@@ -212,7 +213,7 @@ class AccountMoveLine(models.Model):
     # sale_tax_report = fields.Boolean(string='รายงานภาษีขาย', related='account_id.sale_tax_report')
     # purchase_tax_report = fields.Boolean(string='รายงานภาษีซื้อ', related='account_id.purchase_tax_report')
     amount_before_tax = fields.Float(string='Amt Before Tax')
-    is_closing_month = fields.Boolean(string='Closing Month', related='move_id.is_closing_month', store=True)
+    # is_closing_month = fields.Boolean(string='Closing Month', related='move_id.is_closing_month', store=True)
     is_debit = fields.Boolean(string='Is Debit', compute='get_is_debit_credit', store=True)
     # wht_payment_type = fields.Selection([('1','1'),('2','2')],string='WHT Payment Type',default='1')
 

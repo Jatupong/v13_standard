@@ -1,0 +1,26 @@
+<odoo>
+
+    <record id="view_company_form_fax" model="ir.ui.view">
+        <field name="name">res.company.form.fax</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//sheet/div" position="inside">
+                <label for="eng_name" class="oe_edit_only"/>
+                <h1>
+                    <field name="eng_name"/>
+                </h1>
+            </xpath>
+
+            <xpath expr="//notebook/page/group/group[2]" position="inside">
+                <field name="fax"/>
+            </xpath>
+<!--            <xpath expr="//label[@for='street']" position="before">-->
+<!--                <field name="eng_address2"/>-->
+<!--            </xpath>-->
+
+        </field>
+    </record>
+
+</odoo>

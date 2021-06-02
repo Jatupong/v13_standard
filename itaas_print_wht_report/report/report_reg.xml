@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="paperformat_A4_Five_Margin_Pnd" model="report.paperformat">
+            <field name="name">A4_Five_Margin_Pnd</field>
+            <field name="default" eval="False"/>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">5</field>
+            <field name="margin_bottom">0</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">20</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <!--account.move-->
+        <report
+                id="wht_pnd_3_entries_report"
+                model="account.move"
+                menu="True"
+                report_type="qweb-pdf"
+                paperformat="itaas_print_wht_report.paperformat_A4_Five_Margin_Pnd"
+                string="หนังสือรับรองการหัก ณ ที่จ่าย ภ.ง.ด.3"
+                name="itaas_print_wht_report.wht_pnd_3_entries_report_id"
+                file="itaas_print_wht_report.wht_pnd_3_entries_report_id"
+        />
+
+        <report
+                id="wht_pnd_53_entries_report"
+                model="account.move"
+                menu="True"
+                report_type="qweb-pdf"
+                paperformat="itaas_print_wht_report.paperformat_A4_Five_Margin_Pnd"
+                string="หนังสือรับรองการหัก ณ ที่จ่าย ภ.ง.ด.53"
+                name="itaas_print_wht_report.wht_pnd_53_entries_report_id"
+                file="itaas_print_wht_report.wht_pnd_53_entries_report_id"
+        />
+
+        <report
+                id="wht_pnd_2_entries_report"
+                model="account.move"
+                menu="True"
+                report_type="qweb-pdf"
+                paperformat="itaas_print_wht_report.paperformat_A4_Five_Margin_Pnd"
+                string="หนังสือรับรองการหัก ณ ที่จ่าย ภ.ง.ด.2"
+                name="itaas_print_wht_report.wht_pnd_2_entries_report_id"
+                file="itaas_print_wht_report.wht_pnd_2_entries_report_id"
+        />
+
+        <!--account.payment-->
+<!--        <report-->
+<!--                id="wht_pnd_3_payment_report"-->
+<!--                model="account.payment"-->
+<!--                menu="True"-->
+<!--                report_type="qweb-pdf"-->
+<!--                paperformat="itaas_print_wht_report.paperformat_A4_Five_Margin_Pnd"-->
+<!--                string="หนังสือรับรองการหัก ณ ที่จ่าย ภ.ง.ด.3"-->
+<!--                name="itaas_print_wht_report.wht_pnd_3_payment_report_id"-->
+<!--                file="itaas_print_wht_report.wht_pnd_3_payment_report_id"-->
+<!--        />-->
+
+<!--        <report-->
+<!--                id="wht_pnd_53_payment_report"-->
+<!--                model="account.payment"-->
+<!--                menu="True"-->
+<!--                report_type="qweb-pdf"-->
+<!--                paperformat="itaas_print_wht_report.paperformat_A4_Five_Margin_Pnd"-->
+<!--                string="หนังสือรับรองการหัก ณ ที่จ่าย ภ.ง.ด.53"-->
+<!--                name="itaas_print_wht_report.wht_pnd_53_payment_report_id"-->
+<!--                file="itaas_print_wht_report.wht_pnd_53_payment_report_id"-->
+<!--        />-->
+
+        <record id="paperformat_A4_Five_Margin_Pnd_font" model="report.paperformat">
+            <field name="name">A4_Five_Margin_Pnd_font</field>
+            <field name="default" eval="False"/>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">5</field>
+            <field name="margin_bottom">0</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">20</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <report
+                id="action_report_pnd53_id"
+                model="account.move"
+                menu="False"
+                report_type="qweb-pdf"
+                string="รายงานปะหน้า ภ.ง.ด.53"
+                paperformat="itaas_print_wht_report.paperformat_A4_Five_Margin_Pnd_font"
+                name="itaas_print_wht_report.report_pnd53_id"
+                file="itaas_print_wht_report.report_pnd53_id"
+        />
+
+        <report
+                id="action_report_pnd3_id"
+                model="account.move"
+                menu="False"
+                report_type="qweb-pdf"
+                string="รายงานปะหน้า ภ.ง.ด.3"
+                paperformat="itaas_print_wht_report.paperformat_A4_Five_Margin_Pnd_font"
+                name="itaas_print_wht_report.report_pnd3_id"
+                file="itaas_print_wht_report.report_pnd3_id"
+        />
+
+        <report
+                id="action_report_pnd2_id"
+                model="account.move"
+                menu="False"
+                report_type="qweb-pdf"
+                string="รายงานปะหน้า ภ.ง.ด.2"
+                paperformat="itaas_print_wht_report.paperformat_A4_Five_Margin_Pnd_font"
+                name="itaas_print_wht_report.report_pnd2_id"
+                file="itaas_print_wht_report.report_pnd2_id"
+        />
+
+        <!--account.move.line-->
+        <record id="paperformat_A4_Five_Margin_Pnd_item" model="report.paperformat">
+            <field name="name">paperformat_A4_Five_Margin_Pnd_item</field>
+            <field name="default" eval="False"/>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">2</field>
+            <field name="margin_bottom">0</field>
+            <field name="margin_left">0</field>
+            <field name="margin_right">0</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">10</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <report
+                id="wht_pnd_item_report"
+                model="account.move.line"
+                menu="True"
+                report_type="qweb-pdf"
+                string="หนังสือรับรองการหัก ณ ที่จ่าย ภ.ง.ด."
+                paperformat="itaas_print_wht_report.paperformat_A4_Five_Margin_Pnd_item"
+                name="itaas_print_wht_report.wht_pnd_item_report_id"
+                file="itaas_print_wht_report.wht_pnd_item_report_id"
+        />
+
+    </data>
+</odoo>

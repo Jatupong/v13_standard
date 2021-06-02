@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="stock_count_report_id">
+        <t t-call="web.html_container">
+
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.basic_layout">
+                    <div class="header">
+                        <style>
+                            table.table-bordered {
+                            padding:3px;
+                            border:0px solid white;
+                            width: 100%;
+                            }
+                            table.table-bordered &gt; thead &gt; tr &gt; th{
+                            padding:3px;
+                            border:0px solid white;
+                            }
+                            table.table-bordered &gt; tbody &gt; tr &gt; td{
+                            padding:3px;
+                            border:0px solid white;
+                            }
+                            table.table-bordered &gt; tfoot &gt; tr &gt; td{
+                            padding:3px;
+                            border:0px solid white;
+                            }
+                            .box_ellipsis{
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            }
+                        </style>
+
+                        <div class="col-xs-12 text-center" style="padding:10px; border:1px solid black; font-size: 28px; font-family:TH SarabunPSK;                            src:url(/itaas_print_sale_report/static/THSarabun.ttf);">
+                            <B><span t-esc="company_id.name"/>
+                                <t t-if="company_id.branch_no == '00000'">
+                                    <span>(สำนักงานใหญ่)</span>
+                                </t>
+                                <t t-if="company_id.branch_no != '00000'">
+                                    (<span t-esc="company_id.branch_no"/>)
+                                </t></B>
+                        </div>
+                        <div class="col-xs-12" style="margin-top:10px; padding:3px; border:1px solid black; font-size: 20px; font-family:TH SarabunPSK;                            src:url(/itaas_print_sale_report/static/THSarabun.ttf);">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <td colspan="6" align="center"><B><span style="font-size:24px;">รายงานสินค้าเพื่อตรวจนับ</span></B></td>
+                                </tr>
+                                <tr>
+                                    <td width="10%"><span>ข้อมูลวันที่ : </span></td>
+                                    <td width="23%"><span t-field="o.date_from"/></td>
+                                    <td width="10%"><span>ข้อมูลวันที่ : </span></td>
+                                    <td width="23%"><span t-field="o.date_to"/></td>
+                                    <td width="10%"><span>วันที่พิมพ์ : </span></td>
+                                    <td width="24%"><span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y %H:%M')"/></td>
+                                </tr>
+                                <tr>
+                                    <td><span>จากสินค้า : </span></td>
+                                    <td><div class="box_ellipsis" style="width:200px;"><span t-field="o.product_form"/></div></td>
+                                    <td><span>ถึงสินค้า : </span></td>
+                                    <td colspan="2"><div class="box_ellipsis" style="width:200px;"><span t-field="o.product_to"/></div></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-xs-12 text-right" style="font-size: 20px; font-family:TH SarabunPSK;                            src:url(/itaas_print_sale_report/static/THSarabun.ttf);">
+                            <span>หน้า : </span><span class="page"/> / <span class="topage"/>
+                        </div>
+                    </div>
+                    <t t-set="location_ids" t-value="location_ids.sorted(key=lambda l: l.name)"/>
+                    <t t-foreach="location_ids" t-as="location_id">
+                        <t t-set="stock_value" t-value="stock_quant_ids.filtered(lambda x: x.location_id.id == location_id.id)"/>
+                        <div class="page">
+                            <style>
+                                table.table-bordered {
+                                border:0px solid white;
+                                padding:3px;
+                                width: 100%;
+                                }
+                                table.table-bordered &gt; thead &gt; tr &gt; th{
+                                padding:3px;
+                                border:0px solid white;
+                                border-bottom:1px solid black;
+                                }
+                                table.table-bordered &gt; tbody &gt; tr &gt; td{
+                                padding:3px;
+                                border:0px solid white;
+                                }
+                                table.table-bordered &gt; tfoot &gt; tr &gt; td{
+                                padding:3px;
+                                border:0px solid white;
+                                }
+                            </style>
+
+                            <t t-set="sum_qty" t-value="0"/>
+                            <t t-set="product_stock_value" t-value="stock_value.mapped('product_id').sorted(key=lambda p: p.default_code or p.name)"/>
+
+                            <table class="table table-bordered" t-if="product_stock_value" style="font-size: 20px; font-family:TH SarabunPSK;                                                        src:url(/itaas_print_inventory_report/static/THSarabun.ttf);">
+                                <thead style="border:1px solid black;">
+                                    <tr>
+                                        <th width="15%"><span>รหัสสินค้า</span></th>
+                                        <th width="25%"><span>ชื่อสินค้า</span></th>
+                                        <th width="10%"><span>หน่วยนับ</span></th>
+                                        <th width="10%"><span>คงเหลือ</span></th>
+                                        <th width="15%" class="text-center"><span>ปริมาณที่ตรวจนับ</span></th>
+                                        <th width="10%" class="text-center"><span>ผลแตกต่าง</span></th>
+                                        <th width="15%" class="text-center"><span>สาเหตุควมแตกต่าง</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <td colspan="7" style="border-bottom:1px solid #cccccc;">
+                                        <B><span t-esc="location_id.name"/></B>
+                                    </td>
+                                    <t t-foreach="product_stock_value" t-as="product">
+                                        <t t-set="product_stock" t-value="stock_value.filtered(lambda x: x.product_id.id == product.id)"/>
+                                        <t t-set="qty" t-value="sum(product_stock.mapped('quantity'))"/>
+                                        <tr>
+                                            <td>
+                                                <span t-esc="product.default_code"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="product.name"/>
+                                            </td>
+                                            <td class="text-right">
+                                                <span t-esc="product.uom_id.name"/>
+                                            </td>
+                                            <td class="text-right">
+                                                <span t-esc="'{0:,.2f}'.format(float(qty))"/>
+                                                <t t-set="sum_qty" t-value="sum_qty + qty"/>
+                                            </td>
+                                            <td align="center">
+                                                <div style="width:100%; border-bottom:1px solid black; color:white">
+                                                    blank
+                                                </div>
+                                            </td>
+                                            <td align="center">
+                                                <div style="width:100%; border-bottom:1px solid black; color:white">
+                                                    blank
+                                                </div>
+                                            </td>
+                                            <td align="center">
+                                                <div style="width:100%; border-bottom:1px solid black; color:white">
+                                                    blank
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td class="text-right" colspan="3"><B>รวม</B></td>
+                                        <td class="text-right"><B><span t-esc="'{0:,.2f}'.format(float(sum_qty))"/></B></td>
+                                        <td colspan="3"/>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <p style="page-break-before:always;"> </p>
+                    </t>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="paperformat_A4_five_Margin_stock_count" model="report.paperformat">
+        <field name="name">A4_five_Margin_stock_count</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">60</field>
+        <field name="margin_bottom">5</field>
+        <field name="margin_left">5</field>
+        <field name="margin_right">5</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">55</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <report
+            string="Stock Count Report"
+            id="stock_count_report"
+            model="stock.picking"
+            menu="False"
+            name="itaas_print_inventory_report.stock_count_report_id"
+            file="itaas_print_inventory_report.stock_count_report_id"
+            paperformat="paperformat_A4_five_Margin_stock_count"
+            report_type="qweb-pdf"
+    />
+
+</odoo>
