@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<template id="sale_order_report_add_transaction_number"
+			inherit_id="sale.report_saleorder_document">
+			<xpath expr="//div[@name='expiration_date']" position="after">
+				<div name="transaction_number" t-if="doc.transaction_number" class="col-xs-3">
+                    <strong>Transaction:</strong>
+                    <p t-field="doc.transaction_number"/>
+                </div>
+			</xpath>
+		</template>
+
+	</data>
+</odoo>

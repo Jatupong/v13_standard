@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="action_view_picking_multi_assign_done_qty" model="ir.ui.view">
+            <field name="name">Assign Done QTY</field>
+            <field name="model">picking.multi.assign.qty</field>
+            <field name="arch" type="xml">
+                <form string="Assign Done QTY">
+                    <p class="oe_grey">
+                        Selected picking will be process.
+                    </p>
+
+                    <footer>
+                        <button name="assign_done_qty" string="Confirm" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_view_picking_multi_assign_done_qty" model="ir.actions.act_window">
+            <field name="name">Assign QTY</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">picking.multi.assign.qty</field>
+
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="groups_id" eval="[(4,ref('base.group_user'))]"/>
+            <!-- TODO: check if we need this -->
+            <field name="binding_model_id" ref="stock.model_stock_picking" />
+            <field name="binding_view_types">list</field>
+        </record>
+
+
+</odoo>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sot_view_order_form" model="ir.ui.view">
+        <field name="name">sale.order.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <field name="currency_id" position="after">
+                <field name="type_id" required="1"/>
+                <!--                <field name="set_type" invisible="1"/>-->
+            </field>
+        </field>
+    </record>
+
+    <record id="view_quotation_tree_type_update" model="ir.ui.view">
+        <field name="name">sale.order.tree.type</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='partner_id']" position="before">
+                <field name="type_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_order_payment_tree_type_update" model="ir.ui.view">
+        <field name="name">sale.order.payment.tree.type</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='partner_id']" position="before">
+                <field name="type_id"/>
+            </xpath>
+
+        </field>
+    </record>
+
+
+</odoo>

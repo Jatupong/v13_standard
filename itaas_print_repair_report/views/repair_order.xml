@@ -1,0 +1,52 @@
+<odoo>
+    <record id="view_repair_order_form_transportation" model="ir.ui.view">
+        <field name="name">repair.order.form.transportation</field>
+        <field name="model">repair.order</field>
+        <field name="inherit_id" ref="repair.view_repair_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='tag_ids']" position="after">
+                <field name="analytic_tag_id"/>
+            </xpath>
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="analytic_account_id"/>
+            </xpath>
+<!--            <notebook>-->
+<!--                <page string="Reported Notes">-->
+<!--                    <field name="reported_symptoms" placeholder="Reported note..."/>-->
+<!--                    <field name="cause_problem" placeholder="cause of problem note..."/>-->
+<!--                    <field name="method" placeholder="How to fix the problem note..."/>-->
+<!--                    <field name="note_repair" placeholder="repair note..."/>-->
+<!--                </page>-->
+<!--            </notebook>-->
+<!--            <notebook>-->
+<!--                <page string="Check List">-->
+<!--                    <group>-->
+<!--                        <group string="ค่าใช้จ่าย">-->
+<!--                            <field name="without"/>-->
+<!--                            <field name="cost"/>-->
+<!--                            <field name="price"/>-->
+<!--                            <field name="data_time"/>-->
+<!--                        </group>-->
+<!--                        <group string="อาการ">-->
+<!--                            <field name="normal"/>-->
+<!--                            <field name="defective"/>-->
+<!--                        </group>-->
+<!--                        <group string="อาการซ่อม">-->
+<!--                            <field name="repairable"/>-->
+<!--                            <field name="cannot_fixing"/>-->
+<!--                            <field name="claim_product"/>-->
+<!--                            <field name="another"/>-->
+<!--                        </group>-->
+<!--                        <group string="ระยะทดสอบ">-->
+<!--                            <field name="hour"/>-->
+<!--                            <field name="hour_1"/>-->
+<!--                        </group>-->
+<!--                    </group>-->
+<!--                </page>-->
+<!--            </notebook>-->
+
+
+
+        </field>
+    </record>
+</odoo>

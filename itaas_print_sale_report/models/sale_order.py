@@ -270,3 +270,14 @@ class SaleOrderLine(models.Model):
                 'price_subtotal': taxes['total_excluded'],
             })
 
+    @api.onchange('product_id')
+    def product_id_change(self):
+        domain = super(SaleOrderLine, self).product_id_change()
+        if self.product_id:
+            vals = {}
+            vals['name'] = self.product_id.name
+            self.update(vals)
+
+        return domain
+
+

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- View of Validate Receipt -->
+    <record id="view_join_receipt" model="ir.ui.view">
+        <field name="name">Validate Receipts</field>
+        <field name="model">stock.receipt.join</field>
+        <field name="arch" type="xml">
+            <form string="Stock Receipts">
+                <field name="receipt_ids">
+                    <tree editable="bottom" create="0" delete="0">
+                        <field name="product_id" readonly="1"/>
+                        <field name="description" readonly="1"/>
+                        <field name="order_number" readonly="1"/>
+                        <field name="customer_id" readonly="1"/>
+                        <field name="move_id" invisible="1"/>
+                        <field name="location_id" required="1"/>
+                        <field name="product_uom_qty" readonly="1"/>
+                        <field name="quantity"/>
+                    </tree>
+                </field>
+                <footer>
+                    <button name="join_receipt" string="Validate Receipts" type="object"
+                        class="btn-primary"/>
+                    <button string="Cancel" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action of Validate Receipt -->
+    <record id="action_join_receipts" model="ir.actions.act_window">
+        <field name="name">Validate Receipts</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">stock.receipt.join</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_join_receipt"/>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+    </record>
+
+</odoo>

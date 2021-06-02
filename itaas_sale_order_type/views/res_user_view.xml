@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record model="ir.ui.view" id="res_users_sale_type_form_view">
+        <field name="name">res.users.sale_type.form</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//sheet/notebook/page[@name='access_rights']/group[1]" position="after">
+                <group col="2" modifiers="{}">
+                    <separator string="Sales Order Type" colspan="2" modifiers="{}"/>
+                    <field name="sale_type"/>
+                    <newline modifiers="{}"/>
+                </group>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

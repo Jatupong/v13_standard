@@ -4,7 +4,7 @@
 
 {
     'name' : 'Itaas Print Sales Report',
-    'version' : '13.0.1.1',
+    'version' : '11.0.1',
     'price' : 'Free',
     'currency': 'THB',
     'category': 'Sales Report',

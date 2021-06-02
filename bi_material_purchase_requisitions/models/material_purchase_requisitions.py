@@ -18,20 +18,28 @@ class MaterialPurchaseRequisition(models.Model):
         vals['sequence'] = self.env['ir.sequence'].next_by_code('material.purchase.requisition') or '/'
         return super(MaterialPurchaseRequisition, self).create(vals)
 
-    @api.onchange('requisition_responsible_id')
-    def get_responsible_dest_location(self):
-        if self.requisition_responsible_id:
-            self.destination_location_id = self.requisition_responsible_id.default_requisition_des_location_id.id
+    @api.onchange('employee_id')
+    def get_emp_dest_location(self):
+        if self.employee_id:
+            self.destination_location_id = self.employee_id.destination_location_id.id
 
-    def confirm_requisition_old(self):
+    @api.model 
+    def default_get(self, flds): 
+        result = super(MaterialPurchaseRequisition, self).default_get(flds)
+        #result['employee_id'] = self.env.user.partner_id.id
+        result['requisition_date'] = datetime.now()
+        return result        
+
+    # @api.multi
+    def confirm_requisition(self):
         res = self.write({
-            'state':'department_approval',
-            'confirmed_by_id':self.env.user.id,
-            'confirmed_date' : datetime.now()
-        })
+                            'state':'department_approval',
+                            'confirmed_by_id':self.env.user.id,
+                            'confirmed_date' : datetime.now()
+                        })
         template_id = self.env['ir.model.data'].get_object_reference(
-            'bi_material_purchase_requisitions',
-            'email_employee_purchase_requisition')[1]
+                                              'bi_material_purchase_requisitions',
+                                              'email_employee_purchase_requisition')[1]
         email_template_obj = self.env['mail.template'].sudo().browse(template_id)
         if template_id:
             values = email_template_obj.generate_email(self.id, fields=None)
@@ -39,54 +47,36 @@ class MaterialPurchaseRequisition(models.Model):
             values['email_to'] = self.requisition_responsible_id.email
             values['res_id'] = False
             mail_mail_obj = self.env['mail.mail']
+            #request.env.uid = 1
             msg_id = mail_mail_obj.sudo().create(values)
             if msg_id:
-                mail_mail_obj.send([msg_id])
+                mail_mail_obj.send([msg_id])           
         return res
 
-    def confirm_requisition(self):
+    # @api.multi
+    def department_approve(self):
         res = self.write({
-            'state':'ir_approve',
-            'confirmed_by_id':self.env.user.id,
-            'confirmed_date' : datetime.now()
-        })
-        # template_id = self.env['ir.model.data'].get_object_reference(
-        #     'bi_material_purchase_requisitions',
-        #     'email_employee_purchase_requisition')[1]
-        # email_template_obj = self.env['mail.template'].sudo().browse(template_id)
-        # if template_id:
-        #     values = email_template_obj.generate_email(self.id, fields=None)
-        #     values['email_from'] = self.employee_id.work_email
-        #     values['email_to'] = self.requisition_responsible_id.email
-        #     values['res_id'] = False
-        #     mail_mail_obj = self.env['mail.mail']
-        #     msg_id = mail_mail_obj.sudo().create(values)
-        #     if msg_id:
-        #         mail_mail_obj.send([msg_id])
-        return res
+                            'state':'ir_approve',
+                            'department_manager_id':self.env.user.id,
+                            'department_approval_date' : datetime.now()
+                        })
+        template_id = self.env['ir.model.data'].get_object_reference(
+                                              'bi_material_purchase_requisitions',
+                                              'email_manager_purchase_requisition')[1]
+        email_template_obj = self.env['mail.template'].sudo().browse(template_id)
+        if template_id:
+            values = email_template_obj.generate_email(self.id, fields=None)
+            values['email_from'] = self.env.user.partner_id.email
+            values['email_to'] = self.employee_id.work_email
+            values['res_id'] = False
+            mail_mail_obj = self.env['mail.mail']
+            #request.env.uid = 1
+            msg_id = mail_mail_obj.sudo().create(values)
+            if msg_id:
+                mail_mail_obj.send([msg_id])        
+        return res  
 
-    # def department_approve(self):
-    #     res = self.write({
-    #         'state':'ir_approve',
-    #         'department_manager_id':self.env.user.id,
-    #         'department_approval_date' : datetime.now()
-    #     })
-    #     template_id = self.env['ir.model.data'].get_object_reference(
-    #         'bi_material_purchase_requisitions',
-    #         'email_manager_purchase_requisition')[1]
-    #     email_template_obj = self.env['mail.template'].sudo().browse(template_id)
-    #     if template_id:
-    #         values = email_template_obj.generate_email(self.id, fields=None)
-    #         values['email_from'] = self.env.user.partner_id.email
-    #         values['email_to'] = self.employee_id.work_email
-    #         values['res_id'] = False
-    #         mail_mail_obj = self.env['mail.mail']
-    #         #request.env.uid = 1
-    #         msg_id = mail_mail_obj.sudo().create(values)
-    #         if msg_id:
-    #             mail_mail_obj.send([msg_id])
-    #     return res
-
+    # @api.multi
     def action_cancel(self):
         for res in self:
             stock_req = self.env['stock.picking'].search([('origin','=',res.sequence)])
@@ -100,17 +90,19 @@ class MaterialPurchaseRequisition(models.Model):
                     purchase.button_cancel()
                     purchase.unlink()
         res = self.write({
-            'state': 'cancel',
-        })
-        return res
+                            'state':'cancel',
+                        })
+        return res          
 
+    # @api.multi
     def action_received(self):
         res = self.write({
-            'state':'received',
-            'received_date' : datetime.now()
-        })
-        return res
+                            'state':'received',
+                            'received_date' : datetime.now()
+                        })
+        return res         
 
+    # @api.multi
     def action_reject(self):
         for res in self:
             stock_req = self.env['stock.picking'].search([('origin','=',res.sequence)])
@@ -124,12 +116,13 @@ class MaterialPurchaseRequisition(models.Model):
                     purchase.button_cancel()
                     purchase.unlink()
         res = self.write({
-            'state':'cancel',
-            'rejected_date' : datetime.now(),
-            'rejected_by' : self.env.user.id
-        })
-        return res
+                            'state':'cancel',
+                            'rejected_date' : datetime.now(),
+                            'rejected_by' : self.env.user.id
+                        })
+        return res 
 
+    # @api.multi
     def action_reset_draft(self):
         for res in self:
             stock_req = self.env['stock.picking'].search([('origin','=',res.sequence)])
@@ -143,31 +136,33 @@ class MaterialPurchaseRequisition(models.Model):
                     purchase.button_cancel()
                     purchase.unlink()
             res.write({
-                'state':'new',
-            })
-        return res
+                            'state':'new',
+                        })
+        return res 
 
+
+    # @api.multi
     def action_approve(self):
         res = self.write({
-            'state':'approved',
-            'approved_by_id':self.env.user.id,
-            'approved_date' : datetime.now()
-        })
-        # template_id = self.env['ir.model.data'].get_object_reference(
-        #     'bi_material_purchase_requisitions',
-        #     'email_user_purchase_requisition')[1]
-        # email_template_obj = self.env['mail.template'].sudo().browse(template_id)
-        # if template_id:
-        #     values = email_template_obj.generate_email(self.id, fields=None)
-        #     values['email_from'] = self.employee_id.work_email
-        #     values['email_to'] = self.employee_id.work_email
-        #     values['res_id'] = False
-        #     mail_mail_obj = self.env['mail.mail']
-        #     #request.env.uid = 1
-        #     msg_id = mail_mail_obj.sudo().create(values)
-        #     if msg_id:
-        #         mail_mail_obj.send([msg_id])
-        return res
+                            'state':'approved',
+                            'approved_by_id':self.env.user.id,
+                            'approved_date' : datetime.now()
+                        })
+        template_id = self.env['ir.model.data'].get_object_reference(
+                                              'bi_material_purchase_requisitions',
+                                              'email_user_purchase_requisition')[1]
+        email_template_obj = self.env['mail.template'].sudo().browse(template_id)
+        if template_id:
+            values = email_template_obj.generate_email(self.id, fields=None)
+            values['email_from'] = self.employee_id.work_email
+            values['email_to'] = self.employee_id.work_email
+            values['res_id'] = False
+            mail_mail_obj = self.env['mail.mail']
+            #request.env.uid = 1
+            msg_id = mail_mail_obj.sudo().create(values)
+            if msg_id:
+                mail_mail_obj.send([msg_id])         
+        return res 
 
     def create_picking_po(self):
         purchase_order_obj = self.env['purchase.order']
@@ -194,8 +189,9 @@ class MaterialPurchaseRequisition(models.Model):
                                 'date_order' : datetime.now(),
                                 'requisition_po_id' : requisition.id,
                                 'origin': requisition.sequence,
+                                #'job_id':requisition.job_order_id.id,
                                 'state' : 'draft',
-                                'picking_type_id' : requisition.picking_type_id.id
+                                'picking_type_id' : requisition.picking_type_id.id                                
                             }
                             purchase_order = purchase_order_obj.create(vals)
                             po_line_vals = {
@@ -214,16 +210,16 @@ class MaterialPurchaseRequisition(models.Model):
                     stock_picking_type_obj = self.env['stock.picking.type']
                     picking_type_id = False
 
-                    #                    if requisition.picking_type_id.id:
-                    #                        raise Warning(_('Please define Internal Picking.'))
+#                    if requisition.picking_type_id.id:
+#                        raise Warning(_('Please define Internal Picking.'))
                     picking_type_id = requisition.internal_picking_id
 
-                    if line.vendor_id:
+                    if line.vendor_id:                    
                         for vendor in line.vendor_id:
-
+                        
                             #employee_id = self.env['hr.employee'].search('id','=',self.env.user.name)
                             pur_order = stock_picking_obj.search([('requisition_picking_id','=',requisition.id),('partner_id','=',vendor.id)])
-
+                            
                             if pur_order:
                                 if requisition.use_manual_locations:
                                     pic_line_val = {
@@ -244,7 +240,7 @@ class MaterialPurchaseRequisition(models.Model):
                                         'product_uom' : line.uom_id.id,
                                         'location_id': picking_type_id.default_location_src_id.id,
                                         'location_dest_id' : picking_type_id.default_location_dest_id.id,
-                                    }
+                                    }                                    
 
 
                                 stock_move = stock_move_obj.create(pic_line_val)
@@ -268,40 +264,40 @@ class MaterialPurchaseRequisition(models.Model):
                                         'company_id': requisition.env.user.company_id.id,
                                         'requisition_picking_id' : requisition.id,
                                         'origin':requisition.sequence
-                                    }
+                                    }                                    
 
                                 stock_picking = stock_picking_obj.create(val)
                                 if requisition.use_manual_locations:
                                     pic_line_val = {
-                                        'partner_id' : vendor.id,
-                                        'name': line.product_id.name,
-                                        'product_id' : line.product_id.id,
-                                        'product_uom_qty' : line.qty,
-                                        'product_uom' : line.uom_id.id,
-                                        'location_id': requisition.source_location_id.id,
-                                        'location_dest_id' : requisition.destination_location_id.id,
-                                        'picking_id' : stock_picking.id,
-                                        'origin': requisition.sequence,
-                                        'picking_type_id' : picking_type_id.id,
+                                                    'partner_id' : vendor.id,
+                                                    'name': line.product_id.name,
+                                                    'product_id' : line.product_id.id,
+                                                    'product_uom_qty' : line.qty,
+                                                    'product_uom' : line.uom_id.id,
+                                                    'location_id': requisition.source_location_id.id,
+                                                    'location_dest_id' : requisition.destination_location_id.id,
+                                                    'picking_id' : stock_picking.id,
+                                                    'origin': requisition.sequence,
+                                                    'picking_type_id' : picking_type_id.id,
 
                                     }
                                 else:
                                     pic_line_val = {
-                                        'partner_id' : vendor.id,
-                                        'name': line.product_id.name,
-                                        'product_id' : line.product_id.id,
-                                        'product_uom_qty' : line.qty,
-                                        'product_uom' : line.uom_id.id,
-                                        'location_id': picking_type_id.default_location_src_id.id,
-                                        'location_dest_id' : picking_type_id.default_location_dest_id.id,
-                                        'picking_id' : stock_picking.id,
-                                        'origin': requisition.sequence,
-                                        'picking_type_id' : picking_type_id.id,
+                                                    'partner_id' : vendor.id,
+                                                    'name': line.product_id.name,
+                                                    'product_id' : line.product_id.id,
+                                                    'product_uom_qty' : line.qty,
+                                                    'product_uom' : line.uom_id.id,
+                                                    'location_id': picking_type_id.default_location_src_id.id,
+                                                    'location_dest_id' : picking_type_id.default_location_dest_id.id,
+                                                    'picking_id' : stock_picking.id,
+                                                    'origin': requisition.sequence,
+                                                    'picking_type_id' : picking_type_id.id,
 
-                                    }
+                                    }                                    
                                 stock_move = stock_move_obj.create(pic_line_val)
                     else:
-                        pur_order = stock_picking_obj.search([('requisition_picking_id','=',requisition.id)])
+                        pur_order = stock_picking_obj.search([('requisition_picking_id','=',requisition.id)])                     
 
                         if pur_order:
                             if requisition.use_manual_locations:
@@ -323,7 +319,7 @@ class MaterialPurchaseRequisition(models.Model):
                                     'product_uom' : line.uom_id.id,
                                     'location_id': picking_type_id.default_location_src_id.id,
                                     'location_dest_id' : picking_type_id.default_location_dest_id.id,
-                                }
+                                }                                
 
                             stock_move = stock_move_obj.create(pic_line_val)
                         else:
@@ -332,6 +328,9 @@ class MaterialPurchaseRequisition(models.Model):
                                     'location_id'  : requisition.source_location_id.id,
                                     'location_dest_id' : requisition.destination_location_id.id,
                                     'picking_type_id' : picking_type_id.id,
+                                    #'material_requisition_id':requisition.job_order_id.id,
+                                    #'construction_project_id' : requisition.construction_project_id.id,
+                                    #'analytic_account_id' : requisition.analytic_id.id,                                    
                                     'company_id': requisition.env.user.company_id.id,
                                     'requisition_picking_id' : requisition.id,
                                     'origin':requisition.sequence
@@ -344,31 +343,31 @@ class MaterialPurchaseRequisition(models.Model):
                                     'company_id': requisition.env.user.company_id.id,
                                     'requisition_picking_id' : requisition.id,
                                     'origin':requisition.sequence
-                                }
+                                }                                
 
                             stock_picking = stock_picking_obj.create(val)
                             if requisition.use_manual_locations:
                                 pic_line_val = {
-                                    'name': line.product_id.name,
-                                    'product_id' : line.product_id.id,
-                                    'product_uom_qty' : line.qty,
-                                    'product_uom' : line.uom_id.id,
-                                    'location_id': requisition.source_location_id.id,
-                                    'location_dest_id' : requisition.destination_location_id.id,
-                                    'picking_id' : stock_picking.id,
-                                    'origin': requisition.sequence
+                                                'name': line.product_id.name,
+                                                'product_id' : line.product_id.id,
+                                                'product_uom_qty' : line.qty,
+                                                'product_uom' : line.uom_id.id,
+                                                'location_id': requisition.source_location_id.id,
+                                                'location_dest_id' : requisition.destination_location_id.id,
+                                                'picking_id' : stock_picking.id,
+                                                'origin': requisition.sequence
 
                                 }
                             else:
                                 pic_line_val = {
-                                    'name': line.product_id.name,
-                                    'product_id' : line.product_id.id,
-                                    'product_uom_qty' : line.qty,
-                                    'product_uom' : line.uom_id.id,
-                                    'location_id': picking_type_id.default_location_src_id.id,
-                                    'location_dest_id' : picking_type_id.default_location_dest_id.id,
-                                    'picking_id' : stock_picking.id,
-                                    'origin': requisition.sequence
+                                                'name': line.product_id.name,
+                                                'product_id' : line.product_id.id,
+                                                'product_uom_qty' : line.qty,
+                                                'product_uom' : line.uom_id.id,
+                                                'location_id': picking_type_id.default_location_src_id.id,
+                                                'location_dest_id' : picking_type_id.default_location_dest_id.id,
+                                                'picking_id' : stock_picking.id,
+                                                'origin': requisition.sequence
 
                                 }
                             stock_move = stock_move_obj.create(pic_line_val)
@@ -385,11 +384,15 @@ class MaterialPurchaseRequisition(models.Model):
                 'approved_date': datetime.now(),
             })
 
+
+
+    # @api.multi
     def _get_internal_picking_count(self):
         for picking in self:
             picking_ids = self.env['stock.picking'].search([('requisition_picking_id','=',picking.id)])
             picking.internal_picking_count = len(picking_ids)
-
+            
+    # @api.multi
     def internal_picking_button(self):
         self.ensure_one()
         return {
@@ -400,11 +403,13 @@ class MaterialPurchaseRequisition(models.Model):
             'domain': [('requisition_picking_id', '=', self.id)],
         }
 
+    # @api.multi
     def _get_purchase_order_count(self):
         for po in self:
             po_ids = self.env['purchase.order'].search([('requisition_po_id','=',po.id)])
             po.purchase_order_count = len(po_ids)
-
+            
+    # @api.multi
     def purchase_order_button(self):
         self.ensure_one()
         return {
@@ -415,6 +420,12 @@ class MaterialPurchaseRequisition(models.Model):
             'domain': [('requisition_po_id', '=', self.id)],
         }
 
+    # @api.multi
+    # def _get_emp_destination(self):
+    #     if not self.employee_id.destination_location_id:
+    #         return 
+    #     self.destination_location_id = self.employee_id.destination_location_id
+
     @api.model
     def _default_picking_type(self):
         type_obj = self.env['stock.picking.type']
@@ -423,6 +434,7 @@ class MaterialPurchaseRequisition(models.Model):
         if not types:
             types = type_obj.search([('code', '=', 'incoming'), ('warehouse_id', '=', False)])
         return types[:1]
+
 
     @api.model
     def _default_picking_internal_type(self):
@@ -434,17 +446,21 @@ class MaterialPurchaseRequisition(models.Model):
         return types[:1]
 
     sequence = fields.Char(string='Sequence', readonly=True,copy =False)
-    requisition_responsible_id = fields.Many2one('res.users',string="Requisition Responsible", default=lambda self: self.env.user)
-    requisition_date = fields.Date(string="Requisition Date",required=True, default=fields.Datetime.now)
+    employee_id = fields.Many2one('hr.employee',string="Employee",required=True)
+    department_id = fields.Many2one('hr.department',string="Department",required=True)
+    requisition_responsible_id  = fields.Many2one('res.users',string="Requisition Responsible")
+    requisition_date = fields.Date(string="Requisition Date",required=True)
     received_date = fields.Date(string="Received Date",readonly=True)
     requisition_deadline_date = fields.Date(string="Requisition Deadline")
-    state = fields.Selection([('new','New'),
-                              ('department_approval','Waiting Department Approval'),
-                              ('ir_approve','Waiting User Approved'),
-                              ('po_created','Approved'),
-                              ('received','Received'),
-                              ('cancel','Cancel')],string='Stage',default="new")
-    requisition_line_ids = fields.One2many('requisition.line','requisition_id',string="Requisition Line ID")
+    state = fields.Selection([
+                                ('new','New'),
+                                ('department_approval','Waiting Department Approval'),
+                                ('ir_approve','Waiting User Approved'),
+                                ('approved','Approved'),
+                                ('po_created','Purchase Order Created'),
+                                ('received','Received'),
+                                ('cancel','Cancel')],string='Stage',default="new")
+    requisition_line_ids = fields.One2many('requisition.line','requisition_id',string="Requisition Line ID")    
     confirmed_by_id = fields.Many2one('res.users',string="Confirmed By", copy=False)
     department_manager_id = fields.Many2one('res.users',string="Department Manager", copy=False)
     approved_by_id = fields.Many2one('res.users',string="Approved By", copy=False)
@@ -455,13 +471,16 @@ class MaterialPurchaseRequisition(models.Model):
     rejected_date = fields.Date(string="Rejected Date",readonly=True , copy=False)
     reason_for_requisition = fields.Text(string="Reason For Requisition")
     source_location_id = fields.Many2one('stock.location',string="Source Location")
-    destination_location_id = fields.Many2one('stock.location',string="Destination Location", default=lambda self: self.env.user.default_requisition_des_location_id)
+    destination_location_id = fields.Many2one('stock.location',string="Destination Location")
     internal_picking_id = fields.Many2one('stock.picking.type',string="Internal Picking", default=_default_picking_internal_type)
     internal_picking_count = fields.Integer('Internal Picking', compute='_get_internal_picking_count')
     purchase_order_count = fields.Integer('Purchase Order', compute='_get_purchase_order_count')
     company_id = fields.Many2one('res.company',string="Company" , default=lambda self: self.env.user.company_id)
     picking_type_id = fields.Many2one('stock.picking.type', 'Deliver To', required=True, default=_default_picking_type)
     use_manual_locations = fields.Boolean(string="Select Manual Locations" ,default=True)
+    
+
+
 
 
 class RequisitionLine(models.Model):
@@ -469,24 +488,22 @@ class RequisitionLine(models.Model):
     _rec_name = 'requisition_id'
     _description = "Requisition Line"
 
+    # @api.multi
     @api.onchange('product_id')
     def onchange_product_id(self):
+        res = {}
         if not self.product_id:
-            return
-        vals = {}
-        vals['uom_id'] = self.product_id.uom_id
-        vals['description'] = self.product_id.name
-        self.update(vals)
+            return res
+        self.uom_id = self.product_id.uom_id.id
+        self.description = self.product_id.name
 
     product_id = fields.Many2one('product.product',string="Product",domain="[('type','not in',['service'])]")
     description = fields.Text(string="Description")
     qty = fields.Float(string="Quantity",default=1.0)
-    uom_id = fields.Many2one('uom.uom', string='Unit of Measure',
-                                  domain="[('category_id', '=', product_uom_category_id)]")
-    product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id', readonly=True)
+    uom_id = fields.Many2one('uom.uom',string="Unit Of Measure")
     requisition_id = fields.Many2one('material.purchase.requisition',string="Requisition Line")
     requisition_action = fields.Selection([('purchase_order','Purchase Order'),('internal_picking','Internal Picking')],
-                                          string="Requisition Action" , default="internal_picking")
+                                          string="Requisition Action" , default = "internal_picking")
     vendor_id = fields.Many2many('res.partner',string="Vendors")
 
 
@@ -495,14 +512,20 @@ class StockPicking(models.Model):
 
     requisition_picking_id = fields.Many2one('material.purchase.requisition',string="Purchase Requisition")
 
-
-class PurchaseOrder(models.Model):
-    _inherit = 'purchase.order'
+class PurchaseOrder(models.Model):      
+    _inherit = 'purchase.order'    
 
     requisition_po_id = fields.Many2one('material.purchase.requisition',string="Purchase Requisition")
 
+class HrEmployee(models.Model):      
+    _inherit = 'hr.employee'    
 
-class ResUsers(models.Model):
-    _inherit = 'res.users'
+    destination_location_id = fields.Many2one('stock.location',string="Destination Location")    
 
-    default_requisition_des_location_id = fields.Many2one('stock.location',string="Default Requisition Destination Location")
+class HrDepartment(models.Model):      
+    _inherit = 'hr.department'    
+
+    destination_location_id = fields.Many2one('stock.location',string="Destination Location")    
+
+
+    

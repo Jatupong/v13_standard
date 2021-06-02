@@ -11,15 +11,12 @@
     'description': """
 This module is for partner detail address
         """,
-    'depends': ['contacts'],
+    'depends': ['sale','contacts'],
     'data': [
-        'views/res_company_view.xml',
         'views/res_district_view.xml',
         'views/res_subdistrict_view.xml',
         'views/res_partner_view.xml',
-        #'data/res_country_data.xml',
-        'data/res_state_data.xml',
-        'data/res_district_data.xml',
+        'data/res_country_data.xml',
         'security/ir.model.access.csv'
     ],
     'images': [],

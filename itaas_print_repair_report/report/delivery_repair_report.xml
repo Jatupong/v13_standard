@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="delivery_repair_report_id">
+        <t t-call="web.basic_layout">
+            <t t-foreach="docs" t-as="o">
+                <div class="page">
+                    <style>
+                        @font-face
+                        {
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_print_repair_report/static/THSarabun.ttf") format('opentype');
+                        }
+                        .font_fam{
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_print_repair_report/static/THSarabun.ttf") format('opentype');
+                        }
+
+                        table.table-nobordered {
+                        border:1px solid white;
+                        padding:3px;
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_print_repair_report/static/THSarabun.ttf") format('opentype');
+                        margin:0px;
+                        }
+                        table.table-nobordered &gt; thead &gt; tr &gt; th{
+                        border:1px solid white;
+                        padding:3px;
+                        text-align:center;
+                        }
+                        table.table-nobordered &gt; tbody &gt; tr &gt; td{
+                        border:1px solid white;
+                        padding:3px;
+                        }
+                        table.table-nobordered &gt; tfoot &gt; tr &gt; td{
+                        border:1px solid white;
+                        padding:3px;
+                        }
+
+                        table.table-bordered {
+                        border:1px solid black;
+                        padding:3px;
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_print_repair_report/static/THSarabun.ttf") format('opentype');
+                        margin-top:10px;
+                        }
+                        table.table-bordered &gt; thead &gt; tr &gt; th{
+                        border:1px solid black;
+                        padding:3px;
+                        text-align:center;
+                        vertical-align:middle;
+                        }
+                        table.table-bordered &gt; tbody &gt; tr &gt; td{
+                        border:1px solid black;
+                        padding:3px;
+                        }
+                        table.table-bordered &gt; tfoot &gt; tr &gt; td{
+                        border:1px solid black;
+                        padding:3px;
+                        }
+                    </style>
+
+                    <table width="100%" class="table table-nobordered" style="font-size:22px; line-height:20px;">
+                        <tr>
+                            <td width="15%" style="vertical-align:middle;">
+                                <div>
+                                    <img t-if="o.company_id.logo" t-att-src="'data:image/png;base64,%s' % to_text(o.company_id.logo)" style="height:60px; width: 110px;"/>
+                                </div>
+                            </td>
+                            <td width="65%" align="center" style="vertical-align:middle;">
+                                <div>
+                                    <B><span t-field="o.company_id.name"/>&amp;nbsp;
+                                        <t t-if="o.company_id.branch_no == '00000' and o.company_id.partner_id.lang == 'en_US'">
+                                            <span>( Head Office )</span>
+                                        </t>
+                                        <t t-if="o.company_id.branch_no == '00000' and o.company_id.partner_id.lang != 'en_US'">
+                                            <span>( สำนักงานใหญ่ )</span>
+                                        </t>
+                                        <t t-if="o.company_id.branch_no != '00000'">
+                                            (<span t-field="o.company_id.branch_no"/>)
+                                        </t>
+                                    </B>
+                                </div>
+                                <font style="font-size: 20px; line-height:18px;">
+                                    <span t-if="o.company_id.building"><span t-field="o.company_id.building"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.roomnumber">ห้องที่&amp;nbsp;<span t-field="o.company_id.roomnumber"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.floornumber">ชั้นที่&amp;nbsp;<span t-field="o.company_id.floornumber"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.village">หมู่บ้าน&amp;nbsp;<span t-field="o.company_id.village"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.house_number"><span t-field="o.company_id.house_number"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.moo_number">หมู่&amp;nbsp;<span t-field="o.company_id.moo_number"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.soi_number">ซอย&amp;nbsp;<span t-field="o.company_id.soi_number"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.street"><span t-esc="o.company_id.street"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.street2"><span t-esc="o.company_id.street2"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.city and o.company_id.state_id and o.company_id.state_id.code == 'BKK'">เขต<span t-field="o.company_id.city"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.city and o.company_id.state_id and o.company_id.state_id.code != 'BKK'">อ.<span t-field="o.company_id.city"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.state_id and o.company_id.state_id.code == 'BKK'">&amp;nbsp;<span t-field="o.company_id.state_id.name"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.state_id and o.company_id.state_id.code != 'BKK'">จ.&amp;nbsp;<span t-field="o.company_id.state_id.name"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.zip"><span t-esc="o.company_id.zip"/>&amp;nbsp;</span><br/>
+                                    <span t-if="o.company_id.phone">Tel.&amp;nbsp;<span t-esc="o.company_id.phone"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.fax">Fax&amp;nbsp;<span t-esc="o.company_id.fax"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.email">Email&amp;nbsp;<span t-esc="o.company_id.email"/>&amp;nbsp;</span>
+                                </font>
+
+                            </td>
+                            <td width="20%" style="vertical-align:middle;">
+                                <span> ☐ </span><B><span> ด่วนมาก </span></B><br/>
+                                <span> ☐ </span><span> ด่วนมากฝ่ายขาย </span><br/>
+                                <span> ☐ </span><span> ปกติ </span><br/>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div class="font_fam" style="text-align:center; font-size: 24px;"><B><span>เอกสารรับ/ส่งสินค้า</span></B></div>
+                    <div class="font_fam" style="font-size:18px;">
+                        <span> ☐ </span> <span>ซ่อม</span>
+                        <span> ☐ </span> <span>ตัวอย่างเสนอราคา</span>
+                        <span> ☐ </span> <span>ตัวอย่างสั่งผลิต เลขที่ใบงาน PM ....................................................................................</span>
+                        <span> ☐ </span> <span>อื่นๆ ..............................................................................</span>
+                    </div>
+                    <div class="font_fam" style="font-size:18px;">
+                        <span> ☐ </span> <span>งานแก้ไข(ใบเปลี่ยนแปลง)</span>
+                        <span> ☐ </span> <span>งานร้องเรียน (เลขที่เอกสารใบเคลมสินค้า/ใบยืม SO .......................................................................................................................................................)</span>
+                    </div>
+                    <div class="font_fam" style="font-size:20px;">
+                        <span>บริษัท.............................................................................................................</span>
+                        <span>รหัสลูกค้า........................................................</span>
+                        <span>วันที่............................................................</span>
+                    </div>
+                    <div class="font_fam" style="font-size:20px;">
+                        <span>ผู้ติดต่อ...................................................................................</span>
+                        <span>แผนก..............................................</span>
+                        <span>มือถือ...........................................</span>
+                        <span>โทรศัพท์.........................................</span>
+                    </div>
+
+                    <table width="100%" class="table table-bordered" style="font-size:18px; line-height:14px;">
+                        <thead>
+                            <tr style="height:35px;">
+                                <th>ลำดับ</th>
+                                <th>อุปกรณ์</th>
+                                <th>จำนวน</th>
+                                <th>รายละเอียด</th>
+                                <th>ผู้รับเรื่อง</th>
+                                <th>พนักงานขาย/Tel.</th>
+                                <th>สาขา</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="range(0,4)" t-as="x">
+                                <tr style="height:35px;">
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <table width="100%" class="font_fam" style="font-size:18px;">
+                        <tr>
+                            <td align="center" width="33%">
+                                <br/>
+                                <br/>
+                                <span>ลงชื่อ...........................................ผู้ส่งสินค้า</span><br/>
+                                <span>วันที่................../..................../......................</span>
+                            </td>
+                            <td align="center" width="33%">
+                                <br/>
+                                <br/>
+                                <span>ลงชื่อ...........................................ผู้รับสินค้า</span><br/>
+                                <span>วันที่................../..................../......................</span>
+                            </td>
+                            <td align="center" width="34%">
+                                <br/>
+                                <br/>
+                                <span>ลงชื่อ.........................................ผู้รับเรื่องซ่อม</span><br/>
+                                <span>วันที่................../..................../......................</span>
+                            </td>
+
+                        </tr>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

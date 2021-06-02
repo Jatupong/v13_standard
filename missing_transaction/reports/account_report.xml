@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+	<template id="invoice_report_add_transaction_number"
+		inherit_id="account.report_invoice_document">
+		<xpath expr="//div[@name='reference']" position="after">
+			<div name="transaction_number" class="col-xs-2" t-if="o.transaction_number">
+				<strong>Transaction:</strong>
+				<p t-field="o.transaction_number" />
+			</div>
+		</xpath>
+	</template>
+
+</odoo>

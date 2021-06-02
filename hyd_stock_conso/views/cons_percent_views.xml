@@ -1,0 +1,30 @@
+<odoo>
+
+    <record id="cons_percent_tree_view" model="ir.ui.view">
+        <field name="name">hyd_stock_conso.cons_percent.tree</field>
+        <field name="model">hyd_stock_conso.cons_percent</field>
+        <field name="arch" type="xml">
+            
+            <tree string="Consumption Percent" editable="top">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="ratio"/>
+            </tree>
+
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="cons_percent_action_view">
+        <field name="name">Consumption Percent</field>
+        <field name="res_model">hyd_stock_conso.cons_percent</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <menuitem
+        parent="menu_stock_config_settings_cons"
+        sequence="18"
+        id="menu_stock_config_settings_cons_percent"
+        name="Consumption Percent"
+        action="cons_percent_action_view" />
+
+</odoo>

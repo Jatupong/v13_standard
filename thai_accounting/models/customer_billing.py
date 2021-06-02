@@ -28,7 +28,6 @@ class AccountMove(models.Model):
 class CustomerBilling(models.Model):
     _name = 'customer.billing'
     _inherit = ['mail.thread']
-    _description = "Customer Billing"
 
     @api.model
     def _default_journal(self):
@@ -42,12 +41,12 @@ class CustomerBilling(models.Model):
             ('company_id', '=', company_id),
         ]
         return self.env['account.journal'].search(domain, limit=1)
-
+    
     @api.model
     def _default_currency(self):
         journal = self._default_journal()
         return journal.currency_id or journal.company_id.currency_id
-
+    
     # @api.one
     @api.depends('invoice_ids')
     def _compute_amount(self):
@@ -70,17 +69,17 @@ class CustomerBilling(models.Model):
             'type': 'ir.actions.client',
             'tag': 'reload',
         }
-
+        
     # @api.one
     @api.depends('invoice_ids','invoice_ids.amount_residual_signed',)
     def _compute_residual(self):
         for billing in self:
             billing.residual = sum(inv.amount_residual_signed for inv in billing.invoice_ids)
-            if billing.invoice_ids and billing.state in ('validate','confirm','paid') and not billing.residual:
+            if billing.invoice_ids and not billing.residual:
                 billing.state = 'paid'
-
+            
     name = fields.Char(string='Reference', index=True,
-                       readonly=True, states={'draft': [('readonly', False)]}, copy=False, default='New')
+        readonly=True, states={'draft': [('readonly', False)]}, copy=False, default='New')
 
     # To prepare receipt document from billing
     # rec_pre_no = fields.Char(string='Receipt Pre Number.', readonly=True, copy=False)
@@ -88,58 +87,58 @@ class CustomerBilling(models.Model):
     #                            copy=False)
     # rec_pre_generated = fields.Boolean(string='Receive Pre Number Generated', default=False, copy=False)
     date_billing = fields.Date(string='Billing Date',
-                               readonly=True, states={'draft': [('readonly', False)]}, index=True,
-                               default=lambda self: self._context.get('date', fields.Date.context_today(self)), copy=False)
+        readonly=True, states={'draft': [('readonly', False)]}, index=True,
+        default=lambda self: self._context.get('date', fields.Date.context_today(self)), copy=False)
     desc = fields.Char('Description', readonly=True, states={'draft': [('readonly', False)]})
     partner_id = fields.Many2one('res.partner', string='Customer', change_default=True,
-                                 required=True, readonly=True, states={'draft': [('readonly', False)]},
-                                 track_visibility='always')
+        required=True, readonly=True, states={'draft': [('readonly', False)]},
+        track_visibility='always')
     comment = fields.Text('Additional Information', readonly=True, states={'draft': [('readonly', False)]})
     state = fields.Selection([
-        ('draft','Draft'),
-        ('validate', 'Validated'),
-        ('confirm', 'Confirmed'),
-        ('paid', 'Paid'),
-        ('cancel', 'Cancelled'),
-    ], string='Status', index=True, default='draft', track_visibility='onchange', copy=False,
+            ('draft','Draft'),
+            ('validate', 'Validated'),
+            ('confirm', 'Confirmed'),
+            ('paid', 'Paid'),
+            ('cancel', 'Cancelled'),
+        ], string='Status', index=True, default='draft', track_visibility='onchange', copy=False,
         help=" * The 'Draft' status is used when a user is encoding a new and unconfirmed Customer billing.\n"
              " * The 'Confirmed' status is used when user create customer billing, a billing number is generated. Its in confirm status till user does not pay the bill amount.\n"
              " * The 'Paid' status is set automatically when the invoices is paid. Its related journal entries may or may not be reconciled.\n"
              " * The 'Cancelled' status is used when user cancel billing.")
     invoice_ids = fields.Many2many('account.move', 'billing_invoice_rel', string='Invoices',
-                                   readonly=True, states={'draft': [('readonly', False)]}, copy=True)
+        readonly=True, states={'draft': [('readonly', False)]}, copy=True)
 
 
     user_id = fields.Many2one('res.users', string='Salesperson', track_visibility='onchange',
-                              readonly=True, states={'draft': [('readonly', False)]},
-                              default=lambda self: self.env.user)
+        readonly=True, states={'draft': [('readonly', False)]},
+        default=lambda self: self.env.user)
     type = fields.Selection([
-        ('out_invoice','Customer Invoice'),
-        ('out_refund','Customer Refund'),
-        ('in_invoice', 'Supplier Invoice'),
-        ('in_refund', 'Supplier Refund'),
-    ], readonly=False, index=True, change_default=True, default='out_invoice', track_visibility='always')
+            ('out_invoice','Customer Invoice'),
+            ('out_refund','Customer Refund'),
+            ('in_invoice', 'Supplier Invoice'),
+            ('in_refund', 'Supplier Refund'),
+        ], readonly=False, index=True, change_default=True, default='out_invoice', track_visibility='always')
     customer_supplier = fields.Selection([
         ('customer','customer'),
         ('supplier','supplier'),
     ],string="customer or supplier")
     currency_id = fields.Many2one('res.currency', string='Currency',
-                                  required=True, readonly=True, states={'draft': [('readonly', False)]},
-                                  default=_default_currency, track_visibility='always')
+        required=True, readonly=True, states={'draft': [('readonly', False)]},
+        default=_default_currency, track_visibility='always')
     company_id = fields.Many2one('res.company', string='Company', change_default=True,
-                                 required=True, readonly=True, states={'draft': [('readonly', False)]},
-                                 default=lambda self: self.env['res.company']._company_default_get('account.invoice'))
+        required=True, readonly=True, states={'draft': [('readonly', False)]},
+        default=lambda self: self.env['res.company']._company_default_get('account.invoice'))
     company_currency_id = fields.Many2one('res.currency', related='company_id.currency_id', readonly=True)
     amount_untaxed = fields.Monetary(string='Untaxed Amount', currency_field='currency_id',
-                                     store=True, readonly=True, compute='_compute_amount', track_visibility='always')
+        store=True, readonly=True, compute='_compute_amount', track_visibility='always')
     amount_tax = fields.Monetary(string='Tax', currency_field='currency_id',
-                                 store=True, readonly=True, compute='_compute_amount')
+        store=True, readonly=True, compute='_compute_amount')
     amount_total = fields.Monetary(string='Total', currency_field='currency_id',
-                                   store=True, readonly=True, compute='_compute_amount')
+        store=True, readonly=True, compute='_compute_amount')
 
 
     residual = fields.Monetary(string='Amount Due', currency_field='currency_id',
-                               compute='_compute_residual', store=False, help="Remaining amount due.")
+        compute='_compute_residual', store=False, help="Remaining amount due.")
 
     # payments_widget = fields.Text(compute='_get_payment_info_JSON')
     payments_widget = fields.Text(string='Payment Widget')
@@ -151,14 +150,7 @@ class CustomerBilling(models.Model):
 
     date_receipt = fields.Date(string='Receipt Date',default=fields.Date.today())
 
-    sequence_billing = fields.Many2one('ir.sequence', string="Sequence")
 
-    @api.onchange('invoice_ids')
-    def onchange_invoice(self):
-        for inv in self.invoice_ids:
-            print('--UPDATe--')
-            if not self.sequence_billing and inv.journal_id and inv.journal_id.sequence_billing:
-                self.sequence_billing = inv.journal_id.sequence_billing
 
     # @api.one
     # @api.depends('state')
@@ -234,9 +226,6 @@ class CustomerBilling(models.Model):
     #
     #         self.payments_widget = json.dumps(info,default=date_utils.json_default)
 
-
-
-
     @api.onchange('partner_id')
     @api.depends('partner_id')
     def onchange_partner_id(self):
@@ -245,7 +234,7 @@ class CustomerBilling(models.Model):
         if self.type == 'out_invoice':
             if self.auto_load:
                 inv_ids = self.env['account.move'].search([('state','=','posted'),('invoice_payment_state','=','not_paid'),('billing_id','=',False),('type','in',('out_invoice','out_refund')),
-                                                           ('partner_id','=',self.partner_id.id),('invoice_date_due','<=',self.date_billing),('company_id','=',self.company_id.id)])
+                                                          ('partner_id','=',self.partner_id.id),('invoice_date_due','<=',self.date_billing),('company_id','=',self.company_id.id)])
                 inv_ids = [inv.id for inv in inv_ids]
                 self.invoice_ids = [(6, 0, inv_ids)]
             self.customer_supplier = 'customer'
@@ -261,16 +250,15 @@ class CustomerBilling(models.Model):
             self.customer_supplier = 'supplier'
 
 
-
+        
     @api.model
     def create(self, vals):
         if not vals.get('name'):
-            seq_vals = vals.get('sequence_billing')
-            if seq_vals:
-                seq_id = self.env['ir.sequence'].search([('id','=',seq_vals)],limit=1)
-                vals['name'] = seq_id.with_context(ir_sequence_date=vals.get('date_billing')).next_by_id()
-            else:
-                raise UserError(_("Please assign sequence for billing"))
+            if vals.get('type') == 'out_invoice':
+                vals['name'] = self.env['ir.sequence'].next_by_code('customer.billing')
+            elif vals.get('type') == 'in_invoice':
+                vals['name'] = self.env['ir.sequence'].next_by_code('supplier.billing')
+
         return super(CustomerBilling, self).create(vals)
 
     # @api.multi
@@ -285,19 +273,19 @@ class CustomerBilling(models.Model):
     # @api.multi
     def confirm_billing(self):
         self.write({'state': 'confirm'})
-
+    
     # @api.multi
     def action_cancel(self):
         for inv_id in self.invoice_ids:
             inv_id.write({'billing_id': False})
         self.write({'state': 'cancel'})
-
+        
     # @api.multi
     def action_cancel_draft(self):
         for inv_id in self.invoice_ids:
             inv_id.write({'billing_id': False})
         self.write({'state': 'draft'})
-
+        
     # @api.multi
     def action_print(self):
         self.ensure_one()
@@ -317,137 +305,4 @@ class CustomerBilling(models.Model):
             raise UserError(_("You can delete only billing in draft and cancel state"))
         return super(CustomerBilling, self).unlink()
 
-    tax_inv_number = fields.Char(string='Tax Invoice Number', copy=False)
-    tax_inv_generated = fields.Boolean(string='Tax Invoice Generated', copy=False)
-    tax_invoice_date = fields.Date(string='Tax Invoice Date',copy=False)
-
-    def action_billing_generate_tax_invoice(self):
-        if not self.tax_inv_number and self.invoice_ids and self.invoice_ids[0].journal_id and self.invoice_ids[0].journal_id.tax_invoice_sequence_id:
-            if not self.tax_invoice_date:
-                self.tax_invoice_date = fields.Date.today()
-            self.tax_inv_number = self.invoice_ids[0].journal_id.tax_invoice_sequence_id.next_by_id(sequence_date=self.tax_invoice_date)
-            self.tax_inv_generated = True
-        elif not self.tax_inv_number and self.invoice_ids and self.invoice_ids[0].journal_id and not self.invoice_ids[
-                0].journal_id.tax_invoice_sequence_id:
-            raise UserError(_("Please setup tax invoice/receipt sequence number"))
-
-        if self.tax_inv_number:
-            for inv in self.invoice_ids.filtered(lambda x: not x.tax_inv_number):
-                inv.tax_inv_number = self.tax_inv_number
-                inv.tax_inv_generated = True
-
-        if self.tax_inv_number:
-            self.create_reverse_tax_multi_invoice(self.tax_inv_number)
-
-
-    def create_reverse_tax_multi_invoice(self,tax_inv_number):
-        print ('--create_reverse_tax_multi_invoice--')
-        line_ids = []
-        move_id = False
-        for inv in self.invoice_ids:
-            for line in inv.line_ids.filtered('tax_repartition_line_id'):
-                print ('--TAX OUTPUT')
-                if inv.type in ('out_invoice', 'out_refund'):
-                    if not line.account_id.sale_tax_report:
-                        tax_account_id = self.env['account.account'].search([('sale_tax_report','=',True)],limit=1)
-                        if not inv.journal_id.adj_journal:
-                            raise UserError(_("Please setup journal to reverse tax on invoice journal"))
-                    else:
-                        continue
-                else:
-                    if not line.account_id.purchase_tax_report:
-                        tax_account_id = self.env['account.account'].search([('purchase_tax_report', '=', True)], limit=1)
-                        if not inv.journal_id.adj_journal:
-                            raise UserError(_("Please setup journal to reverse tax on invoice journal"))
-                    else:
-                        continue
-
-                original_tax_line = {
-                    'name': line.name,
-                    'amount_currency': line.amount_currency if line.currency_id else 0.0,
-                    'currency_id': line.currency_id.id or False,
-                    'debit': line.credit,
-                    'credit': line.debit,
-                    'date_maturity': self.tax_invoice_date,
-                    'partner_id': line.partner_id.id,
-                    'account_id': line.account_id.id,
-                    'payment_id': False,
-                    'ref': inv.name,
-                }
-                new_tax_line = {
-                    'name': tax_account_id.name,
-                    'amount_currency': line.amount_currency if line.currency_id else 0.0,
-                    'currency_id': line.currency_id.id or False,
-                    'debit': line.debit,
-                    'credit': line.credit,
-                    'date_maturity': self.tax_invoice_date,
-                    'partner_id': line.partner_id.id,
-                    'account_id': tax_account_id.id,
-                    'payment_id': False,
-                    'ref': inv.name,
-                }
-                line_ids.append((0, 0, original_tax_line))
-                line_ids.append((0, 0, new_tax_line))
-
-        if line_ids:
-            print ('LINE')
-            print (line_ids)
-            move_vals = {
-                'name': tax_inv_number,
-                'type': 'entry',
-                'date': self.tax_invoice_date,
-                'ref': self.name,
-                'journal_id': self.invoice_ids[0].journal_id.adj_journal.id,
-                'currency_id': self.currency_id.id or self.journal_id.currency_id.id or self.company_id.currency_id.id,
-                'partner_id': self.partner_id.id,
-                'line_ids': line_ids
-            }
-
-            move_id = self.env['account.move'].create(move_vals)
-            move_id.post()
-
-        if move_id:
-            for inv in self.invoice_ids:
-                if not inv.adjust_move_id:
-                    inv.adjust_move_id = move_id
-
-
-
-    def action_invoice_register_payment(self):
-        print ('-XXXX')
-        # self.with_context({'active_model': 'account.move'})
-        # self.xlsx_report = self.env["report.report_xlsx.abstract"].with_context(
-        #     active_model="res.partner"
-        # )
-        #
-        # wiz = self.wiz_model.with_context(
-        #     active_ids=request.ids, active_model="mrp.production.request"
-        # )
-        #
-        # self.with_context(
-        #     active_model='account.move',
-        #     active_ids=self.invoice_ids.ids
-        # )
-        # print(self.env.context)
-        ctx = self._context.copy()
-        ctx['active_model'] = 'account.move'
-        ctx['active_ids'] = self.invoice_ids.ids
-        active_ids = ctx['active_ids']
-        # active_ids = self.invoice_ids.ids
-        # self.env['account.move'].browse()
-        print (active_ids)
-        # if not active_ids:
-        #     return ''
-        print ('-------CONTEXT action_register_payment')
-        print (ctx)
-
-        return {
-            'name': _('Register Payment'),
-            'res_model': len(active_ids) == 1 and 'account.payment' or 'account.register.payment',
-            'view_mode': 'form',
-            'view_id': len(active_ids) != 1 and self.env.ref('thai_accounting.view_account_register_payment_form_multi').id or self.env.ref('account.view_account_payment_invoice_form').id,
-            'context': ctx,
-            'target': 'new',
-            'type': 'ir.actions.act_window',
-        }
 

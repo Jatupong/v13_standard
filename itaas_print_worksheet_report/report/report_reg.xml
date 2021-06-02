@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- QWeb Reports for Product -->
+        <!--#############################################################################################-->
+        <!--Worksheet-->
+        <record id="paperformat_A4_worksheet_report" model="report.paperformat">
+            <field name="name">A4_Zero_Margin_worksheet_report</field>
+            <field name="default" eval="False"/>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">40</field>
+            <field name="margin_bottom">45</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">35</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <!--Worksheet-->
+        <report
+                id="wortsheet_report"
+                model="project.task"
+                menu="True"
+                report_type="qweb-pdf"
+                string="Worksheet Report(PDF)"
+                paperformat="paperformat_A4_worksheet_report"
+                name="itaas_print_worksheet_report.wortsheet_report_id"
+                file="itaas_print_worksheet_report.wortsheet_report_id"
+        />
+
+    </data>
+</odoo>

@@ -23,7 +23,6 @@ class AccountChequeStatement(models.Model):
     _name = 'account.cheque.statement'
     _order = "name desc, id desc"
     _inherit = ['mail.thread']
-    _description = "Account Cheque Statement"
 
 
     name = fields.Char(string='Number', states={'open': [('readonly', False)]}, copy=False, readonly=True)

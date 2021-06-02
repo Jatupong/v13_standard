@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_delivery_carrier_details_form" model="ir.ui.view">
+            <field name="name">Delivery Carrier Details</field>
+            <field name="model">delivery.carrier.details</field>
+            <field name="arch" type="xml">
+                <form string="Delivery Carrier Details">
+
+                    <group>
+
+                        <group>
+                            <field name="partner_id"/>
+                            <label for="street" string="Address"/>
+                            <div class="o_address_format">
+                                <field name="street" placeholder="Street..." class="o_address_street"/>
+                                <field name="street2" placeholder="Street 2..." class="o_address_street"/>
+                                <field name="city_id" placeholder="City" class="o_address_city"/>
+                                <field name="city" placeholder="City" class="o_address_city"/>
+                                <field name="state_id" class="o_address_state" placeholder="State"
+                                       options='{"no_open": True}'/>
+                                <field name="zip" placeholder="ZIP" class="o_address_zip"/>
+                                <field name="country_id" placeholder="Country" class="o_address_country"
+                                       options='{"no_open": True, "no_create": True}'/>
+                            </div>
+                            <field name="phone"/>
+                        </group>
+                        <group>
+                            <field name="picking_id"/>
+                            <field name="carrier_id"/>
+                        </group>
+                        <group>
+                            <field name="number_of_parcels"/>
+                            <label for="total_weight"/>
+                            <div class="o_row">
+                                <field name="total_weight"/>
+                                <field name="weight_uom_name"/>
+                            </div>
+                        </group>
+                        <group>
+                            <field name="parcel_value"/>
+                            <field name="value_to_collect"/>
+                            <field name="origin"/>
+                        </group>
+                    </group>
+
+                    <footer>
+                        <button name="do_save" string="_Apply" type="object" class="oe_highlight"/>
+                        or
+                        <button string="_Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+
+                </form>
+            </field>
+        </record>
+
+
+        <record id="action_delivery_carrier_details" model="ir.actions.act_window">
+            <field name="name">Delivery Carrier Details</field>
+            <field name="res_model">delivery.carrier.details</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+
+    </data>
+</odoo>

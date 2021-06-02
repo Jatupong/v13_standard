@@ -58,64 +58,104 @@ class invoice_discount(models.Model):
 
     @api.depends('amount_untaxed','discount_type', 'discount_value')
     def disc_amount(self):
-
         print ('---DISC AMOUNT---')
+        for move in self:
+            if move.discount_view == 'Before Tax':
+                # print('---BT-1')
+                if move.discount_type == 'Fixed':
+                    # print('---BT-2')
+                    move.discounted_amount = move.discount_value
+                elif move.discount_type == 'Percentage':
+                    # print('---BT-3')
+                    amount_to_dis = move.amount_untaxed * (move.discount_value / 100)
+                    move.discounted_amount = round(amount_to_dis,2)
+                else:
+                    # print('---BT-4')
+                    move.discounted_amount = 0
 
-        if self.discount_view == 'Before Tax':
-            # print('---BT-1')
-            if self.discount_type == 'Fixed':
-                # print('---BT-2')
-                self.discounted_amount = self.discount_value
-            elif self.discount_type == 'Percentage':
-                # print('---BT-3')
-                amount_to_dis = self.amount_untaxed * (self.discount_value / 100)
-                self.discounted_amount = round(amount_to_dis,2)
+
             else:
-                # print('---BT-4')
                 self.discounted_amount = 0
 
 
-        else:
-            self.discounted_amount = 0
+            ############## Out Invoice ################33
+            if self._context.get('default_type') in ['out_invoice'] and move.discounted_amount:
+                discount_vals = {
+                    'account_id': self.env.user.company_id.default_sales_discount_account_id.id,  ##self.out_discount_account.id,
+                    'debit': move.discounted_amount,
+                    'price_unit': - move.discounted_amount,
+                    'credit': 0.00,
+                    'quantity': 1,
+                    'name': 'Discount',
+                    'tax_ids':[(6, 0, [2])],
+                    'tag_ids': [(6, 0, [10])],
+                    'exclude_from_invoice_tab': True,
+                    # 'predict_override_default_account': True,
+                }
+                print('-DISCOUNT VAL')
+                print(discount_vals)
+
+                exist = False
+                for line in move.line_ids:
+                    if line.account_id == self.env.user.company_id.default_sales_discount_account_id:
+                        exist = True
+                        line.update({'debit': move.discounted_amount})
+                        line.update({'price_unit': -move.discounted_amount})
+                        line._onchange_debit()
+                        print('---EXIST---')
+                if not exist:
+                    print ('---NEW---')
+                    discount_lines = move.line_ids.with_context(check_move_validity=False).new(discount_vals)
+                    # discount_lines = self.line_ids.new(discount_vals)
+
+                    move.line_ids += discount_lines
+                    discount_lines._onchange_debit()
+                    # discount_lines._onchange_debit()
+
+                ###########Update #########################
+                move.line_ids._onchange_price_subtotal()
+                move._recompute_dynamic_lines(recompute_all_taxes=True)
+
+             ############## Out Invoice ################33
+            elif self._context.get('default_type') in ['in_invoice'] and move.discounted_amount:
+                discount_vals = {
+                    'account_id': self.env.user.company_id.default_purchase_discount_account_id.id,  ##self.out_discount_account.id,
+                    'credit': move.discounted_amount,
+                    'price_unit': - move.discounted_amount,
+                    'debit': 0.00,
+                    'quantity': 1,
+                    'name': 'Discount',
+                    'tax_ids':[(6, 0, [1])],
+                    'tag_ids': [(6, 0, [9])],
+                    'exclude_from_invoice_tab': True,
+                    # 'predict_override_default_account': True,
+                }
+                print('-DISCOUNT VAL')
+                print(discount_vals)
+
+                exist = False
+                for line in self.line_ids:
+                    if line.account_id == self.env.user.company_id.default_purchase_discount_account_id:
+                        exist = True
+                        line.update({'credit': move.discounted_amount})
+                        line.update({'price_unit': -move.discounted_amount})
+                        line._onchange_debit()
+                        print('---EXIST---')
+                if not exist:
+                    print ('---NEW---')
+                    discount_lines = self.line_ids.with_context(check_move_validity=False).new(discount_vals)
+                    # discount_lines = self.line_ids.new(discount_vals)
+
+                    move.line_ids += discount_lines
+                    discount_lines._onchange_credit()
+                    # discount_lines._onchange_debit()
+
+                ###########Update #########################
+                move.line_ids._onchange_price_subtotal()
+                move._recompute_dynamic_lines(recompute_all_taxes=True)
 
 
-        ###################################
-        if self._context.get('default_type') in ['out_invoice'] and self.discounted_amount:
-            discount_vals = {
-                'account_id': self.env.user.company_id.default_sales_discount_account_id.id,  ##self.out_discount_account.id,
-                'debit': self.discounted_amount,
-                'price_unit': - self.discounted_amount,
-                'credit': 0.00,
-                'quantity': 1,
-                'name': 'Discount',
-                'tax_ids':[(6, 0, [2])],
-                'tag_ids': [(6, 0, [10])],
-                'exclude_from_invoice_tab': True,
-                # 'predict_override_default_account': True,
-            }
-            print('-DISCOUNT VAL')
-            print(discount_vals)
 
-            exist = False
-            for line in self.line_ids:
-                if line.account_id == self.env.user.company_id.default_sales_discount_account_id:
-                    exist = True
-                    line.update({'debit': self.discounted_amount})
-                    line.update({'price_unit': -self.discounted_amount})
-                    line._onchange_debit()
-                    print('---EXIST---')
-            if not exist:
-                print ('---NEW---')
-                discount_lines = self.line_ids.with_context(check_move_validity=False).new(discount_vals)
-                # discount_lines = self.line_ids.new(discount_vals)
-
-                self.line_ids += discount_lines
-                discount_lines._onchange_debit()
-                # discount_lines._onchange_debit()
-
-            ###########Update #########################
-            self.line_ids._onchange_price_subtotal()
-            self._recompute_dynamic_lines(recompute_all_taxes=True)
 
     def update_discount(self):
         if self.type == 'out_invoice':
@@ -126,6 +166,24 @@ class invoice_discount(models.Model):
             #     self.discount_value = order_id.discount_value
             #     self.discounted_amount = order_id.discounted_amount
 
+    @api.depends(
+        'line_ids.debit',
+        'line_ids.credit',
+        'line_ids.currency_id',
+        'line_ids.amount_currency',
+        'line_ids.amount_residual',
+        'line_ids.amount_residual_currency',
+        'line_ids.payment_id.state',
+        'discount_value',
+        'discounted_amount',
+        'discount_type',)
+    def _compute_amount(self):
+        for move in self:
+            self.disc_amount()
+            super(invoice_discount, move)._compute_amount()
+            # print ('------UPDATE HERE---')
+            move.amount_total = move.amount_untaxed - move.discounted_amount + move.amount_tax
+            move.amount_total_signed = move.amount_untaxed_signed - move.discounted_amount + move.amount_tax_signed
 
 
 class account_move_line(models.Model):

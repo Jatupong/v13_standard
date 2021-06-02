@@ -1,0 +1,36 @@
+<odoo>
+	<data>
+		<record id="sale_order_form_inherited_to_add_transaction" model="ir.ui.view">
+			<field name="name">sale.order.inherited.form</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="sale.view_order_form" />
+			<field name="arch" type="xml">
+				<field name="partner_shipping_id" position="after">
+					<field name="transaction_number" />
+				</field>
+			</field>
+		</record>
+	
+		<record id="sale_order_tree_inherited_to_add_transaction" model="ir.ui.view">
+			<field name="name">sale.order.inherited.tree</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="sale.view_order_tree" />
+			<field name="arch" type="xml">
+				<field name="name" position="after">
+					<field name="transaction_number" />
+				</field>
+			</field>
+		</record>
+		
+		<record id="sale_quotation_tree_inherited_to_add_transaction" model="ir.ui.view">
+			<field name="name">sale.quotation.inherited.tree</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="sale.view_quotation_tree_with_onboarding" />
+			<field name="arch" type="xml">
+				<field name="name" position="after">
+					<field name="transaction_number" />
+				</field>
+			</field>
+		</record>
+	</data>
+</odoo>
