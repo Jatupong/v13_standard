@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data> 
+
+        <record id="project_task_tree_view" model="ir.ui.view">
+            <field name="name">project.task.form.fsm.view</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="industry_fsm.project_task_view_form"/>
+            <field name="arch" type="xml">
+                <group>
+                    <xpath expr="//sheet" position="inside">
+                        <field name="employee_ids"/>
+                    </xpath>
+                </group>
+
+            </field>
+        </record>
+    </data>
+</odoo>

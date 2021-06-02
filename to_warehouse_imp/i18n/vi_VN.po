@@ -1,0 +1,90 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* to_warehouse_imp
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 13.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-25 02:48+0000\n"
+"PO-Revision-Date: 2020-05-25 02:48+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: to_warehouse_imp
+#: model_terms:ir.ui.view,arch_db:to_warehouse_imp.view_picking_internal_search
+msgid "Delivery Orders"
+msgstr "Giao hàng"
+
+#. module: to_warehouse_imp
+#: model_terms:ir.ui.view,arch_db:to_warehouse_imp.view_move_search
+#: model_terms:ir.ui.view,arch_db:to_warehouse_imp.view_picking_internal_search
+msgid "In Next 30 Days"
+msgstr "Trong 30 Ngày tiếp"
+
+#. module: to_warehouse_imp
+#: model_terms:ir.ui.view,arch_db:to_warehouse_imp.view_move_search
+#: model_terms:ir.ui.view,arch_db:to_warehouse_imp.view_picking_internal_search
+msgid "In Next 7 Days"
+msgstr "Trong 7 Ngày tiếp"
+
+#. module: to_warehouse_imp
+#: model_terms:ir.ui.view,arch_db:to_warehouse_imp.quant_search_view
+#: model_terms:ir.ui.view,arch_db:to_warehouse_imp.view_move_search
+#: model_terms:ir.ui.view,arch_db:to_warehouse_imp.view_picking_internal_search
+msgid "Last 30 Days"
+msgstr "30 Ngày trước"
+
+#. module: to_warehouse_imp
+#: model_terms:ir.ui.view,arch_db:to_warehouse_imp.quant_search_view
+#: model_terms:ir.ui.view,arch_db:to_warehouse_imp.view_move_search
+msgid "Last 7 Days"
+msgstr "7 Ngày trước"
+
+#. module: to_warehouse_imp
+#: model_terms:ir.ui.view,arch_db:to_warehouse_imp.quant_search_view
+msgid "Orders processed Today"
+msgstr "Đơn được xử lý Hôm nay"
+
+#. module: to_warehouse_imp
+#: model_terms:ir.ui.view,arch_db:to_warehouse_imp.view_picking_internal_search
+msgid "Receipts"
+msgstr "Nhận hàng"
+
+#. module: to_warehouse_imp
+#: model_terms:ir.ui.view,arch_db:to_warehouse_imp.view_picking_internal_search
+msgid ""
+"Show Delivery Orders (which have the source location in type of Internal and"
+" the destination location in type of Customer)"
+msgstr ""
+"Hiển thị các lô hàng Giao (mà có địa điểm nguồn là kiểu Nội bộ và địa điểm "
+"đích là kiểu Khách hàng)"
+
+#. module: to_warehouse_imp
+#: model_terms:ir.ui.view,arch_db:to_warehouse_imp.view_picking_internal_search
+msgid ""
+"Show Stock Receipts (which have the source location in type of Supplier and "
+"the destination location in type of Internal"
+msgstr ""
+"Hiển thị các lô hàng Nhận (mà có địa điểm nguồn là kiểu Nhà cung cấp và địa "
+"điểm đích là kiểu Nội bộ)"
+
+#. module: to_warehouse_imp
+#: model_terms:ir.ui.view,arch_db:to_warehouse_imp.view_picking_internal_search
+msgid "The Day after Tomorrow"
+msgstr "Ngày Kia"
+
+#. module: to_warehouse_imp
+#: model_terms:ir.ui.view,arch_db:to_warehouse_imp.quant_search_view
+#: model_terms:ir.ui.view,arch_db:to_warehouse_imp.view_picking_internal_search
+msgid "Today"
+msgstr "Hôm nay"
+
+#. module: to_warehouse_imp
+#: model_terms:ir.ui.view,arch_db:to_warehouse_imp.view_picking_internal_search
+msgid "Tomorrow"
+msgstr "Ngày Mai"

@@ -8,7 +8,6 @@ class Partner(models.Model):
 
     district_id = fields.Many2one('res.district', string='District')
     sub_district_id = fields.Many2one('res.sub.district', string='Sub District')
-    fax = fields.Char(String='Fax')
 
 
     def _display_address(self, without_company=False):
@@ -57,23 +56,5 @@ class Partner(models.Model):
             self.state_id = self.sub_district_id.district_id.state_id.id
             self.zip = self.sub_district_id.zip
             self.country_id = self.sub_district_id.district_id.state_id.country_id.id
-
-
-    @api.depends('street', 'zip', 'city', 'country_id', 'district_id', 'sub_district_id')
-    def _compute_complete_address(self):
-        for record in self:
-            record.contact_address_complete = ''
-            if record.street:
-                record.contact_address_complete += record.street+','
-            if record.district_id:
-                record.contact_address_complete += record.district_id.name+' '
-            if record.sub_district_id:
-                record.contact_address_complete += record.sub_district_id.name+' '
-            if record.zip:
-                record.contact_address_complete += record.zip+ ' '
-            if record.city:
-                record.contact_address_complete += record.city+','
-            if record.country_id:
-                record.contact_address_complete += record.country_id.name
 
 

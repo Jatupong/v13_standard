@@ -1,0 +1,9 @@
+<odoo>
+
+    <menuitem
+        parent="stock.menu_stock_config_settings"
+        sequence="15"
+        id="menu_stock_config_settings_cons"
+        name="Consumption"/>
+
+</odoo>

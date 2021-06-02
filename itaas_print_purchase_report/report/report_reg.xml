@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-
         <record id="paperformat_A4_Zero_Margin_purchase" model="report.paperformat">
             <field name="name">A4_Zero_Margin_purchase</field>
             <field name="default" eval="False"/>
             <field name="format">A4</field>
             <field name="orientation">Portrait</field>
-            <field name="margin_top">105</field>
+            <field name="margin_top">95</field>
             <field name="margin_bottom">45</field>
             <field name="margin_left">5</field>
             <field name="margin_right">5</field>
             <field name="header_line" eval="False"/>
-            <field name="header_spacing">100</field>
+            <field name="header_spacing">90</field>
             <field name="dpi">90</field>
         </record>
 
@@ -47,7 +46,7 @@
         <report
                 id="purchase_temporary_report"
                 model="purchase.order"
-                menu="False"
+                menu="True"
                 report_type="qweb-pdf"
                 string="ใบส่งของชั่วคราว"
                 paperformat="paperformat_A4_Zero_Margin_purchase_temporary"

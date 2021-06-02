@@ -1,0 +1,80 @@
+<odoo>
+
+    <record id="consumption_rule_tree_view" model="ir.ui.view">
+        <field name="name">hyd_stock_conso.consumption_rule.tree</field>
+        <field name="model">hyd_stock_conso.consumption_rule</field>
+        <field name="arch" type="xml">
+            
+            <tree string="Consumption Rules">
+                <field name="name"/>
+                <field name="unit_id"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="check_rule"/>
+            </tree>
+
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="consumption_rule_search_view">
+        <field name="name">hyd_stock_conso.consumption_rule.search</field>
+        <field name="model">hyd_stock_conso.consumption_rule</field>
+        <field name="arch" type="xml">
+            <search string="Consumption rule search">
+                <field name="name"/>
+                <field name="unit_id"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="consumption_rule_form_view" model="ir.ui.view">
+        <field name="name">hyd_stock_conso.consumption_rule.form</field>
+        <field name="model">hyd_stock_conso.consumption_rule</field>
+        <field name="arch" type="xml">
+            
+            <form string="Consumption Rule Form">
+                <sheet>
+                    <group colspan="4" col="4">
+                        <group colspan="2">
+                            <field name="name" />
+                            <field name="unit_id" />
+                            <field name="date_start" />
+                            <field name="date_end" />
+                        </group>
+                        <group colspan="2">
+                            <field name="check_rule" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Lines">
+                            <field name="line_ids">
+                                <tree editable="top">
+                                    <field name="rule_id" invisible="1"/>
+                                    <field name="product_id" />
+                                    <field name="product_qty" />
+                                    <field name="actual_qty" />
+                                    <field name="remain_qty" />
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="consumption_rule_action_view">
+        <field name="name">Consumption Rule</field>
+        <field name="res_model">hyd_stock_conso.consumption_rule</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem
+        parent="menu_stock_config_settings_cons"
+        sequence="19"
+        id="menu_stock_config_settings_cons_unit_rule"
+        name="Consumption Rule"
+        action="consumption_rule_action_view" />
+
+</odoo>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="external_layout_standard_interit" inherit_id="web.external_layout_standard">
+        <xpath expr="//div/div[3]" position="replace">
+             <div class="row">
+                    <div class="col-6" name="company_address">
+                        <div t-field="company.partner_id"
+                             t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;,], &quot;no_marker&quot;: true}"/>
+                        <p t-if="company.partner_id.vat"><t t-esc="company.partner_id.country_id.vat_label or 'Tax ID'"/>: <span t-field="company.partner_id.vat"/></p>
+                    </div>
+                </div>
+        </xpath>
+    </template>
+</odoo>

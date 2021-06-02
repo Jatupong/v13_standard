@@ -1,0 +1,65 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* scrimo_birthdate
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 13.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-03-22 20:07+0000\n"
+"PO-Revision-Date: 2020-03-22 20:07+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: scrimo_birthdate
+#: model_terms:ir.ui.view,arch_db:scrimo_birthdate.sc_res_partner_birthdate_kanban_view
+msgid "&amp;nbsp;&amp;bull;&amp;nbsp;("
+msgstr ""
+
+#. module: scrimo_birthdate
+#: model_terms:ir.ui.view,arch_db:scrimo_birthdate.sc_res_partner_birthdate_kanban_view
+msgid "<span class=\"bg-danger\" style=\"padding: 2px !important;\">U 18</span>"
+msgstr ""
+
+#. module: scrimo_birthdate
+#: model:ir.model.fields,field_description:scrimo_birthdate.field_res_partner__sc_age
+#: model:ir.model.fields,field_description:scrimo_birthdate.field_res_users__sc_age
+msgid "Age"
+msgstr "Alter"
+
+#. module: scrimo_birthdate
+#: model_terms:ir.ui.view,arch_db:scrimo_birthdate.sc_res_partner_birthdate_kanban_view
+msgid "Age: &amp;nbsp;"
+msgstr "Alter: &amp;nbsp;"
+
+#. module: scrimo_birthdate
+#: model_terms:ir.ui.view,arch_db:scrimo_birthdate.sc_res_partner_birthdate_kanban_view
+msgid "Age:&amp;nbsp;"
+msgstr "Alter:&amp;nbsp;"
+
+#. module: scrimo_birthdate
+#: model:ir.model,name:scrimo_birthdate.model_res_partner
+msgid "Contact"
+msgstr "Kontakt"
+
+#. module: scrimo_birthdate
+#: model:ir.model.fields,field_description:scrimo_birthdate.field_res_partner__sc_birthdate
+#: model:ir.model.fields,field_description:scrimo_birthdate.field_res_users__sc_birthdate
+msgid "Date of Birth"
+msgstr "Geburtsdatum"
+
+#. module: scrimo_birthdate
+#: model_terms:ir.ui.view,arch_db:scrimo_birthdate.sc_view_res_partner_filter
+msgid "Over 18"
+msgstr "Über 18"
+
+#. module: scrimo_birthdate
+#: model:ir.model.fields,field_description:scrimo_birthdate.field_res_partner__sc_under_18
+#: model:ir.model.fields,field_description:scrimo_birthdate.field_res_users__sc_under_18
+#: model_terms:ir.ui.view,arch_db:scrimo_birthdate.sc_view_res_partner_filter
+msgid "Under 18"
+msgstr "Unter 18"

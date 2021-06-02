@@ -511,11 +511,11 @@ from ${object.company_id.name}.
                                     </td>
                                     <td style="line-height:14px;"><span>รวม</span><br/><span>Total</span></td>
                                     <td align="right">
-                                        <span  t-if="end ==(break_line[len(break_line)-1])" t-esc="'{0:,.2f}'.format(float(o.amount_untaxed))"/>
+                                        <span  t-if="end ==(break_line[len(break_line)-1])" t-esc="'{0:,.2f}'.format(float(o.amount_total))"/>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td t-att-colspan="colspan_foot" rowspan="2">
+                                    <td t-att-colspan="colspan_foot" rowspan="4">
                                         <strong>หมายเหตุ/Remark</strong><br/>
                                         <t t-if="end ==(break_line[len(break_line)-1])">
                                             <span t-field="o.note"/>
@@ -528,9 +528,16 @@ from ${object.company_id.name}.
                                 </tr>
                                 <tr>
                                     <td style="line-height:14px;"><span>คงเหลือ</span><br/><span>Subtotal</span></td>
-                                    <td align="right"><span t-if="end ==(break_line[len(break_line)-1])" t-esc="'{0:,.2f}'.format(float(o.amount_untaxed - o.discounted_amount))"/></td>
+                                    <td align="right"><span t-if="end ==(break_line[len(break_line)-1])" t-esc="'{0:,.2f}'.format(float(o.amount_total - o.discounted_amount))"/></td>
                                 </tr>
-
+                                <tr>
+                                    <td style="line-height:14px;"><span>ส่วนลด</span><br/><span>Discount</span></td>
+                                    <td align="right"><span t-if="end ==(break_line[len(break_line)-1])" t-esc="'{0:,.2f}'.format(float(o.discounted_amount))"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="line-height:14px;"><span>มูลค่าสินค้า</span><br/><span>Total</span></td>
+                                    <td align="right"><span t-if="end ==(break_line[len(break_line)-1])" t-esc="'{0:,.2f}'.format(float(o.amount_untaxed))"/></td>
+                                </tr>
                                 <tr>
                                     <td t-att-colspan="colspan_foot" rowspan="2" style="line-height:16px; vertical-align: middle;">
                                         <span>- สินค้าตามรายการข้างต้น แม้จะได้ส่งมอบแก่ผู้ซื้อแล้วก็ยังคงเป็นทรัพย์สินของผู้ขายกว่าผู้ซื้อได้ชำระเงินเสร็จเรียบร้อย</span>

@@ -1,0 +1,558 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="project_service_report_id">
+        <t t-call="web.basic_layout">
+            <t t-foreach="docs" t-as="o">
+                <div class="header">
+                    <style>
+                        @font-face
+                        {
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_sale_order_type/static/THSarabun.ttf") format('opentype');
+                        }
+                        .font_fam{
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_sale_order_type/static/THSarabun.ttf") format('opentype');
+                        }
+                        table.table-bordered{
+                        border:1px solid black;
+                        }
+                        table.table-bordered &gt; thead &gt; tr &gt; th{
+                        border:1px solid black;
+                        padding:3px;
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_sale_order_type/static/THSarabun.ttf") format('opentype');
+                        }
+                        table.table-bordered &gt; tbody &gt; tr &gt; td{
+                        border:1px solid black;
+                        padding:3px;
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_sale_order_type/static/THSarabun.ttf") format('opentype');
+                        }
+                        table.table-bordered &gt; tfoot &gt; tr &gt; td{
+                        border:1px solid black;
+                        padding:3px;
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_sale_order_type/static/THSarabun.ttf") format('opentype');
+                        }
+
+                        table.table-nobordered{
+                        border:1px solid white;
+                        }
+                        table.table-nobordered &gt; thead &gt; tr &gt; th{
+                        border:1px solid white;
+                        padding:3px;
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_sale_order_type/static/THSarabun.ttf") format('opentype');
+                        }
+                        table.table-nobordered &gt; tbody &gt; tr &gt; td{
+                        border:1px solid white;
+                        padding:3px;
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_sale_order_type/static/THSarabun.ttf") format('opentype');
+                        }
+                        table.table-nobordered &gt; tfoot &gt; tr &gt; td{
+                        border:1px solid white;
+                        padding:3px;
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_sale_order_type/static/THSarabun.ttf") format('opentype');
+                        }
+
+                        .word_wrap{
+                        word-wrap: break-word;
+                        line-height:18px;
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_sale_order_type/static/THSarabun.ttf") format('opentype');
+                        <!--background-color:#cccccc;-->
+                        }
+                    </style>
+
+                </div>
+                <div class="page">
+                    <style>
+                        @font-face
+                        {
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_print_repair_report/static/THSarabun.ttf") format('opentype');
+                        }
+                        .font_fam{
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_print_repair_report/static/THSarabun.ttf") format('opentype');
+                        }
+
+                        table.table-nobordered {
+                        border:1px solid white;
+                        padding:3px;
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_print_repair_report/static/THSarabun.ttf") format('opentype');
+                        margin:0px;
+                        }
+                        table.table-nobordered &gt; thead &gt; tr &gt; th{
+                        border:1px solid white;
+                        padding:3px;
+                        text-align:center;
+                        }
+                        table.table-nobordered &gt; tbody &gt; tr &gt; td{
+                        border:1px solid white;
+                        padding:3px;
+                        }
+                        table.table-nobordered &gt; tfoot &gt; tr &gt; td{
+                        border:1px solid white;
+                        padding:3px;
+                        }
+
+                        table.table-bordered {
+                        border:1px solid black;
+                        padding:3px;
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_print_repair_report/static/THSarabun.ttf") format('opentype');
+                        margin-top:10px;
+                        }
+                        table.table-bordered &gt; thead &gt; tr &gt; th{
+                        border:1px solid black;
+                        padding:3px;
+                        text-align:center;
+                        vertical-align:middle;
+                        }
+                        table.table-bordered &gt; tbody &gt; tr &gt; td{
+                        border:1px solid black;
+                        padding:3px;
+                        }
+                        table.table-bordered &gt; tfoot &gt; tr &gt; td{
+                        border:1px solid black;
+                        padding:3px;
+                        }
+                    </style>
+                    <div class="col-xs-12" style="text-align:right;">
+                        <table width="100%" class="font_fam" style="font-size: 20px;">
+                            <tr class="font_fam">
+                                <td>
+                                    <span>เลขที่เอกสาร <span t-field="o.name"/></span><br/>
+                                    <span>เลขที่Invoice <span t-field="o.invoice_method"/></span><br/>
+                                    <span>วันที่ <span t-field="o.sch_date"/></span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <table width="100%" class="font_fam" style="margin-top:25px;">
+                        <tr class="font_fam">
+                            <td style="text-align: center;">
+                                <font style="font-size: 20px;">
+                                    <strong>ใบบันทึกการซ่อม<br/></strong>
+                                </font>
+                                <br/>
+                            </td>
+                        </tr>
+                    </table>
+                    <table width="100%" class="font_fam" style="font-size:20px; line-height:20px; margin-top:10px;">
+                        <tr >
+                            <td width="55%" style="border:1px solid black;">
+                                <table class="table table-nobordered" width="100%">
+                                    <tr>
+                                        <td width="25%">
+                                            <span>ชื่อบริษัท</span>
+                                        </td>
+                                        <td width="75%"><span>: </span>
+                                            <span t-field="o.partner_id"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span>ชื่อผู้ติดต่อ</span>
+                                        </td>
+                                        <td><span>: </span>
+                                            <span t-field="o.contact_id"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span>ประเภทสินค้า</span>
+                                        </td>
+                                        <td><span>: </span>
+                                            <span t-field="o.product_id.categ_id"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span>Lot/Serial No.</span>
+                                        </td>
+                                        <td><span>: </span>
+                                            <span t-field="o.lot_id"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span>วันที่ซื้อสินค้า</span>
+                                        </td>
+                                        <td><span>: </span>
+                                            <span t-field="o.date_purchase"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span>วันที่เริ่มซ่อม</span>
+                                        </td>
+                                        <td><span>: </span>
+                                            <span t-field="o.sch_date"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span>รัปประกันหลังการซ่อม</span></td>
+                                        <td><span>: </span>
+                                            <span><span t-field="o.warranty_month"/>months</span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td width="45%" style="border:1px solid black;">
+                                <table class="table table-nobordered" width="100%" style="font-size:20px;">
+                                    <tr>
+                                        <td width="20%">
+                                            <span>รหัสลูกค้า</span>
+                                        </td>
+                                        <td width="80%"><span>: </span>
+                                            <span t-field="o.partner_id.ref"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span>ผู้ขาย</span>
+                                        </td>
+                                        <td><span>: </span>
+                                            <span t-field="o.sale_id"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span>รุ่นสินค้า</span></td>
+                                        <td><span>: </span>
+                                            <span t-field="o.product_id.product_model_id"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span>ครั้งที่</span>
+                                        </td>
+                                        <td><span>: </span>
+                                            <span t-field="o.data_time"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span>เบอร์โทร</span></td>
+                                        <td><span>: </span>
+                                            <span t-field="o.partner_id.phone"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span>จำนวน</span></td>
+                                        <td><span>: </span>
+                                            <span t-field="o.product_qty"/>
+                                        </td>
+                                    </tr>
+
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div class="font_fam">
+                        <table width="100%" class="table table-bordered" style="font-size:20px; line-height:20px;margin-top:10px;">
+                            <tr>
+                                <td colspan="2">
+                                    <div style="line-height:16px; height:60px; width:400px; word-wrap: break-word;">
+                                        <span>อาการที่แจ้ง/อาการเสีย:</span><br/>
+                                        <span><span t-field="o.reported_symptoms"/></span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <div style="line-height:16px; height:60px; width:400px; word-wrap: break-word;">
+                                        <span>สาเหตุอาการเสีย:</span>
+                                        <span><span t-field="o.cause_problem"/></span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <div style="line-height:16px; height:60px; width:400px; word-wrap: break-word;">
+                                        <span>วิธีการแก้ไข:</span>
+                                        <t t-foreach="o.operations.product_id" t-as="product_id">
+                                            <span><span t-field="product_id.name"/>,</span>
+                                        </t>
+
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div style="line-height:16px; height:60px; width:400px; word-wrap: break-word;">
+                                        <span>หมายเหตุ:</span>
+                                        <span><span t-field="o.note_repair"/></span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="line-height:16px; height:60px; width:400px; word-wrap: break-word;">
+                                        <span>ลงชื่อผู้ซ่อมสินค้า:</span>
+                                        <span><span t-field="o.employee_id"/></span>
+                                        <br/><br/>
+                                        <t t-if="o.date_repair">
+                                            <span><span t-field="o.date_repair"/></span>
+                                        </t>
+                                        <t t-if="not o.date_repair">
+                                            <span>วันที่_____/______/_______</span>
+                                        </t>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </table>
+                    </div>
+                    <table width="100%" class="font_fam" style="border:1px solid black; font-size: 20px;">
+                        <tr>
+                            <td style="vertical-align: middle;">
+                                <font style="font-size:20px;"><span>ผลการดำเนินการ</span></font>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="font_fam" style="font-size:18px;">
+                                    <t t-if="o.repairable == 'repairable_1'">
+                                        <span>☑</span><span>ซ่อมได้</span>
+                                    </t>
+                                    <t t-if="o.repairable != 'repairable_1'">
+                                        <span> ☐ </span><span>ซ่อมได้</span>
+                                    </t>
+                                    <t t-if="o.repairable == 'repairable_2'">
+                                        <span>☑</span><span>ซ่อมไม่ได้</span>
+                                    </t>
+                                     <t t-if="o.repairable != 'repairable_2'">
+                                        <span> ☐ </span><span>ซ่อมไม่ได้</span>
+                                    </t>
+                                    <t t-if="o.repairable == 'repairable_3'">
+                                        <span>☑</span><span>เคลมสินค้า</span>
+                                    </t>
+                                    <t t-if="o.repairable != 'repairable_3'">
+                                        <span> ☐ </span><span>เคลมสินค้า</span>
+                                    </t>
+                                     <t t-if="o.repairable == 'repairable_4'">
+                                        <font style="font-size: 20px;">
+                                            <span>☑</span><span>อื่นๆ ..............................................................................</span>
+                                        </font>
+                                    </t>
+                                     <t t-if="o.repairable != 'repairable_4'">
+                                        <span> ☐ </span><span>อื่นๆ ..............................................................................</span>
+                                    </t>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <table width="100%" class="font_fam" style="border:1px solid black; font-size: 20px;">
+                        <tr>
+                            <td colspan="3" align="center" style="border:1px solid black;">
+                                <font style="font-size:20px;"><span>บันทึกผลหลังซ่อม</span></font>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid black;">
+                                <br/>
+                            </td>
+                            <td colspan="2" align="center" style="border:1px solid black;">
+                                <span>อาการ</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid black;">
+                                <span>ระยะทดสอบ :</span>
+                            </td>
+                            <td style="border:1px solid black;">
+                                <div class="font_fam" style="font-size:18px;">
+                                    <t t-if="o.normal == 'normal'">
+                                        <font style="font-size: 20px;">
+                                            <span>☑</span><span>ปกติ</span>
+                                        </font>
+                                    </t>
+                                    <t t-if="o.normal != 'normal'">
+                                        <font style="font-size: 20px;">
+                                            <span>☐</span><span>ปกติ</span>
+                                        </font>
+                                    </t>
+                                </div>
+                            </td>
+                            <td style="border:1px solid black;">
+                                <div class="font_fam" style="font-size:18px;">
+                                    <t t-if="o.normal == 'no_normal'">
+                                        <font style="font-size: 20px;">
+                                            <span>☑</span><span>ผิดปกติ</span>
+                                        </font>
+                                    </t>
+                                    <t t-if="o.normal != 'no_normal'">
+                                        <font style="font-size: 20px;">
+                                            <span>☐</span><span>ผิดปกติ</span>
+                                        </font>
+                                    </t>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid black;">
+                                <div class="font_fam" style="font-size:18px;">
+                                    <t t-if="o.hour == 'hour_12'">
+                                        <font style="font-size: 20px;">
+                                            <span>☑</span><span>12ซม</span>
+                                        </font>
+                                    </t>
+                                    <t t-if="o.hour != 'hour_12'">
+                                        <font style="font-size: 20px;">
+                                            <span>☐</span><span>12ซม</span>
+                                        </font>
+                                    </t>
+                                </div>
+                            </td>
+                            <td style="border:1px solid black;">
+                                <br/>
+                            </td>
+                            <td style="border:1px solid black;">
+                                <br/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid black;">
+                                <div class="font_fam" style="font-size:18px;">
+                                    <t t-if="o.hour == 'hour_24'">
+                                        <font style="font-size: 20px;">
+                                            <span>☑</span><span>24ซม.</span>
+                                        </font>
+                                    </t>
+                                    <t t-if="o.hour != 'hour_24'">
+                                        <font style="font-size: 20px;">
+                                            <span>☐</span><span>24ซม.</span>
+                                        </font>
+                                    </t>
+                                </div>
+                            </td>
+                            <td style="border:1px solid black;">
+                                <br/>
+                            </td>
+                            <td style="border:1px solid black;">
+                                <br/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid black;">
+                                <span>ค่าใช้จ่ายในการซ่อม</span>
+                            </td>
+                            <td style="border:1px solid black;">
+                                <div class="font_fam" style="font-size:18px;">
+                                    <t t-if="o.cost == 'no'">
+                                        <font style="font-size: 20px;">
+                                            <span>☑</span><span>ไม่มี</span>
+                                        </font>
+                                    </t>
+                                    <t t-if="o.cost != 'no'">
+                                        <font style="font-size: 20px;">
+                                            <span>☐</span><span>ไม่มี</span>
+                                        </font>
+                                    </t>
+                                </div>
+                            </td>
+                            <td style="border:1px solid black;">
+                                <div class="font_fam" style="font-size:18px;">
+                                    <t t-if="o.cost == 'yes'">
+                                        <font style="font-size: 20px;">
+                                            <span>☑</span><span>มี</span>
+                                            &amp;nbsp;<span><span t-field="o.price"/>&amp;nbsp;บาท</span>
+                                        </font>
+                                    </t>
+                                    <t t-if="o.cost != 'yes'">
+                                        <font style="font-size: 20px;">
+                                            <span>☐</span><span>มี</span>
+                                        </font>
+                                    </t>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <table width="100%" class="font_fam" style="border:1px solid black; font-size: 20px;">
+                        <tr>
+                            <td>
+                                <t t-if="o.temperature_test">
+                                    <span>อุณหภูมิห้องTest <span t-field="o.temperature_test"/></span>
+                                </t>
+                                <t t-if="not o.temperature_test">
+                                    <span>อุณหภูมิห้องTest_________</span>
+                                </t>
+                            </td>
+                            <td>
+                                <t t-if="o.temperature_cut">
+                                    <span>การตัดต่ออุณหภูม <span t-field="o.temperature_cut"/></span>
+                                </t>
+                                <t t-if="not o.temperature_cut">
+                                    <span>การตัดต่ออุณหภูมิ_________</span>
+                                </t>
+                            </td>
+                            <td>
+                                <t t-if="o.cooling_down">
+                                    <span>ความเย็นลมส่ง <span t-field="o.cooling_down"/></span>
+                                </t>
+                                <t t-if="not o.cooling_down">
+                                    <span>ความเย็นลมส่ง__________</span>
+                                </t>
+                            </td>
+                            <td>
+                                <t t-if="o.flow">
+                                    <span>ความเย็นลมส่ง <span t-field="o.flow"/></span>
+                                </t>
+                                <t t-if="not o.flow">
+                                    <span>กระแส____________</span>
+                                </t>
+                            </td>
+                        </tr>
+                    </table>
+                    <table width="100%" class="font_fam" style="font-size:18px;margin-top:50px;">
+                        <tr class="font_fam">
+                            <td class="col-xs-6" style="text-align: center; line-height:20px;">
+                                <br/><br/>
+                                <span>ลงชื่อ...............................................ผู้รับสินค้า</span><br/><br/>
+                                <span><center>วันที่............../.............../..............</center></span>
+                            </td>
+                            <td class="col-xs-6" style="text-align: center; line-height:20px;">
+                                <br/><br/>
+                                <span>ลงชื่อ..............................................ผู้ส่งสินค้า</span><br/><br/>
+                                <span style="vertical-align: middle;">วันที่............../.............../..............</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="footer">
+                    <style>
+                        @font-face
+                        {
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/print_fft_report/static/THSarabun.ttf") format('opentype');
+                        }
+                        .font_fam{
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/print_fft_report/static/THSarabun.ttf") format('opentype');
+                        font-size: 20px;
+                        }
+                    </style>
+                    <!--                    <table class="font_fam" style="width:100%">-->
+                    <!--                        <tr class="font_fam">-->
+                    <!--                            <td class="col-xs-6" style="text-align: center; line-height:20px;">-->
+                    <!--                                <br/><br/>-->
+                    <!--                                <span>ลงชื่อ...............................................ผู้รับสินค้า</span><br/>-->
+                    <!--                                <span><center>วันที่......./......./.......</center></span>-->
+                    <!--                            </td>-->
+                    <!--                            <td class="col-xs-6" style="text-align: center; line-height:20px;">-->
+                    <!--                                <br/><br/>-->
+                    <!--                                <span>ลงชื่อ..............................................ผู้รับเรื่องซ่อม</span><br/>-->
+                    <!--                                <span><center>วันที่......./......./.......</center></span>-->
+                    <!--                            </td>-->
+                    <!--                        </tr>-->
+                    <!--                    </table>-->
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

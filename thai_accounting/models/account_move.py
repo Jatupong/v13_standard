@@ -54,9 +54,6 @@ class account_move(models.Model):
                 self.tax_inv_number = self.journal_id.tax_invoice_sequence_id.next_by_id(sequence_date=self.tax_invoice_date)
                 self.tax_inv_generated = True
                 self.create_reverse_tax()
-            elif not self.tax_inv_number and not self.journal_id.tax_invoice_sequence_id:
-                raise UserError(_("Please setup tax invoice/receipt sequence number"))
-
         else:
             ######### This is purchase side########
             self.create_reverse_tax()
@@ -194,7 +191,6 @@ class account_move(models.Model):
 
 class account_wht_type(models.Model):
     _name = 'account.wht.type'
-    _description = "Account WHT Type"
 
     name = fields.Char(string='WHT Type')
 

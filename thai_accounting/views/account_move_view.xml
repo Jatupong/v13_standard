@@ -61,6 +61,12 @@
                 <field name="amount_before_tax"/>
             </xpath>
 
+            <xpath expr="//notebook/page[@id='aml_tab']/field[@name='line_ids']/tree/field[@name='exclude_from_invoice_tab']" position="attributes">
+                <attribute name="invisible">0</attribute>
+            </xpath>
+
+
+
         </field>
     </record>
 
@@ -163,47 +169,7 @@
         </field>
     </record>
 
-    <!--    <record id="view_move_tree_user" model="ir.ui.view">-->
-    <!--        <field name="name">account.move.tree</field>-->
-    <!--        <field name="model">account.move</field>-->
-    <!--        <field name="arch" type="xml">-->
-    <!--            <tree decoration-info="state == 'draft'" create="false" string="Journal Entries" import="false">-->
-    <!--                <field name="date"/>-->
-    <!--                <field name="name"/>-->
-    <!--                <field name="partner_id"/>-->
-    <!--                <field name="ref"/>-->
-    <!--                <field name="journal_id"/>-->
-    <!--                <field name="amount" sum="Total Amount"/>-->
-    <!--                <field name="state"/>-->
-    <!--                <field name="currency_id" invisible="1"/>-->
-    <!--            </tree>-->
-    <!--        </field>-->
-    <!--    </record>-->
 
-
-
-    <!--    <record id="action_move_journal_line_user" model="ir.actions.act_window">-->
-    <!--        <field name="name">Journal Entries</field>-->
-    <!--        <field name="res_model">account.move</field>-->
-    <!--        <field name="view_type">form</field>-->
-    <!--        <field name="view_mode">tree,form</field>-->
-    <!--        <field name="search_view_id" ref="account.view_account_move_filter"/>-->
-    <!--        <field name="view_id" ref="view_move_tree_user"/>-->
-    <!--        <field name="context">{'search_default_misc_filter':1}</field>-->
-    <!--        <field name="help" type="html">-->
-    <!--            <p class="oe_view_nocontent_create">-->
-    <!--                Click to create a journal entry.-->
-    <!--            </p><p>-->
-    <!--            A journal entry consists of several journal items, each of-->
-    <!--            which is either a debit or a credit transaction.-->
-    <!--        </p><p>-->
-    <!--            Odoo automatically creates one journal entry per accounting-->
-    <!--            document: invoice, refund, vendor payment, bank statements,-->
-    <!--            etc. So, you should record journal entries manually only/mainly-->
-    <!--            for miscellaneous operations.-->
-    <!--        </p>-->
-    <!--        </field>-->
-    <!--    </record>-->
 
 
     <record id="action_account_moves_all_sale_tax" model="ir.actions.act_window">

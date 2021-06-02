@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="paperformat_A4_Zero_Margin_interit" model="report.paperformat">
+            <field name="name">A4_Zero_Margin_interit</field>
+            <field name="default" eval="False"/>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">45</field>
+            <field name="margin_bottom">28</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">40</field>
+            <field name="dpi">90</field>
+        </record>
+<!--        <report-->
+<!--                id="report_saleorder_document_interit"-->
+<!--                model="sale.order"-->
+<!--                menu="False"-->
+<!--                report_type="qweb-pdf"-->
+<!--                string="Quotation/Order"-->
+<!--                paperformat="update_sale_dev.paperformat_A4_Zero_Margin_interit"-->
+<!--                name="update_sale_dev.report_saleorder_document_interit_id"-->
+<!--                file="update_sale_dev.report_saleorder_document_interit_id"-->
+<!--        />-->
+        <report
+                id="external_layout_standard_interit"
+                model="sale.order"
+                menu="False"
+                report_type="qweb-pdf"
+                string="Quotation/Order"
+                paperformat="update_sale_dev.paperformat_A4_Zero_Margin_interit"
+                name="update_sale_dev.external_layout_standard_interit_id"
+                file="update_sale_dev.external_layout_standard_interit_id"
+        />
+    </data>
+</openerp>

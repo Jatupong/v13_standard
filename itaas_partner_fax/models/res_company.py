@@ -8,4 +8,3 @@ class res_company(models.Model):
 
     fax = fields.Char(String='Fax')
     eng_name = fields.Char(string="Company English Name")
-    # eng_address2 = fields.Char(string="English Address 2")

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="sc_view_birthdate_partner_form" model="ir.ui.view">
+        <field name="name">Scrimo Birthdate Partner Form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+              <xpath expr="//field[@name='function']" position="before">
+                   <field name="sc_birthdate" attrs="{'invisible': [('company_type','=', 'company')]}"/>
+                   <field name="sc_age" attrs="{'invisible': ['|',('company_type','=', 'company'),('sc_birthdate','=', False)]}"/>
+                   <field name="sc_under_18" attrs="{'invisible': ['|',('company_type','=', 'company'),('sc_birthdate','=', False)]}"/>
+              </xpath>
+        </field>
+    </record>
+
+    <record id="sc_view_res_partner_filter" model="ir.ui.view">
+        <field name="name">Scrimo Birthdate Partner Search</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <filter name="type_company" position="after">
+                <separator/>
+                <filter string="Under 18" name="under_18" domain="['&amp;',('sc_birthdate', '!=', False),('sc_under_18', '=', True)]"/>
+                <filter string="Over 18" name="over_18" domain="['&amp;',('sc_birthdate', '!=', False),('sc_under_18', '=', False)]"/>
+            </filter>
+        </field>
+    </record>
+
+     <record id="sc_view_partner_birthdate_tree" model="ir.ui.view">
+        <field name="name">sc.res.partner.birthdate.tree</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='city']" position="after">
+                <field name="sc_age"/>
+            </xpath>
+        </field>
+    </record>
+
+
+     <record model="ir.ui.view" id="sc_res_partner_birthdate_kanban_view">
+        <field name="name">sc.res.partner.birthdate.kanban</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.res_partner_kanban_view"/>
+        <field name="arch" type="xml">
+            <field name="type" position="after">
+                <field name="sc_age"/>
+            </field>
+            <xpath expr="//li[@t-if='record.email.raw_value']" position="after">
+                <li t-if='record.sc_age.raw_value'>
+                     <span t-if="record.sc_age.raw_value &lt; 18" style="color:blue;"><b>Age: <![CDATA[&nbsp;]]><field name="sc_age"/></b></span>
+                     <span t-if="record.sc_age.raw_value &gt; 17" style="color:green;"><b>Age:<![CDATA[&nbsp;]]><field name="sc_age"/></b></span>
+                    <![CDATA[&nbsp;&bull;&nbsp;]]>(<field name="sc_birthdate"/>)
+                </li>
+            </xpath>
+           <xpath expr="//div[hasclass('oe_kanban_details')]" position="before">
+                <t t-if='record.sc_age.raw_value &lt; 18 and record.sc_age.raw_value &gt; 0'>
+                    <div class="ribbon ribbon-top-right o_widget" style="margin-top: -8px !important; width: 120px !important; height: 120px !important;">
+                        <span class="bg-danger" style="padding: 2px !important;">U 18</span>
+                    </div>
+                </t>
+            </xpath>
+        </field>
+    </record>
+
+
+</odoo>

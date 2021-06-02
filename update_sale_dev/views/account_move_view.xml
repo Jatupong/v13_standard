@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="account_move_form_add_payment_info_inherit" model="ir.ui.view">
+        <field name="name">account.move.payment.info.itaas</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <field name="invoice_origin" position="after">
+                <field name="period_payment_amount"/>
+                <field name="period"/>
+            </field>
+        </field>
+    </record>
+
+
+    <record id="account_move_form_add_payment_tree_info_inherit" model="ir.ui.view">
+        <field name="name">account.move.payment.info.tree.itaas</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_invoice_tree"/>
+        <field name="arch" type="xml">
+            <field name="invoice_origin" position="after">
+                <field name="journal_id"/>
+                <field name="period_payment_amount"/>
+                <field name="period"/>
+            </field>
+        </field>
+    </record>
+
+
+<!--    <record id="view_quotation_tree_update" model="ir.ui.view">-->
+<!--        <field name="name">sale.order.tree</field>-->
+<!--        <field name="model">sale.order</field>-->
+<!--        <field name="inherit_id" ref="sale.view_quotation_tree"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//tree/field[@name='partner_id']" position="before">-->
+<!--                <field name="period_payment_amount"/>-->
+<!--                <field name="period"/>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+
+</odoo>
+
+

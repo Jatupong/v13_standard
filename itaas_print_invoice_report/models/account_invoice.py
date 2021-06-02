@@ -1,58 +1,24 @@
 # -*- coding: utf-8 -*-
-
 from odoo import fields, api, models, _
 from bahttext import bahttext
-from num2words import num2words
-import locale
 
 class AccountInvoice_inherit(models.Model):
     _inherit ="account.move"
 
 
+    # def _get_printed_report_name(self):
+    #     self.ensure_one()
+    #     return self.type == 'out_invoice' and self.state == 'draft' and _('Draft Invoice') or \
+    #            self.type == 'out_invoice' and self.state in ('open', 'paid') and _('Invoice - %s') % (self.number) or \
+    #            self.type == 'out_refund' and self.state == 'draft' and _('Credit Note') or \
+    #            self.type == 'out_refund' and _('Credit Note - %s') % (self.number) or \
+    #            self.type == 'in_invoice' and self.state == 'draft' and _('Vendor Bill') or \
+    #            self.type == 'in_invoice' and self.state in ('open', 'paid') and _('Vendor Bill - %s') % (self.number) or \
+    #            self.type == 'in_refund' and self.state == 'draft' and _('Vendor Credit Note') or \
+    #            self.type == 'in_refund' and _('Vendor Credit Note - %s') % (self.number)
+
     def baht_text(self, amount_total):
         return bahttext(amount_total)
-
-    def num2_words(self, amount_total):
-        before_point = ""
-        amount_total_str = str(amount_total)
-        for i in range(0, len(amount_total_str)):
-            if amount_total_str[i] != ".":
-                before_point += amount_total_str[i]
-            else:
-                break
-
-        after_point = float(amount_total) - float(before_point)
-        after_point = locale.format("%.2f", float(after_point), grouping=True)
-        after_point = float(after_point)
-        before_point = float(before_point)
-
-        # print before_point
-        # print after_point
-        before_point_str = num2words(before_point)
-        after_point_str = num2words(after_point)
-        if after_point_str == 'zero':
-            before_point_str += ' Only'
-        else:
-            for i in range(4, len(after_point_str)):
-                before_point_str += after_point_str[i]
-
-        n2w_origianl = before_point_str
-        # print n2w_origianl
-        # n2w_origianl = num2words(float(amount_total))
-        n2w_new = ""
-        for i in range(len(n2w_origianl)):
-            if i == 0:
-                n2w_new += n2w_origianl[i].upper()
-            else:
-                if n2w_origianl[i] != ",":
-                    if n2w_origianl[i - 1] == " ":
-                        n2w_new += n2w_origianl[i].upper()
-                    else:
-                        n2w_new += n2w_origianl[i]
-
-        # print n2w_origianl
-        # print n2w_new
-        return n2w_new
 
     def get_origin(self,invoice_origin):
         print(invoice_origin)
@@ -64,6 +30,13 @@ class AccountInvoice_inherit(models.Model):
             account = 0.0
             return account
 
+    def get_date_of_orgin(self, vals):
+        print(vals)
+        if vals:
+            origin = self.search([('name', '=', vals), ], limit=1)
+            date = origin.date_invoice
+        print(origin.name)
+        return date
 
     # @api.multi
     # def invoice_print(self):
