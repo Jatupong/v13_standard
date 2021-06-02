@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2019-Today  itaas
+# Copyright (C) 2019-Today  Technaureus Info Solutions(<http://technaureus.com/>).
 {
     'name': 'Itaas Partner Detail Address',
-    'version': '13.0.2.0',
+    'version': '13.0.0.1',
     'sequence': 1,
     'category': 'base',
     'summary': 'Partner Detail Address',
-    'author': 'ITAAS',
-    'website': 'http://www.itaas.co.th/',
+    'author': 'Technaureus Info Solutions Pvt.Ltd',
+    'website': 'http://www.technaureus.com/',
     'description': """
 This module is for partner detail address
         """,
@@ -20,7 +20,6 @@ This module is for partner detail address
         'data/res_country_data.xml',
         'data/res_state_data.xml',
         'data/res_district_data.xml',
-        'data/res_sub_district_data.xml',
         'security/ir.model.access.csv'
     ],
     'images': [],

@@ -80,9 +80,5 @@
   <record id="UTI_id" model="res.country.state"><field name="name">อุทัยธานี</field> <field name="code">UTI</field> <field name='country_id' ref='base.th'/></record>
   <record id="UBN_id" model="res.country.state"><field name="name">อุบลราชธานี</field> <field name="code">UBN</field> <field name='country_id' ref='base.th'/></record>
 
-
-
-
-
  </data>
 </odoo>
