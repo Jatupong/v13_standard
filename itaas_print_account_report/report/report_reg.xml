@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
+<openerp>
     <data>
+
+
 
         <record id="paperformat_A4_Zero_Margin_Debit_Credit" model="report.paperformat">
             <field name="name">A4_Zero_Margin_debit_credit</field>
@@ -30,6 +32,51 @@
             <field name="dpi">90</field>
         </record>
 
+<!--        <report-->
+<!--                id="debitcredit01_report_inherit"-->
+<!--                model="account.move"-->
+<!--                menu="True"-->
+<!--                report_type="qweb-pdf"-->
+<!--                string="สมุดรายวันรับ"-->
+<!--                paperformat="itaas_print_account_report.paperformat_A4_Zero_Margin_Debit_Credit"-->
+<!--                name="itaas_print_account_report.debitcredit01_report_inherit_id"-->
+<!--                file="itaas_print_account_report.debitcredit01_report_inherit_id"-->
+<!--        />-->
+<!--        <report-->
+<!--                id="debitcredit02_report_inherit"-->
+<!--                model="account.move"-->
+<!--                menu="True"-->
+<!--                report_type="qweb-pdf"-->
+<!--                string="สมุดรายวันทั่วไป"-->
+<!--                paperformat="itaas_print_account_report.paperformat_A4_Zero_Margin_Debit_Credit"-->
+<!--                name="itaas_print_account_report.debitcredit02_report_inherit_id"-->
+<!--                file="itaas_print_account_report.debitcredit02_report_inherit_id"-->
+<!--        />-->
+
+
+<!--        <report-->
+<!--                id="debitcredit04_report_inherit"-->
+<!--                model="account.move"-->
+<!--                menu="True"-->
+<!--                report_type="qweb-pdf"-->
+<!--                string="สมุดรายวันขาย"-->
+<!--                paperformat="itaas_print_account_report.paperformat_A4_Zero_Margin_Debit_Credit"-->
+<!--                name="itaas_print_account_report.debitcredit04_report_inherit_id"-->
+<!--                file="itaas_print_account_report.debitcredit04_report_inherit_id"-->
+<!--        />-->
+<!--        <report-->
+<!--                id="debitcredit05_report_inherit"-->
+<!--                model="account.move"-->
+<!--                menu="True"-->
+<!--                report_type="qweb-pdf"-->
+<!--                string="สมุดรายวันจ่าย"-->
+<!--                paperformat="itaas_print_account_report.paperformat_A4_Zero_Margin_Debit_Credit_04"-->
+<!--                name="itaas_print_account_report.debitcredit05_report_inherit_id"-->
+<!--                file="itaas_print_account_report.debitcredit05_report_inherit_id"-->
+<!--        />-->
+
+
+        <!-- QWeb Reports for Product -->
         <record id="paperformat_A4_Zero_Margin" model="report.paperformat">
             <field name="name">A4_Zero_Margin</field>
             <field name="default" eval="False"/>
@@ -57,7 +104,6 @@
             <field name="header_spacing">20</field>
             <field name="dpi">90</field>
         </record>
-
         <record id="paperformat_A4_Zero_Finance_Report" model="report.paperformat">
             <field name="name">A4_Zero_Finance_Report</field>
             <field name="default" eval="False"/>
@@ -71,7 +117,6 @@
             <field name="header_spacing">0</field>
             <field name="dpi">90</field>
         </record>
-
         <record id="paperformat_A4_Zero_GL_Report" model="report.paperformat">
             <field name="name">A4_Zero_GL_Report</field>
             <field name="default" eval="False"/>
@@ -97,6 +142,7 @@
                 file="itaas_print_account_report.account_vat_report_id"
         />
 
+
         <report
                 id="action_report_paperbalance"
                 model="account.paperbalance.report"
@@ -106,6 +152,8 @@
                 name="itaas_print_account_report.report_paperbalance"
                 file="itaas_print_account_report.report_paperbalance"
         />
+
+
 
         <report
                 id="account.action_report_trial_balance"
@@ -140,8 +188,7 @@
             <field name="header_spacing">20</field>
             <field name="dpi">90</field>
         </record>
-
-        <report
+<report
                 id="action_debitcredit_report_detail"
                 model="account.move"
                 menu="False"
@@ -151,7 +198,6 @@
                 name="itaas_print_account_report.journal_daily_report"
                 file="itaas_print_account_report.journal_daily_report"
         />
-
         <report
                 id="action_debitcredit_report_summary"
                 model="account.move"
@@ -165,20 +211,21 @@
 
     </data>
 
-    <record id="paperformat_debitcredit01_receipt_voucher_id" model="report.paperformat">
-        <field name="name">A4_paperformat_Receipt_Voucher</field>
-        <field name="default" eval="False"/>
-        <field name="format">A4</field>
-        <field name="orientation">Portrait</field>
-        <field name="margin_top">5</field>
-        <field name="margin_bottom">100</field>
-        <field name="margin_left">5</field>
-        <field name="margin_right">5</field>
-        <field name="header_line" eval="False"/>
-        <field name="header_spacing">0</field>
-        <field name="dpi">90</field>
-    </record>
 
+
+    <record id="paperformat_debitcredit01_receipt_voucher_id" model="report.paperformat">
+         <field name="name">A4_paperformat_Receipt_Voucher</field>
+             <field name="default" eval="False"/>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">5</field>
+            <field name="margin_bottom">100</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">0</field>
+            <field name="dpi">90</field>
+    </record>
     <report
             id="debitcredit01_receipt_voucher"
             model="account.move"
@@ -190,18 +237,19 @@
             file="itaas_print_account_report.debitcredit01_receipt_voucher_id"
     />
 
+
     <record id="paperformat_debitcredit01_general_voucher" model="report.paperformat">
-        <field name="name">A4_paperformat_General_Voucher</field>
-        <field name="default" eval="False"/>
-        <field name="format">A4</field>
-        <field name="orientation">Portrait</field>
-        <field name="margin_top">5</field>
-        <field name="margin_bottom">70</field>
-        <field name="margin_left">5</field>
-        <field name="margin_right">5</field>
-        <field name="header_line" eval="False"/>
-        <field name="header_spacing">0</field>
-        <field name="dpi">90</field>
+         <field name="name">A4_paperformat_General_Voucher</field>
+            <field name="default" eval="False"/>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">5</field>
+            <field name="margin_bottom">70</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">0</field>
+            <field name="dpi">90</field>
     </record>
     <report
             id="debitcredit01_general_voucher"
@@ -215,19 +263,18 @@
     />
 
     <record id="paperformat_debitcredit01_payment_voucher" model="report.paperformat">
-        <field name="name">paperformat_debitcredit01_payment_voucher</field>
-        <field name="default" eval="False"/>
-        <field name="format">A4</field>
-        <field name="orientation">Portrait</field>
-        <field name="margin_top">50</field>
-        <field name="margin_bottom">80</field>
-        <field name="margin_left">5</field>
-        <field name="margin_right">5</field>
-        <field name="header_line" eval="False"/>
-        <field name="header_spacing">45</field>
-        <field name="dpi">90</field>
+         <field name="name">A4_paperformat_General_Voucher</field>
+            <field name="default" eval="False"/>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">5</field>
+            <field name="margin_bottom">110</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">0</field>
+            <field name="dpi">90</field>
     </record>
-
     <report
             id="debitcredit01_payment_voucher"
             model="account.move"
@@ -239,44 +286,16 @@
             file="itaas_print_account_report.debitcredit01_payment_voucher_id"
     />
 
-    <record id="paperformat_debitcredit05_payment" model="report.paperformat">
-        <field name="name">paperformat_debitcredit05_payment</field>
-        <field name="default" eval="False"/>
-        <field name="format">A4</field>
-        <field name="orientation">Portrait</field>
-        <field name="margin_top">5</field>
-        <field name="margin_bottom">110</field>
-        <field name="margin_left">5</field>
-        <field name="margin_right">5</field>
-        <field name="header_line" eval="False"/>
-        <field name="header_spacing">0</field>
-        <field name="dpi">90</field>
-    </record>
-
     <report
             id="debitcredit05_payment_report"
             model="account.move"
             menu="True"
             report_type="qweb-pdf"
             string="สมุดรายวันจ่าย(A4)"
-            paperformat="itaas_print_account_report.paperformat_debitcredit05_payment"
+            paperformat="itaas_print_account_report.paperformat_debitcredit01_payment_voucher"
             name="itaas_print_account_report.debitcredit05_payment_report_id"
             file="itaas_print_account_report.debitcredit05_payment_report_id"
     />
-
-     <record id="paperformat_debitcredit_receivable_voucher" model="report.paperformat">
-        <field name="name">paperformat_debitcredit_receivable_voucher</field>
-        <field name="default" eval="False"/>
-        <field name="format">A4</field>
-        <field name="orientation">Portrait</field>
-        <field name="margin_top">5</field>
-        <field name="margin_bottom">110</field>
-        <field name="margin_left">5</field>
-        <field name="margin_right">5</field>
-        <field name="header_line" eval="False"/>
-        <field name="header_spacing">0</field>
-        <field name="dpi">90</field>
-    </record>
 
     <report
             id="debitcredit_account_receivable_voucher"
@@ -290,4 +309,4 @@
     />
 
 
-</odoo>
+</openerp>

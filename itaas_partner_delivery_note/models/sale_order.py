@@ -20,12 +20,3 @@ class SaleOrder(models.Model):
             self.note_for_delivery = self.partner_id.note_for_delivery
         else:
             return
-
-    @api.model
-    def create(self, vals):
-        if self._context.get('default_order_type') and self._context.get('default_order_type') == 'sale':
-            if 'partner_id' in vals:
-                partner = self.env['res.partner'].browse(vals.get('partner_id'))
-                vals.update({'note_for_delivery':partner.note_for_delivery or ''})
-
-        return super(SaleOrder, self).create(vals)

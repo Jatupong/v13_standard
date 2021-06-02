@@ -114,8 +114,6 @@ class account_payment(models.Model):
         #             raise UserError(
         #                 _("You cannot register payments for customer invoices and credit notes at the same time-1."))
         ###############################################################################################
-        amount_untaxed = sum([invoice.amount_untaxed for invoice in invoices])
-
         amount = self._compute_payment_amount(invoices, invoices[0].currency_id, invoices[0].journal_id,
                                               rec.get('payment_date') or fields.Date.today())
 
@@ -123,7 +121,6 @@ class account_payment(models.Model):
         rec.update({
             'currency_id': invoices[0].currency_id.id,
             'amount': abs(amount),
-            'amount_untaxed': amount_untaxed,
             'payment_type': 'inbound' if amount > 0 else 'outbound',
             'partner_id': invoices[0].commercial_partner_id.id,
             'partner_type': MAP_INVOICE_TYPE_PARTNER_TYPE[invoices[0].type],
@@ -371,8 +368,8 @@ class account_payment(models.Model):
                             'wht_type': write_off_line.wht_type.id or False,
                             'amount_before_tax': write_off_line.amount_untaxed or 0.00,
                         }))
-                # print ('--LINS NEW--')
-                # print (line_ids_new)
+                print ('--LINS NEW--')
+                print (line_ids_new)
                 res[0]['line_ids'] = line_ids_new
             res[0]['narration'] = payment.remark
         return res
@@ -450,16 +447,8 @@ class writeoff_accounts(models.Model):
     @api.onchange('deduct_item_id')
     # @api.multi
     def _onchange_deduct_item_id(self):
-        print ('UPDATE DEDUCT--')
         if self.payment_wizard_id:
-            print ('---Payment Wizard--1')
-            print (self.payment_wizard_id.amount_untaxed)
             self.amount_untaxed = self.payment_wizard_id.amount_untaxed
-        if self.payment_id:
-            print('---Payment Wizard--2')
-            print(self.payment_id.amount_untaxed)
-            self.amount_untaxed = self.payment_id.amount_untaxed
-
         #
         #     # new for payment billing only
         # if self.payment_billing_id:

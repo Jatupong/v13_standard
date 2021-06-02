@@ -188,26 +188,6 @@ class account_move(models.Model):
     # else:
     #     return super(account_move,self).post(invoice)
 
-    def action_gen_wht(self):
-        line_ids = self.line_ids.filtered(lambda m: m.wht_type and not m.wht_reference)
-        if line_ids:
-            wht_type = line_ids.mapped('wht_type')
-            for wht_t in wht_type:
-                wht_line_ids = line_ids.filtered(lambda m: m.wht_type == wht_t)
-                if wht_line_ids:
-                    wht_reference = ""
-                    if wht_t.sequence_id:
-                        wht_reference = wht_t.sequence_id.next_by_id()
-
-                    for wht_l in wht_line_ids:
-                        wht_l.update({'wht_reference': wht_reference})
-
-    def post(self):
-        res = super(account_move, self).post()
-        self.action_gen_wht()
-
-        return res
-
     def roundup(self,x):
         return int(math.ceil(x / 10.0)) * 6
 
@@ -217,9 +197,6 @@ class account_wht_type(models.Model):
     _description = "Account WHT Type"
 
     name = fields.Char(string='WHT Type')
-    sequence_id = fields.Many2one('ir.sequence', string='Entry Sequence',
-                                  help="This field contains the information related to the numbering of the journal entries of this journal.",
-                                  required=True, copy=False)
 
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"

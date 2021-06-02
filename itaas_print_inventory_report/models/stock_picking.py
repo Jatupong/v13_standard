@@ -84,7 +84,7 @@ class StockPicking_inherit(models.Model):
         count = 1
         line_default_code = 0
 
-        for line in self.move_ids_without_package:
+        for line in self.move_lines:
 
             # count += 1
             # print(count)
@@ -99,7 +99,6 @@ class StockPicking_inherit(models.Model):
 
             if (line_move_line_ids_lot_name >= line_move_line_ids_lot_id):
                 line_move_line_ids = line_move_line_ids_lot_name
-
             else:
                 line_move_line_ids = line_move_line_ids_lot_id
 
@@ -119,56 +118,6 @@ class StockPicking_inherit(models.Model):
             line_height = row_line_height + ((get_line) * new_line_height)
             print("line_height")
             print(line_height)
-            count_height += line_height
-            if count_height > max_body_height:
-                break_page_line.append(count - 1)
-                count_height = line_height
-            count += 1
-        # last page
-        break_page_line.append(count - 1)
-
-        print(break_page_line)
-        return break_page_line
-
-    def get_break_line_03(self, max_body_height, new_line_height, row_line_height, max_line_lenght):
-        break_page_line = []
-        count_height = 0
-        count = 1
-        for line in self.move_lines:
-
-            line_default_code = self.get_lines(line.product_id.code or '', 15)
-            line_name = self.get_lines(line.product_id.name, max_line_lenght)
-            line_move_line_ids_lot_name = len(line.move_line_ids.filtered(lambda c: c.lot_name))
-            line_move_line_ids_lot_id = len(line.move_line_ids.filtered(lambda c: c.lot_id))
-            get_line = max(line_default_code,line_name,line_move_line_ids_lot_name,line_move_line_ids_lot_id)
-
-            line_height = row_line_height + ((get_line) * new_line_height)
-            count_height += line_height
-            if count_height > max_body_height:
-                break_page_line.append(count - 1)
-                count_height = line_height
-            count += 1
-        # last page
-        break_page_line.append(count - 1)
-
-        return break_page_line
-
-    def get_break_line_07(self, max_body_height, new_line_height, row_line_height, max_line_lenght):
-        break_page_line = []
-        count_height = 0
-        count = 1
-
-        for line in self.move_line_nosuggest_ids:
-
-            if line.product_id.default_code:
-                product = "[" + line.product_id.default_code + "]" + line.product_id.name
-            else:
-                product = line.product_id.name
-
-            get_line = self.get_lines(product, max_line_lenght)
-
-            line_height = row_line_height + ((get_line) * new_line_height)
-
             count_height += line_height
             if count_height > max_body_height:
                 break_page_line.append(count - 1)
@@ -206,6 +155,7 @@ class StockPicking_inherit(models.Model):
 
         print(break_page_line)
         return break_page_line
+
 
     def get_origin(self, origin):
 

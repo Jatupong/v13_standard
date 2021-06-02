@@ -46,8 +46,6 @@
                         }
                         table.table-nobordered{
                         margin:0px;
-                        margin-top:10px;
-                        margin-bottom:5px;
                         width: 100%;
                         font-family: SarabunPSK;
                         src: local('United'), url("/itaas_print_invoice_report/static/THSarabun.ttf") format('opentype');
@@ -85,7 +83,7 @@
                     <table width="100%" class="font_fam td_bott">
                         <td width="20%" style="vertical-align: middle;">
                             <img t-if="o.company_id.logo" t-att-src="'data:image/png;base64,%s' % to_text(o.company_id.logo)"
-                                 style="height: 100px; width: 150px;"/>
+                                 style="height: 100px; width: 100px;"/>
                         </td>
                         <td width="55%" style="vertical-align: middle;">
                             <div style="width:500px; word-wrap: break-word;">
@@ -94,18 +92,13 @@
                                         <span t-field="o.company_id.name"/>&amp;nbsp;
                                         <t t-if="o.company_id.branch_no == '00000'"><span>(สำนักงานใหญ่)</span></t>
                                         <t t-if="o.company_id.branch_no != '00000'">(<span t-field="o.company_id.branch_no"/>)</t>
-                                    </B><br/>
-                                    <B>
-                                        <span t-field="o.company_id.eng_name"/>&amp;nbsp;
-                                        <t t-if="o.company_id.branch_no == '00000'"><span>(HEAD OFFICE)</span><br/></t>
-                                        <t t-if="o.company_id.branch_no != '00000'"><span t-field="o.company_id.branch_no"/><br/></t>
                                     </B>
-                                </font>
+                                </font><br/>
                                 <font style="font-size: 20px; line-height:18px;">
                                     <t t-set="company_address" t-value="o.company_id.get_company_full_address()"/>
-                                    <span t-esc="' '.join([ address for address in company_address ])"/><br/>
+                                    <span t-esc="' '.join([ address for address in company_address ])"/>
                                     <t t-if="o.company_id.eng_address"><span t-field="o.company_id.eng_address"/><br/></t>
-                                    <span t-if="o.company_id.phone">โทรศัพท์&amp;nbsp;<span t-esc="o.company_id.phone"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.phone">โทรศัพท์&amp;nbsp;<span t-esc="o.company_id.phone"/>&amp;nbsp;<br/></span>
                                     <span t-if="o.company_id.email">อีเมล&amp;nbsp;<span t-esc="o.company_id.email"/>&amp;nbsp;<br/></span>
                                     <span t-if="o.company_id.vat">เลขประจำตัวผู้เสียภาษีอากร&amp;nbsp;<span t-esc="o.company_id.vat"/>&amp;nbsp;</span>
                                 </font>
@@ -127,55 +120,18 @@
 
                     <table width="100%" class="font_fam td_bott" style="font-size: 20px; line-height:18px; ">
                         <tr>
-                            <td width="75%">
-                                <table class="table table-nobordered">
-                                    <tr>
-                                        <td width="15%">
-                                            <B><span>รหัสลูกค้า<br/>Customer Code</span></B>
-                                        </td>
-                                        <td width="60%">
-                                            <span t-field="o.partner_id.ref"/>
-                                            <t t-if="o.partner_id.vat">
-                                                &amp;nbsp;
-                                                <span>เลขประจำตัวผู้เสียภาษีอากร&amp;nbsp;:&amp;nbsp;</span>
-                                                <span t-field="o.partner_id.vat"/>
-                                            </t>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <B><span>ชื่อลูกค้า<br/>Customer Name</span></B>
-                                        </td>
-                                        <td>
-                                            <span t-field="o.partner_id"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <B><span>ที่อยู่<br/>Address</span></B>
-                                        </td>
-                                        <td>
-                                            <div style="width:500px; word-wrap: break-word;">
-                                                <t t-set="partner_address" t-value="o.partner_id.get_partner_full_address()"/>
-                                                <span t-esc="' '.join([ address for address in partner_address ])"/>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td >
-                                            <B><span>ที่อยู่จัดส่ง<br/>Delivery Address</span></B>
-                                        </td>
-                                        <td>
-                                            <div style="width:500px; word-wrap: break-word;">
-                                                <span t-field="o.partner_shipping_id"/>&amp;nbsp;
-                                                <t t-set="partner_address" t-value="o.partner_shipping_id.get_partner_full_address()"/>
-                                                <span t-esc="' '.join([ address for address in partner_address ])"/>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
+                            <td width="15%" style="padding-top:10px;">
+                                <span>รหัสลูกค้า<br/>Customer Code</span>
                             </td>
-                            <td width="25%" style="border-left:1px solid black; padding-top:10px; line-height:20px; vertical-align: top;">
+                            <td width="60%" style="padding-top:10px;">
+                                <span t-field="o.partner_id.ref"/>
+                                <t t-if="o.partner_id.vat">
+                                    &amp;nbsp;
+                                    <span>เลขประจำตัวผู้เสียภาษีอากร&amp;nbsp;:&amp;nbsp;</span>
+                                    <span t-field="o.partner_id.vat"/>
+                                </t>
+                            </td>
+                            <td width="25%" rowspan="4" style="border-left:1px solid black; padding-top:10px;">
                                 <div style="padding-left:5px;">
                                     <span><B>เลขที่/No</B></span><br/>
                                     <span t-field="o.name"/><br/>
@@ -186,13 +142,48 @@
                                 </div>
                             </td>
                         </tr>
+                        <tr>
+                            <td>
+                                <span>ชื่อลูกค้า<br/>Customer Name</span>
+                            </td>
+                            <td>
+                                <span t-field="o.partner_id"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span>ที่อยู่<br/>Address</span>
+                            </td>
+                            <td>
+                                <div style="width:500px; height:60px;">
+                                    <t t-set="partner_address" t-value="o.partner_id.get_partner_full_address()"/>
+                                    <span t-esc="' '.join([ address for address in partner_address ])"/>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span>ที่อยู่จัดส่ง<br/>Delivery Address</span>
+                            </td>
+                            <td>
+                                <div style="width:500px; height:60px;">
+                                    <t t-set="partner_address" t-value="o.partner_shipping_id.get_partner_full_address()"/>
+                                    <span t-esc="' '.join([ address for address in partner_address ])"/>
+                                </div>
+                            </td>
+                        </tr>
                     </table>
 
                     <table width="100%" class="font_fam" style="font-size: 20px; line-height:18px; margin-top:10px;">
                         <tr>
                             <td style="text-align: center">
                                 <span><B>อ้างอิง</B><br/>Reference</span><br/>
-                                <span t-field="o.invoice_origin"/>
+                                <t t-if="o.name">
+                                    <span t-field="o.name"/>
+                                </t>
+                                <t t-if="not o.name and o.invoice_origin">
+                                    <span t-field="o.invoice_origin"/>
+                                </t>
                             </td>
                             <td style="text-align: center">
                                 <span><B>เงื่อนไขการชำระเงิน</B><br/>Term of Payment</span><br/>
@@ -207,7 +198,7 @@
                                 </t>
                             </td>
                             <td style="text-align: center">
-                                <span><B>พนักงานขาย</B><br/>Salesperson</span><br/>
+                                <span><B>พนักงานขาย</B><br/>Sales Person</span><br/>
                                 <t t-if="o.user_id">
                                     <span t-field="o.user_id"/>
                                 </t>
@@ -272,16 +263,12 @@
                         border:1px solid white;
                         padding:0px;
                         }
-                        .word_wrap{
-                        word-wrap: break-word;
-                        <!--background-color:#cccccc;-->
-                        }
                     </style>
 
                     <!-- unit is mm --> <!-- max height a4 = 297, deduct margin and bottom 100, 50 and left 147, 30px per line then max = 15 line-->
                     <!--t t-set="max_body_line" t-value="15"-->
                     <!-- header of tbody take 2 new light = 15, then 147 - 15 = 132-->
-                    <t t-set="max_body_height" t-value="135"/>
+                    <t t-set="max_body_height" t-value="120"/>
                     <t t-set="new_line_height" t-value="5"/>
                     <t t-set="row_line_height" t-value="5"/> <!--- 30px = 7.9375 mm -->
                     <t t-set="max_line_lenght" t-value="40"/>
@@ -298,7 +285,7 @@
                                     <th width="5%" ><span>ลำดับ<br/>No.</span></th>
                                     <th width="40%"><span>รายละเอียดสินค้า<br/>DESCRIPTION</span></th>
                                     <th width="15%"><span>จำนวน<br/>QUANTITY</span></th>
-                                    <th width="15%" ><span>ราคาหน่วยละ<br/>UNIT PRICE</span></th>
+                                    <th width="15%" ><span>ราคา<br/>UNIT PRICE</span></th>
                                     <th width="10%"><span>ส่วนลด<br/>DISCOUNT</span></th>
                                     <th width="15%"><span>จำนวนเงิน<br/>AMOUNT</span></th>
                                 </tr>
@@ -309,11 +296,12 @@
                                         <tr style="height:30px;">
                                             <td align="center"><span t-esc="y+1"/></td>
                                             <td>
-                                                <div class="word_wrap" style="width:380px;">
-                                                    <span t-field="o.invoice_line_ids[y].name"/>
-                                                </div>
+                                                <span t-field="o.invoice_line_ids[y].name"/>
                                             </td>
-                                            <td align="center">
+                                            <td>
+                                                <t t-if="o.invoice_line_ids[y].quantity == 0.00">
+                                                    <span/>
+                                                </t>
                                                 <t t-if="o.invoice_line_ids[y].quantity != 0.00">
                                                     <span t-field="o.invoice_line_ids[y].quantity"/>
                                                     <span>&amp;nbsp;</span>
@@ -338,6 +326,9 @@
                                                 </t>
                                             </td>
                                             <td align="right">
+                                                <t t-if="o.invoice_line_ids[y].price_subtotal == 0.00">
+                                                    <span/>
+                                                </t>
                                                 <t t-if="o.invoice_line_ids[y].price_subtotal != 0.00">
                                                     <span t-esc="'{0:,.2f}'.format(abs(float(o.invoice_line_ids[y].price_subtotal)))" t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;o.currency_id&quot;}"/>
                                                 </t>
@@ -348,11 +339,12 @@
                                         <tr>
                                             <td align="center"><span t-esc="y+1"/></td>
                                             <td>
-                                                <div class="word_wrap" style="width:380px;">
-                                                    <span t-field="o.invoice_line_ids[y].name"/>
-                                                </div>
+                                                <span t-field="o.invoice_line_ids[y].name"/>
                                             </td>
-                                            <td align="center">
+                                            <td>
+                                                <t t-if="o.invoice_line_ids[y].quantity == 0.00">
+                                                    <span/>
+                                                </t>
                                                 <t t-if="o.invoice_line_ids[y].quantity != 0.00">
                                                     <span t-field="o.invoice_line_ids[y].quantity"/>
                                                     <span>&amp;nbsp;</span>
@@ -377,6 +369,9 @@
                                                 </t>
                                             </td>
                                             <td align="right">
+                                                <t t-if="o.invoice_line_ids[y].price_subtotal == 0.00">
+                                                    <span/>
+                                                </t>
                                                 <t t-if="o.invoice_line_ids[y].price_subtotal != 0.00">
                                                     <span t-esc="'{0:,.2f}'.format(abs(float(o.invoice_line_ids[y].price_subtotal)))" t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;o.currency_id&quot;}"/>
                                                 </t>
@@ -455,7 +450,7 @@
                                 </tr>
                                 <tr style="height:30px;">
                                     <td colspan="3" rowspan="2">
-                                        <span>- สินค้าตามรายการข้างต้น แม้จะได้ส่งมอบแก่ผู้ซื้อแล้วก็ยังคงเป็นทรัพย์สินของผู้ขายจนกว่าผู้ซื้อได้ชำระเงินเสร็จเรียบร้อย</span>
+                                        <span>- สินค้าตามรายการข้างต้น แม้จะได้ส่งมอบแก่ผู้ซื้อแล้วก็ยังคงเป็นทรัพย์สินของผู้ขายกว่าผู้ซื้อได้ชำระเงินเสร็จเรียบร้อย</span>
                                         <br/>
                                         <span>- ได้รับสินค้าดังรายการข้างต้นไว้ถูกต้องในสภาพเรียบร้อยดีแล้ว</span>
                                     </td>
@@ -487,8 +482,7 @@
                                                 รบกวนตรวจสอบความถูกต้องของออเดอร์ หากถูกต้องแล้ว รบกวนชำระเงินตามรายละเอียดนี้
                                                 ธนาคารกสิกรไทย 073-8-12127-9
                                                 <br/>
-                                                บจก.หอม โคโคนัท
-                                                <!--<span t-field="o.company_id.name"/>-->
+                                                <span t-field="o.company_id.name"/>
                                             </div>
                                             <div class="col-6">
                                                 Please kindly review the order confirmation. To confirm your order, please transfer to
@@ -543,7 +537,7 @@
                         }
                     </style>
 
-                    <table width="100%" class="table table-bordered last-page" style="text-align: center; page-break-inside: avoid; font-size: 20px; font-family:TH SarabunPSK;">
+                    <table width="100%" class="table table-bordered" style="text-align: center; page-break-inside: avoid; font-size: 20px; font-family:TH SarabunPSK;">
                         <tbody>
                             <tr>
                                 <td class="col-xs-4" style="text-align: center; line-height:20px;">

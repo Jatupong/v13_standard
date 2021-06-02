@@ -27,7 +27,6 @@ Stock report
         'report/report_reg.xml',
         'report/quotation_report.xml',
         'report/quotation_temporary_report.xml',
-        'report/sale_order_report.xml',
 
         'security/ir.model.access.csv',
     ],

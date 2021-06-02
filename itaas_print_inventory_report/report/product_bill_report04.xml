@@ -317,7 +317,7 @@
                                 <td>
                                     <span style="text-decoration: underline;">หมายเหตุ</span>
                                 </td>
-                                <td tyle="text-align:lefดt" width="40%" >
+                                <td tyle="text-align:left" width="40%" >
                                     <span>  จำนวนที่รับคืน (  )   ถูกต้อง   (  )  ไม่ถูกต้อง    เกินไป/ขาดไป  __________________</span>
                                 </td>
                             </tr>
@@ -359,7 +359,7 @@
     <report
             id="product_bill_report04"
             model="stock.picking"
-            menu="False"
+            menu="True"
             report_type="qweb-pdf"
             string="ใบรับคืนสินค้า"
             paperformat="paperformat_A4_Zero_Margin_product_bill04"

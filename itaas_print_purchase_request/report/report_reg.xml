@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="paperformat_A4_Zero_Margin_purchase_request" model="report.paperformat">
+            <field name="name">A4_Zero_Margin_purchase_request</field>
+            <field name="default" eval="False"/>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">80</field>
+            <field name="margin_bottom">65</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">85</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <report
+                id="purchase_request_report"
+                model="purchase.request"
+                menu="True"
+                report_type="qweb-pdf"
+                string="ใบขอซื้อ"
+                paperformat="itaas_print_purchase_request.paperformat_A4_Zero_Margin_purchase_request"
+                name="itaas_print_purchase_request.purchase_request_report_id"
+                file="itaas_print_purchase_request.purchase_request_report_id"
+        />
+
+
+    </data>
+</odoo>

@@ -20,8 +20,6 @@ class StockCardView(models.TransientModel):
     is_initial = fields.Boolean()
     product_in = fields.Float()
     product_out = fields.Float()
-    lot_id = fields.Many2one('stock.production.lot', string='Lot')
-
 
 
 class StockCardReport(models.TransientModel):
@@ -41,49 +39,6 @@ class StockCardReport(models.TransientModel):
         help="Use compute fields, so there is nothing store in database",
     )
 
-    #stock.move
-    # def _compute_results(self):
-    #     self.ensure_one()
-    #     date_from = self.date_from or "0001-01-01"
-    #     self.date_to = self.date_to or fields.Date.context_today(self)
-    #     locations = self.env["stock.location"].search(
-    #         [("id", "child_of", [self.location_id.id])]
-    #     )
-    #     self._cr.execute(
-    #         """
-    #         SELECT move.date, move.product_id, move.product_qty,
-    #             move.product_uom_qty, move.product_uom, move.reference,
-    #             move.location_id, move.location_dest_id,
-    #             case when move.location_dest_id in %s and move.location_id in %s
-    #                 then move.product_qty end as product_int,
-    #             case when move.location_dest_id in %s
-    #                 then move.product_qty end as product_in,
-    #             case when move.location_id in %s
-    #                 then move.product_qty end as product_out,
-    #             case when move.date < %s then True else False end as is_initial
-    #         FROM stock_move move
-    #         WHERE (move.location_id in %s or move.location_dest_id in %s)
-    #             and move.state = 'done' and move.product_id in %s
-    #             and CAST(move.date AS date) <= %s
-    #         ORDER BY move.date, move.reference
-    #     """,
-    #         (
-    #             tuple(locations.ids),
-    #             tuple(locations.ids),
-    #             tuple(locations.ids),
-    #             tuple(locations.ids),
-    #             date_from,
-    #             tuple(locations.ids),
-    #             tuple(locations.ids),
-    #             tuple(self.product_ids.ids),
-    #             self.date_to,
-    #         ),
-    #     )
-    #     stock_card_results = self._cr.dictfetchall()
-    #     ReportLine = self.env["stock.card.view"]
-    #     self.results = [ReportLine.new(line).id for line in stock_card_results]
-
-    #stock.move.line
     def _compute_results(self):
         self.ensure_one()
         date_from = self.date_from or "0001-01-01"
@@ -93,22 +48,21 @@ class StockCardReport(models.TransientModel):
         )
         self._cr.execute(
             """
-            SELECT move.date, move.product_id, move.qty_done as product_qty,
-                move.product_uom_qty, move.product_uom_id as product_uom, move.reference,
-                move.location_id, move.location_dest_id,move.lot_id,
+            SELECT move.date, move.product_id, move.product_qty,
+                move.product_uom_qty, move.product_uom, move.reference,
+                move.location_id, move.location_dest_id,
                 case when move.location_dest_id in %s
-                    then move.qty_done end as product_in,
+                    then move.product_qty end as product_in,
                 case when move.location_id in %s
-                    then move.qty_done end as product_out,
+                    then move.product_qty end as product_out,
                 case when move.date < %s then True else False end as is_initial
-            FROM stock_move_line move
+            FROM stock_move move
             WHERE (move.location_id in %s or move.location_dest_id in %s)
                 and move.state = 'done' and move.product_id in %s
                 and CAST(move.date AS date) <= %s
             ORDER BY move.date, move.reference
         """,
             (
-
                 tuple(locations.ids),
                 tuple(locations.ids),
                 date_from,
@@ -123,7 +77,6 @@ class StockCardReport(models.TransientModel):
         self.results = [ReportLine.new(line).id for line in stock_card_results]
 
     def _get_initial(self, product_line):
-
         product_input_qty = sum(product_line.mapped("product_in"))
         product_output_qty = sum(product_line.mapped("product_out"))
         return product_input_qty - product_output_qty

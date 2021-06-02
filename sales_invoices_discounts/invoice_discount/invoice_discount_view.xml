@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
+<openerp>
     <data>
         <record model="ir.ui.view" id="invoice_sale_discount_invoice">
             <field name="name">account.invoice.form</field>
@@ -7,26 +7,23 @@
             <field name="inherit_id" ref="account.view_move_form"/>
             <field name="arch" type="xml">
                 <data>
-
                     <xpath expr="//field[@name='narration']" position="before">
                         <group>
                             <group>
-                                <field name="discount_view"/>
-                                <field name="discount_type" attrs="{'required':[('discount_view', '!=', False)],}"/>
-                                <field name="discount_value" attrs="{'required':[('discount_view', '!=', False)],'invisible':[('discount_type', 'not in', ['Fixed', 'Percentage'])]}"/>
+                                <field name="discount_view" invisible="1"/>
+                                <field name="discount_type"/>
+                                <field name="discount_value"
+                                       attrs="{'invisible':[('discount_type', 'not in', ['Fixed', 'Percentage'])]}"/>
+
                                 <button name="update_discount" string="Update Discount" type="object"/>
                             </group>
                         </group>
-                    </xpath>
-                    <xpath expr="//field[@name='amount_by_group']" position="after">
-                        <field name="discounted_amount" widget="monetary" options="{'currency_field': 'currency_id'}"
-                               attrs="{'invisible':[('discount_view', '!=', 'After Tax')]}"/>
-                    </xpath>
-                    <xpath expr="//field[@name='amount_by_group']" position="before">
-                        <field name="discounted_amount" widget="monetary" options="{'currency_field': 'currency_id'}"
-                               attrs="{'invisible':[('discount_view', '!=', 'Before Tax')]}"/>
-                    </xpath>
 
+                    </xpath>
+                    <field name="amount_untaxed" position="after">
+                        <field name="discounted_amount" widget="monetary" options="{'currency_field': 'currency_id'}"
+                               attrs="{'invisible':[('discount_type', 'not in', ['Fixed', 'Percentage'])]}"/>
+                    </field>
                 </data>
             </field>
         </record>
@@ -41,9 +38,9 @@
                     <field name="default_sales_discount_account_id"/>
                     <field name="default_purchase_discount_account_id"/>
                 </field>
-
             </field>
         </record>
 
+
     </data>
-</odoo>
+</openerp>

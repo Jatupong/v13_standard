@@ -11,21 +11,5 @@
             <field name="company_id" eval="False"/>
         </record>
 
-        <record id="seq_res_partner_customer" model="ir.sequence">
-            <field name="name">Res Partner Customer</field>
-            <field name="code">res.partner.customer</field>
-            <field name="prefix">customer/%(y)s/%(month)s:</field>
-            <field name="padding">5</field>
-            <field name="company_id" eval="False"/>
-        </record>
-
-        <record id="seq_res_partner_vendor" model="ir.sequence">
-            <field name="name">Res Partner Vendor</field>
-            <field name="code">res.partner.vendor</field>
-            <field name="prefix">vendor/%(y)s/%(month)s:</field>
-            <field name="padding">5</field>
-            <field name="company_id" eval="False"/>
-        </record>
-
     </data>
 </odoo>

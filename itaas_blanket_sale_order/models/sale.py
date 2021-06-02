@@ -92,17 +92,11 @@ class SaleOrder(models.Model):
                 line.compute_consume_qty()
                 line.compute_remaining_qty()
                 print (line.remaining_qty)
-                if line.remaining_qty <= 0.0:
+                if line.remaining_qty <= 0:
                     continue
-
-                if line.standard_qty > line.remaining_qty:
-                    product_uom_qty = line.remaining_qty
-                else:
-                    product_uom_qty = line.standard_qty
-
                 data.append((0, 0, {'product_id': line.product_id.id,
                                     'product_uom': line.product_uom.id,
-                                    'product_uom_qty': product_uom_qty,
+                                    'product_uom_qty': line.standard_qty,
                                     'price_unit': line.price_unit,
                                     'name': line.name,
                                     }))
@@ -156,6 +150,8 @@ class SaleOrder(models.Model):
 
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
+
+
 
     def update_next_date(self):
         for record in self:

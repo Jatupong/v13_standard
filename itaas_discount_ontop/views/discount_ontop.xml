@@ -1,0 +1,18 @@
+<odoo>
+
+    <record id="view_sale_order_form_itaas_ontop" model="ir.ui.view">
+        <field name="name">sale.order.form.itaas.ontop</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='order_line']/tree/field[@name='discount']" position="after">
+                <field name="discount_ontop1"/>
+                <field name="discount_ontop2"/>
+                <field name="discount_ontop3"/>
+            </xpath>
+
+
+        </field>
+    </record>
+
+</odoo>

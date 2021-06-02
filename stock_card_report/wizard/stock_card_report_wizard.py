@@ -13,11 +13,10 @@ class StockCardReportWizard(models.TransientModel):
     date_from = fields.Date(string="Start Date")
     date_to = fields.Date(string="End Date")
     location_id = fields.Many2one(
-        comodel_name="stock.location", string="Location", required=False
+        comodel_name="stock.location", string="Location", required=True
     )
-    category_id = fields.Many2one('product.category',string='Category')
     product_ids = fields.Many2many(
-        comodel_name="product.product", string="Products", required=False
+        comodel_name="product.product", string="Products", required=True
     )
 
     @api.onchange("date_range_id")
@@ -51,17 +50,11 @@ class StockCardReportWizard(models.TransientModel):
 
     def _prepare_stock_card_report(self):
         self.ensure_one()
-        if not self.product_ids and self.category_id:
-            product_ids = self.env['product.product'].search([('categ_id','=',self.category_id.id)])
-        else:
-            product_ids = self.product_ids
-
-
         return {
             "date_from": self.date_from,
             "date_to": self.date_to or fields.Date.context_today(self),
-            "product_ids": [(6, 0, product_ids.ids)],
-            "location_id": self.location_id and self.location_id.id or False,
+            "product_ids": [(6, 0, self.product_ids.ids)],
+            "location_id": self.location_id.id,
         }
 
     def _export(self, report_type):

@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="product_brand_search_form_view" model="ir.ui.view">
+        <field name="name">product.brand.search.form</field>
+        <field name="model">product.brand</field>
+        <field name="arch" type="xml">
+            <search string="Product Brand">
+                <field name="name"/>
+                <field name="partner_id"/>
+            </search>
+        </field>
+    </record>
+
+    <!--    <act_window-->
+    <!--        id="action_open_brand_products"-->
+    <!--        name="Brand Products"-->
+    <!--        res_model="product.template"-->
+    <!--        view_type="form"-->
+    <!--        view_mode="kanban,form,tree"-->
+    <!--        domain="[('product_brand_id', '=', active_id)]"/>-->
+
+    <!--    <act_window-->
+    <!--        id="action_open_single_product_brand"-->
+    <!--        name="Product Brand"-->
+    <!--        res_model="product.brand"-->
+    <!--        view_mode="kanban,form,tree"-->
+    <!--        target="current"-->
+    <!--        domain="[('product_ids', 'in', active_id)]"/>-->
+
+    <!--    <record id="view_product_brand_form" model="ir.ui.view">-->
+    <!--        <field name="name">product.brand.form</field>-->
+    <!--        <field name="model">product.brand</field>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <form>-->
+    <!--                <sheet>-->
+    <!--                    <div class="oe_button_box" name="button_box">-->
+    <!--                        <button name="%(action_open_brand_products)d"-->
+    <!--                            type="action"-->
+    <!--                            class="oe_stat_button"-->
+    <!--                            icon="fa-cubes">-->
+    <!--                            <field name="products_count" widget="statinfo" string="Products"/>-->
+    <!--                        </button>-->
+    <!--                    </div>-->
+    <!--                    <field name="logo" widget="image" class="oe_avatar"/>-->
+    <!--                    <div class="oe_title">-->
+    <!--                            <label for="name" string="Brand Name" class="oe_edit_only"/>-->
+    <!--                            <h1><field name="name"/></h1>-->
+    <!--                    </div>-->
+    <!--                    <group>-->
+    <!--                        <group>-->
+    <!--                            <field name="partner_id"/>-->
+    <!--                        </group>-->
+    <!--                    </group>-->
+    <!--                    <group string="Description">-->
+    <!--                        <field name="description" nolabel="1"/>-->
+    <!--                    </group>-->
+    <!--                </sheet>-->
+    <!--            </form>-->
+    <!--        </field>-->
+    <!--    </record>-->
+
+    <record id="view_product_brand_tree" model="ir.ui.view">
+        <field name="name">product.brand.tree</field>
+        <field name="model">product.brand</field>
+        <field name="arch" type="xml">
+            <tree string="product.brand">
+                <field name="name"/>
+                <field name="description"/>
+                <field name="partner_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--    <record id="view_product_brand_kanban" model="ir.ui.view">-->
+    <!--        <field name="name">product.brand.kanban</field>-->
+    <!--        <field name="model">product.brand</field>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <kanban>-->
+    <!--                <field name="id"/>-->
+    <!--                <field name="logo"/>-->
+    <!--                <field name="products_count"/>-->
+    <!--                <field name="description"/>-->
+    <!--                <templates>-->
+    <!--                    <t t-name="kanban-box">-->
+    <!--                        <div class="oe_kanban_global_click">-->
+    <!--                            <div class="o_kanban_image">-->
+    <!--                                <img t-att-src="kanban_image('product.brand', 'logo', record.id.raw_value)" alt="Logo"/>-->
+    <!--                            </div>-->
+    <!--                            <div class="oe_kanban_details">-->
+    <!--                                <h4>-->
+    <!--                                    <field name="name"/>-->
+    <!--                                </h4>-->
+    <!--                                <div>-->
+    <!--                                    <a name="%(product_brand.action_open_brand_products)d" type="action">-->
+    <!--                                        <t t-esc="record.products_count.value"/> Products-->
+    <!--                                    </a>-->
+    <!--                                </div>-->
+    <!--                            </div>-->
+    <!--                        </div>-->
+    <!--                    </t>-->
+    <!--                </templates>-->
+    <!--            </kanban>-->
+    <!--        </field>-->
+    <!--    </record>-->
+
+    <record id="view_product_template_search_brand" model="ir.ui.view">
+        <field name="name">product.template.search.brand</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_search_view"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="product_brand_id"/>
+                <field name="product_model_id"/>
+                <field name="product_series_id"/>
+                <field name="product_group_id"/>
+                <field name="category_id"/>
+                <field name="sub_category_id"/>
+                <filter string="Brand" name="groupby_brand" domain="[]"
+                        context="{'group_by' : 'product_brand_id'}"/>
+                <filter string="Model" name="groupby_model" domain="[]"
+                        context="{'group_by' : 'product_model_id'}"/>
+                <filter string="Series" name="groupby_series" domain="[]"
+                        context="{'group_by' : 'product_series_id'}"/>
+
+                <filter string="Product Group" name="groupby_product_group" domain="[]"
+                        context="{'group_by' : 'product_group_id'}"/>
+                <filter string="Category" name="groupby_product_category" domain="[]"
+                        context="{'group_by' : 'category_id'}"/>
+                <filter string="Sub Category" name="groupby_product_sub_category" domain="[]"
+                        context="{'group_by' : 'sub_category_id'}"/>
+                <filter string="Production" name="groupby_product_production" domain="[]"
+                        context="{'group_by' : 'production'}"/>
+
+                <separator/>
+
+            </field>
+            <filter name="categ_id" position="attributes">
+                <attribute name="string">Parent Category</attribute>
+            </filter>
+        </field>
+    </record>
+
+    <record id="product_template_form_brand_add" model="ir.ui.view">
+        <field name="name">product.template.product.form</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view" />
+        <field name="arch" type="xml">
+            <field name="sale_ok" position="before">
+                <field name="product_brand_id" placeholder="Brand" options="{'no_create': True, 'no_create_edit':True}"/><div/>
+                <field name="product_series_id" placeholder="Series" options="{'no_create': True, 'no_create_edit':True}"/><div/>
+                <field name="product_model_id" placeholder="Model" options="{'no_create': True, 'no_create_edit':True}"/><div/>
+            </field>
+            <field name="uom_id" position="before">
+                <field name="minimum_sale_price"/>
+            </field>
+            <field name="categ_id" position="after">
+                <field name="production" options="{'no_create': True, 'no_create_edit':True}"/>
+                <field name="product_group_id" options="{'no_create': True, 'no_create_edit':True}"/>
+                <field name="category_id" options="{'no_create': True, 'no_create_edit':True}"/>
+                <field name="sub_category_id" options="{'no_create': True, 'no_create_edit':True}"/>
+            </field>
+            <field name="categ_id" position="attributes">
+                <attribute name="string">Parent Category</attribute>
+                <attribute name="options">{'no_create': True, 'no_create_edit':True}</attribute>
+            </field>
+        </field>
+    </record>
+
+    <!--    <record id="view_product_template_kanban_brand" model="ir.ui.view">-->
+    <!--        <field name="name">product kanban view: add brand</field>-->
+    <!--        <field name="model">product.template</field>-->
+    <!--        <field name="inherit_id" ref="product.product_template_kanban_view" />-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <xpath expr="//div[hasclass('oe_kanban_details')]/strong[1]" position="after">-->
+    <!--                <div>-->
+    <!--                    <a t-if="record.product_brand_id" type="action"-->
+    <!--                       name="%(action_open_single_product_brand)d">-->
+    <!--                        <field name="product_brand_id"/>-->
+    <!--                    </a>-->
+    <!--                </div>-->
+    <!--            </xpath>-->
+    <!--        </field>-->
+    <!--    </record>-->
+
+    <record id="view_product_variant_kanban_brand" model="ir.ui.view">
+        <field name="name">product variant kanban view: add brand</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_kanban_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_kanban_details')]/strong[1]" position="after">
+                <div>
+                    <a t-if="record.product_brand_id" type="open">
+                        <field name="product_brand_id"/>
+                    </a>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_product_template_tree_brand" model="ir.ui.view">
+        <field name="name">product tree view: add brand</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view" />
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="product_brand_id"/>
+                <field name="product_series_id"/>
+                <field name="product_model_id"/>
+            </field>
+            <field name="categ_id" position="after">
+                <field name="product_group_id"/>
+                <field name="category_id"/>
+                <field name="sub_category_id"/>
+                <field name="production"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_product_variant_tree_brand" model="ir.ui.view">
+        <field name="name">product variant tree view: add brand</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_product_tree_view" />
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="product_brand_id" />
+                <field name="product_series_id"/>
+                <field name="product_model_id"/>
+            </field>
+            <field name="categ_id" position="after">
+                <field name="product_group_id"/>
+                <field name="category_id"/>
+                <field name="sub_category_id"/>
+                <field name="production"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_product_model_form" model="ir.ui.view">
+        <field name="name">view.product.model.form</field>
+        <field name="model">product.model</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" class="oe_inline"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="series_id"/>
+                        </group>
+                        <field name="products_count" invisible="1"/>
+                        <field name="product_ids" nolabel="1"/>
+                        <field name="description" nolabel="1" placeholder="Description..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_product_model">
+        <field name="name">Model</field>
+        <field name="res_model">product.model</field>
+        <!--        <field name="view_type">form</field>-->
+        <field name="view_mode">kanban,form,tree</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_product_series">
+        <field name="name">Series</field>
+        <field name="res_model">product.series</field>
+        <!--        <field name="view_type">form</field>-->
+        <field name="view_mode">kanban,form,tree</field>
+    </record>
+
+
+    <record model="ir.actions.act_window" id="action_product_brand">
+        <field name="name">Brand</field>
+        <field name="res_model">product.brand</field>
+        <!--        <field name="view_type">form</field>-->
+        <field name="view_mode">kanban,form,tree</field>
+    </record>
+
+    <menuitem
+            name="Product Brands"
+            id="menu_product_brand"
+            action="action_product_brand"
+            parent="sale.prod_config_main"/>
+    <menuitem
+            name="Product Series"
+            id="menu_product_series"
+            action="action_product_series"
+            parent="sale.prod_config_main"/>
+
+    <menuitem
+            name="Product Model"
+            id="menu_product_model"
+            action="action_product_model"
+            parent="sale.prod_config_main"/>
+</odoo>

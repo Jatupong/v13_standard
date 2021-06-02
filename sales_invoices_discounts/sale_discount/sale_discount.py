@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
 from odoo import fields, models, api
+import odoo.addons.decimal_precision as dp
+
 
 class saleorder_discount(models.Model):
     _inherit = 'sale.order'
-
-    discount_view = fields.Selection([('After Tax', 'After Tax'), ('Before Tax', 'Before Tax')], string='Discount Type',
+    discount_view = fields.Selection([('After Tax', 'After Tax'), ('Before Tax', 'Before Tax')], default='Before Tax', string='Discount Type',
                                      states={'draft': [('readonly', False)]},
                                      help='Choose If After or Before applying Taxes type of the Discount')
     discount_type = fields.Selection([('Fixed', 'Fixed'), ('Percentage', 'Percentage')], string='Discount Method',
@@ -14,29 +15,34 @@ class saleorder_discount(models.Model):
                                   help='Choose the value of the Discount')
     discounted_amount = fields.Float(compute='disc_amount', string='Discounted Amount', readonly=True)
 
-    def _prepare_invoice(self):
-        res = super(saleorder_discount, self)._prepare_invoice()
-        if self.discount_view:
-            res.update({'discount_view':self.discount_view,
-                        'discount_type': self.discount_type,
-                        'discount_value': self.discount_value,
-                        'discounted_amount': self.discounted_amount
-                        })
-        return res
 
-    @api.depends('order_line.price_total', 'discount_type', 'discount_value')
+    amount_total = fields.Float(string='Total', digits=dp.get_precision('Account'),
+                                store=True, readonly=True, compute='_amount_all')
+
+
+
+    # def _prepare_invoice(self):
+    #     res = super(saleorder_discount, self)._prepare_invoice()
+    #     if self.discount_view and self.discount_type and self.discount_value:
+    #         res['discount_view'] = self.discount_view
+    #         res['discount_type'] = self.discount_type
+    #         res['discount_value'] = self.discount_value
+    #
+    #     return res
+
+    @api.depends('order_line.price_total','discount_type', 'discount_value')
     def _amount_all(self):
         for order in self:
-            taxes_id = sum(order.order_line.mapped('tax_id').mapped('amount'))
+            t_id = self.env['account.tax'].search([('tax_report','=',True),('type_tax_use','=','sale')],limit=1)
             amount_untaxed = amount_tax = 0.0
-
             for line in order.order_line:
                 amount_untaxed += line.price_subtotal
+                # amount_tax += line.price_tax
+
                 if order.company_id.tax_calculation_rounding_method == 'round_globally':
                     price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
                     taxes = line.tax_id.compute_all(price, line.order_id.currency_id, line.product_uom_qty, product=line.product_id, partner=order.partner_shipping_id)
                     amount_tax += sum(t.get('amount', 0.0) for t in taxes.get('taxes', []))
-
                 else:
                     amount_tax += line.price_tax
 
@@ -44,22 +50,35 @@ class saleorder_discount(models.Model):
             if order.discount_view == 'After Tax':
                 if order.discount_type == 'Fixed':
                     amount_total = amount_untaxed + amount_tax - order.discount_value
-                else:
-                    amount_to_dis = (amount_untaxed + amount_tax) * (order.discount_value * 0.01)
+                elif order.discount_type == 'Percentage':
+                    amount_to_dis = (amount_untaxed + amount_tax) * (order.discount_value / 100)
                     amount_total = (amount_untaxed + amount_tax) - amount_to_dis
-
+                else:
+                    amount_total = amount_untaxed + amount_tax
             elif order.discount_view == 'Before Tax':
                 if order.discount_type == 'Fixed':
                     the_value_before = amount_untaxed - order.discount_value
-                    amount_tax = amount_tax - (order.discount_value * taxes_id * 0.01)
-                else:
-                    amount_to_dis = amount_untaxed * (order.discount_value * 0.01)
+                    if t_id.amount:
+                        the_tax_before = amount_tax - (order.discount_value * t_id.amount / 100)
+                    else:
+                        the_tax_before = amount_tax - (order.discount_value * 0.07)
+                    amount_tax = the_tax_before
+                    amount_total = the_value_before + the_tax_before
+                elif order.discount_type == 'Percentage':
+                    amount_to_dis = round(amount_untaxed * (order.discount_value / 100),2)
                     the_value_before = amount_untaxed - amount_to_dis
-                    amount_tax = amount_tax - (amount_to_dis * taxes_id * 0.01)
-                amount_total = the_value_before + amount_tax
+                    if t_id.amount:
+                        the_tax_before = amount_tax - (amount_to_dis * t_id.amount / 100)
+                    else:
+                        the_tax_before = amount_tax - (amount_to_dis * 0.07)
 
+                    amount_tax = round(the_tax_before,2)
+                    amount_total = the_value_before + round(the_tax_before,2)
+                else:
+                    amount_total = amount_untaxed + amount_tax
             else:
                 amount_total = amount_untaxed + amount_tax
+
 
             order.update({
                 'amount_untaxed': amount_untaxed,
@@ -67,25 +86,28 @@ class saleorder_discount(models.Model):
                 'amount_total': amount_total,
             })
 
+
     @api.depends('order_line.price_subtotal', 'discount_type', 'discount_value')
     def disc_amount(self):
-        for order in self:
-            discounted_amount = 0.0
-            if order.discount_view:
-                if order.discount_view == 'After Tax':
-                    amount_tax = order.amount_tax
-                elif order.discount_view == 'Before Tax':
-                    amount_tax = 0.0
+        if self.discount_view == 'After Tax':
+            if self.discount_type == 'Fixed':
+                self.discounted_amount = self.discount_value
+            elif self.discount_type == 'Percentage':
+                amount_to_dis = (self.amount_untaxed + self.amount_tax) * (self.discount_value / 100)
+                self.discounted_amount = round(amount_to_dis,2)
+            else:
+                self.discounted_amount = 0
+        elif self.discount_view == 'Before Tax':
+            if self.discount_type == 'Fixed':
+                self.discounted_amount = self.discount_value
+            elif self.discount_type == 'Percentage':
+                amount_to_dis = self.amount_untaxed * (self.discount_value / 100)
+                self.discounted_amount = round(amount_to_dis,2)
+            else:
+                self.discounted_amount = 0
+        else:
+            self.discounted_amount = 0
 
-                if order.discount_type == 'Fixed':
-                    discounted_amount = order.discount_value
-                else:
-                    discounted_amount = (order.amount_untaxed + amount_tax) * (order.discount_value * 0.01)
-
-            order.update({
-                # 'discounted_amount': order.currency_id.round(discounted_amount),
-                'discounted_amount': round(discounted_amount, 2)
-            })
 
 # saleorder_discount()
 
