@@ -3,8 +3,8 @@ access_advance_payment_line_group_account_invoice,advance.payment.line,model_adv
 access_advance_payment_line_group_account_user,advance.payment.line,model_advance_payment_line,account.group_account_user,1,1,1,1
 access_advance_payment_line_group_account_manager,advance.payment.line,model_advance_payment_line,account.group_account_manager,1,1,1,1
 
-access_bulk_invoice,bulk.invoice,model_bulk_invoice,,1,1,1,1
-access_bulk_inv_payment,bulk.inv.payment,model_bulk_inv_payment,,1,1,1,1
+access_bulk_register_invoice,bulk.register.invoice,model_bulk_register_invoice,,1,1,1,1
+
 
 
 
