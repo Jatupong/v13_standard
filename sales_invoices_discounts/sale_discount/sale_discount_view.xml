@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="invoice_sale_discount_sale">
+            <field name="name">sale.order.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <data>
+
+                    <xpath expr="//field[@name='note']" position="before">
+                        <group>
+                            <field name="discount_view"/>
+                            <field name="discount_type" attrs="{'required':[('discount_view', '!=', False)],}"/>
+                            <field name="discount_value" attrs="{'required':[('discount_view', '!=', False)],'invisible':[('discount_type', 'not in', ['Fixed', 'Percentage'])]}"/>
+                        </group>
+                    </xpath>
+                    <xpath expr="//field[@name='amount_tax']" position="after">
+                        <field name="discounted_amount" widget="monetary" options="{'currency_field': 'currency_id'}"
+                               attrs="{'invisible':[('discount_view', '!=', 'After Tax')]}"/>
+                    </xpath>
+                    <xpath expr="//field[@name='amount_tax']" position="before">
+                        <field name="discounted_amount" widget="monetary" options="{'currency_field': 'currency_id'}"
+                               attrs="{'invisible':[('discount_view', '!=', 'Before Tax')]}"/>
+                    </xpath>
+
+                </data>
+            </field>
+        </record>
+
+        <!-- inherit company form -->
+        <!--<record id="res_company_form_itaas_inherit" model="ir.ui.view">-->
+        <!--<field name="name">res.company.form.itaas</field>-->
+        <!--<field name="model">res.company</field>-->
+        <!--<field name="inherit_id" ref="base.view_company_form"/>-->
+        <!--<field name="arch" type="xml">-->
+        <!--&lt;!&ndash;<xpath expr="//notebook/page[2]/group/group[1]" position="after">&ndash;&gt;-->
+        <!--&lt;!&ndash;<group name="warranty" string="เงื่อนไขรับประกัน">&ndash;&gt;-->
+        <!--&lt;!&ndash;<field name="sale_condition" nolabel="1"/>&ndash;&gt;-->
+        <!--&lt;!&ndash;</group>&ndash;&gt;-->
+        <!--&lt;!&ndash;</xpath>&ndash;&gt;-->
+        <!--<field name="tax_calculation_rounding_method" position="after">-->
+        <!--<field name="discount_amount_condition"/>-->
+        <!--</field>-->
+        <!--</field>-->
+        <!--</record>-->
+    </data>
+</openerp>

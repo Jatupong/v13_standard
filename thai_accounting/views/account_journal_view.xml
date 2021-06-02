@@ -13,6 +13,7 @@
 				<field name="sequence"/>
 				<field name="adj_journal" attrs="{'required': [('bank_cheque','=',True)]}"/>
 				<field name="bank_cheque"/>
+				<field name="is_tax"/>
 			</field>
 			<field name="default_credit_account_id" position="after">
 				<field name="bank_for_cheque_account_id" attrs="{'invisible': [('bank_cheque','=',False)],'required': [('bank_cheque','=',True)]}"/>
@@ -22,6 +23,7 @@
 				<field name="debit_sequence_id" attrs="{'invisible': ['|',('type', 'not in', ['sale', 'purchase']), ('refund_sequence', '!=', True)], 'required': [('type', 'in', ['sale', 'purchase']), ('refund_sequence', '=', True)]}"/>
 				<field name="tax_invoice_sequence_id" attrs="{'invisible': [('type', 'not in', ['sale', 'purchase'])]}"/>
 				<field name="payment_sequence_id" attrs="{'invisible': [('type', 'not in', ['sale', 'purchase'])]}"/>
+				<field name="sequence_billing" attrs="{'invisible': [('type', 'not in', ['sale', 'purchase'])]}"/>
 			</field>
 		</field>
 	</record>

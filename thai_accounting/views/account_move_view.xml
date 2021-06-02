@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="account.view_move_form"/>
         <field name="arch" type="xml">
             <button name="button_draft" position="after">
-                <button name="action_invoice_generate_tax_invoice" type="object" class="oe_highlight" attrs="{'invisible': ['|', '|', ('state', '!=', 'posted'), ('invoice_payment_state', '=', 'paid'), ('type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt'))]}" string="Generate Tax/Reverse Tax" groups="account.group_account_invoice"/>
+                <button name="action_invoice_generate_tax_invoice" type="object" class="oe_highlight" attrs="{'invisible': ['|', '|', ('state', '!=', 'posted'), ('invoice_payment_state', '=', 'paid'), ('type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt'))]}" string="Generate Tax Invoice" groups="account.group_account_invoice"/>
             </button>
 
             <field name="name" position="after">
@@ -28,9 +28,9 @@
             <!--                    <attribute name="attrs">{'readonly': [('state','!=','draft')]}</attribute>-->
             <!--                </field>-->
 
-                            <field name="auto_post" position="after">
-                                <field name="is_closing_month"/>
-                            </field>
+            <!--                <field name="date" position="after">-->
+            <!--                    <field name="is_closing_month"/>-->
+            <!--                </field>-->
 
             <field name="invoice_date" position="after">
                 <field name="tax_invoice_date"/>
@@ -260,18 +260,29 @@
         <field name="groups_id" eval="[(4, ref('account.group_account_user'))]"/>
     </record>
 
-
-
-
     <!--    New menu for tax report -->
     <menuitem id="menu_finance_accounting_tax" name="Tax" parent="account.menu_finance_entries" sequence="20" />
-
 
     <menuitem action="action_account_moves_all_sale_tax" id="menu_action_account_moves_sale_tax" parent="menu_finance_accounting_tax" sequence="1" groups="account.group_account_user" />
     <menuitem action="action_account_moves_all_purchase_tax" id="menu_action_account_moves_purchase_tax" parent="menu_finance_accounting_tax" sequence="2" groups="account.group_account_user" />
     <menuitem action="action_account_moves_all_wht53" id="menu_action_account_moves_wht53" parent="menu_finance_accounting_tax" sequence="3" groups="account.group_account_user" />
     <menuitem action="action_account_moves_all_wht3" id="menu_action_account_moves_wht3" parent="menu_finance_accounting_tax" sequence="4" groups="account.group_account_user" />
 
+    <!-- account.wht.type: views -->
+    <record id="view_account_wht_type_form" model="ir.ui.view">
+        <field name="name">view.account.wht.type.form</field>
+        <field name="model">account.wht.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="sequence_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
 
     <!--    Account with holding tax-->
     <record id="account_wht_type_action" model="ir.actions.act_window">
@@ -284,11 +295,9 @@
         </field>
     </record>
 
-    <menuitem id="account_wht_type_menu" parent="account.account_account_menu" action="account_wht_type_action" groups="account.group_account_manager"/>
-
-
-    <record id="account.action_move_out_invoice_type" model="ir.actions.act_window">
-        <field name="domain">[('type', 'in', ('out_invoice','out_refund'))]</field>
-    </record>
+    <menuitem id="account_wht_type_menu"
+              parent="account.account_account_menu"
+              action="account_wht_type_action"
+              groups="account.group_account_manager"/>
 
 </odoo>

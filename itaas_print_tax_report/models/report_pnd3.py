@@ -116,7 +116,7 @@ class report_report_pnd3(models.AbstractModel):
     @api.model
     def _get_report_values(self, docids, data=None):
         print('cccccccccccccccc')
-        company_id = self.env.company
+        company_id = self.env.user.company_id
         # docs = self.env['account.move.line'].search([('name','=','Output VAT'),('company_id','=',1)])
         header_info = self._get_header_info(data['date_from'], data['date_to'], company_id)
         tax_info = self._get_tax_month(data['date_from'], data['date_to'], company_id,

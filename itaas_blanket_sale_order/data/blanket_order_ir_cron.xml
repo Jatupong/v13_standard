@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2017 ForgeFlow S.L.
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo noupdate="1">
+    <record id="cron_blanket_auto_order_view" model="ir.cron">
+        <field name="name">Automatically Create Blanket Orders</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+        <field name="model_id" ref="model_sale_order"/>
+        <field name="code">model.create_auto_order_from_blanket_orders()</field>
+        <field name="state">code</field>
+    </record>
+</odoo>

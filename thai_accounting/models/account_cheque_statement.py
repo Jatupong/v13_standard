@@ -129,7 +129,7 @@ class AccountChequeStatement(models.Model):
         if journal_id.sequence_id:
             # If invoice is actually refund and journal has a refund_sequence then use that one or use the regular one
             sequence_id = journal_id.sequence_id
-            new_name = sequence_id.with_context(ir_sequence_date=self.validate_date).next_by_id()
+            new_name = sequence_id.with_context(ir_sequence_date=self.issue_date).next_by_id()
             # print "new_new"
             # print new_name
         else:
@@ -281,5 +281,4 @@ class account_payment(models.Model):
                     'payment_id': payment.id,
                 }
                 self.cheque_reg_id = self.env['account.cheque.statement'].create(vals_cheque_rec).id
-                self.cheque_reg_id.get_move_id()
         return res

@@ -57,7 +57,7 @@ class report_report_pnd53(models.AbstractModel):
         # print domain
         if line_ids:
             for line in line_ids:
-                # print(line.wht_type.name)
+                print(line.wht_type.name)
                 amt_percent = 0
                 if line.wht_tax.name == 'Company Withholding Tax 1% (Transportation)':
                     amt_percent = 1
@@ -123,7 +123,7 @@ class report_report_pnd53(models.AbstractModel):
     @api.model
     def _get_report_values(self, docids, data=None):
         # print "xxxx"
-        company_id = self.env.company
+        company_id = self.env.user.company_id
         # docs = self.env['account.move.line'].search([('name','=','Output VAT'),('company_id','=',1)])
         header_info = self._get_header_info(data['date_from'], data['date_to'], company_id)
         tax_info = self._get_tax_month(data['date_from'], data['date_to'], company_id,

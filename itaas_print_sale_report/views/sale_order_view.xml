@@ -1,0 +1,25 @@
+<odoo>
+
+    <record id="sale_order_report_setting_form" model="ir.ui.view">
+        <field name="name">sale.order.report.setting.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//page[@name='other_information']" position="inside">
+                <group>
+                    <field name="show_product_code_on_sale"/>
+                </group>
+            </xpath>
+
+            <xpath expr="//field[@name='partner_invoice_id']" position="attributes">
+                <attribute name="context">{'default_type':'invoice', 'show_address': 1}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_shipping_id']" position="attributes">
+                <attribute name="context">{'default_type':'delivery', 'show_address': 1}</attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

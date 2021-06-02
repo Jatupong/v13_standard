@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="invoice_sale_discount_invoice">
+            <field name="name">account.invoice.form</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <data>
+
+                    <xpath expr="//field[@name='narration']" position="before">
+                        <group>
+                            <group>
+                                <field name="discount_view"/>
+                                <field name="discount_type" attrs="{'required':[('discount_view', '!=', False)],}"/>
+                                <field name="discount_value" attrs="{'required':[('discount_view', '!=', False)],'invisible':[('discount_type', 'not in', ['Fixed', 'Percentage'])]}"/>
+                                <button name="update_discount" string="Update Discount" type="object"/>
+                            </group>
+                        </group>
+                    </xpath>
+                    <xpath expr="//field[@name='amount_by_group']" position="after">
+                        <field name="discounted_amount" widget="monetary" options="{'currency_field': 'currency_id'}"
+                               attrs="{'invisible':[('discount_view', '!=', 'After Tax')]}"/>
+                    </xpath>
+                    <xpath expr="//field[@name='amount_by_group']" position="before">
+                        <field name="discounted_amount" widget="monetary" options="{'currency_field': 'currency_id'}"
+                               attrs="{'invisible':[('discount_view', '!=', 'Before Tax')]}"/>
+                    </xpath>
+
+                </data>
+            </field>
+        </record>
+
+        <record id="view_company_form_itaas_discount_inherit" model="ir.ui.view">
+            <field name="name">res.company.form.itaas</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form"/>
+            <field name="arch" type="xml">
+
+                <field name="currency_id" position="after">
+                    <field name="default_sales_discount_account_id"/>
+                    <field name="default_purchase_discount_account_id"/>
+                </field>
+
+            </field>
+        </record>
+
+    </data>
+</odoo>

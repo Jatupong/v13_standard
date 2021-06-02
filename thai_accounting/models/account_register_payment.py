@@ -98,10 +98,8 @@ class account_register_payment(models.Model):
         if 'journal_id' not in rec:
             rec['journal_id'] = self.env['account.journal'].search([('company_id', '=', self.env.company.id), ('type', 'in', ('bank', 'cash'))], limit=1).id
         if 'payment_method_id' not in rec:
-            amount = self.env['account.payment']._compute_payment_amount(invoices, invoices[0].currency_id,
-                                                                         invoices[0].journal_id,
-                                                                         datetime.today().date())
-            if amount >= 0:
+
+            if invoices[0].is_inbound():
                 domain = [('payment_type', '=', 'inbound')]
                 rec['payment_type'] = 'inbound'
             else:
@@ -285,6 +283,7 @@ class account_register_payment(models.Model):
 #     # calculate writeoff amount
     @api.onchange('writeoff_multi_acc_ids')
     def onchange_writeoff_multi_accounts(self):
+        print ('---writeoff_multi_acc_ids')
         diff_amount = 0
         context = dict(self._context or {})
         active_model = context.get('active_model')
@@ -303,7 +302,7 @@ class account_register_payment(models.Model):
 
             self.amount = abs(total_invoice_amount) - diff_amount
         else:
-
+            print (invoice_ids)
             total_invoice_amount = self.env['account.payment']._compute_payment_amount(invoice_ids,
                                                                                        invoice_ids[0].currency_id,
                                                                                        self.journal_id,

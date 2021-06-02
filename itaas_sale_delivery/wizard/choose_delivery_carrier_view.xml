@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- choose.delivery.carrier : inherit views -->
+    <record id="view_choose_delivery_carrier_form_sale" model="ir.ui.view">
+        <field name="name">view.choose.delivery.carrier.form.sale</field>
+        <field name="model">choose.delivery.carrier</field>
+        <field name="inherit_id" ref="delivery.choose_delivery_carrier_view_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//form/group" position="inside">
+                <group>
+                    <field name="district_id"/>
+                </group>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

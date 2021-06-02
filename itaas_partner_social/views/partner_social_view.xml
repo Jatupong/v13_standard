@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- 1 res.partner inherit : views -->
+    <record id="partner_social_inherit_form" model="ir.ui.view">
+        <field name="name">partner.social.inherit.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//sheet/group/group[2]/field[@name='user_ids']" position="before">
+                <field name="instagram"/>
+                <field name="line"/>
+                <field name="facebook"/>
+                <field name="location"/>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

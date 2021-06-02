@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_pnd_report_wizard_form" model="ir.ui.view">
+        <field name="name">pnd.report.form</field>
+        <field name="model">pnd.report</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="PND Reports">
+                <group col="4" colspan="4">
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="wht_type"/>
+                </group>
+                <footer>
+                    <button name="print_pnd_report" string="Print" type="object" default_focus="1" class="oe_highlight"/>
+                    <button name="get_bank_report" string="Print(txt)" type="object" default_focus="1" class="oe_highlight"/>
+                    or
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pnd_report_pdf" model="ir.actions.act_window">
+        <field name="name">Witholding Tax Report</field>
+        <field name="res_model">pnd.report</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_pnd_report_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+
+    <!--    <menuitem id="menu_main_pnd_report"-->
+    <!--              parent="account.menu_finance_reports"-->
+    <!--              name="Witholding Tax Report"/>-->
+    <menuitem id="menu_pnd_report"
+              action="action_pnd_report_pdf"
+              name="Witholding Tax Report"
+              parent="account_reports.account_reports_audit_reports_menu"/>
+
+</odoo>

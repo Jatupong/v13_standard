@@ -292,10 +292,6 @@ class PurchaseRequestLineMakePurchaseOrder(models.TransientModel):
             new_qty = pr_line_obj._calc_new_qty(
                 line, po_line=po_line, new_pr_line=new_pr_line
             )
-
-            print('NEW QTY')
-            print(new_qty)
-
             po_line.product_qty = new_qty
             po_line._onchange_quantity()
             # The onchange quantity is altering the scheduled date of the PO

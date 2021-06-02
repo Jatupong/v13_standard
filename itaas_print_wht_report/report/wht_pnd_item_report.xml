@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="wht_pnd_item_report_id">
+        <t t-call="web.basic_layout">
+
+            <t t-set="docs" t-value="docs.filtered(lambda x: x.wht_type)"/>
+            <t t-if="len(docs) &lt;= 10">
+                <t t-set="num_page" t-value="1"/>
+            </t>
+            <t t-else="">
+                <t t-set="num_page" t-value="len(docs)*10+10/10"/>
+            </t>
+
+            <t t-foreach="range(0, num_page)" t-as="x">
+                <div class="page" t-attf-style="background-image:url('/itaas_print_wht_report/static/Blank_Form.jpg'); background-size:390mm 550mm; width:390mm; height:550mm;">
+                    <style>
+                        .header{
+                        width:100%;
+                        height:500px;
+                        }
+                        .content{
+                        width:100%;
+                        height:1500px;
+                        }
+                        table.table-bordered {
+                        border:none;
+                        padding:3px;
+                        }
+                        table.table-bordered &gt; thead &gt; tr &gt; th{
+                        border:none;
+                        padding:3px;
+                        }
+                        table.table-bordered &gt; tbody &gt; tr &gt; td{
+                        border:none;
+                        padding:3px;
+                        }
+                        table.table-bordered &gt; tfoot &gt; tr &gt; td{
+                        border:none;
+                        padding:3px;
+                        }
+                    </style>
+
+                    <!--company info-->
+                    <div style="height:290px; width:100%; position:relative; font-size:24px; line-height: 30px;">
+
+                        <t t-set="company_vat" t-value="docs[0].company_id.vat"/>
+                        <t t-if="company_vat">
+                            <span t-if="len(company_vat) &gt; 0" t-esc="company_vat[0]" style="position: absolute;left: 900px; top: 30px;"/>
+
+                            <span t-if="len(company_vat) &gt; 1" t-esc="company_vat[1]" style="position: absolute;left: 920px; top: 30px;"/>
+                            <span t-if="len(company_vat) &gt; 2" t-esc="company_vat[2]" style="position: absolute;left: 940px; top: 30px;"/>
+                            <span t-if="len(company_vat) &gt; 3" t-esc="company_vat[3]" style="position: absolute;left: 960px; top: 30px;"/>
+                            <span t-if="len(company_vat) &gt; 4" t-esc="company_vat[4]" style="position: absolute;left: 980px; top: 30px;"/>
+
+                            <span t-if="len(company_vat) &gt; 5" t-esc="company_vat[5]" style="position: absolute;left: 1000px; top: 30px;"/>
+                            <span t-if="len(company_vat) &gt; 6" t-esc="company_vat[6]" style="position: absolute;left: 1020px; top: 30px;"/>
+                            <span t-if="len(company_vat) &gt; 7" t-esc="company_vat[7]" style="position: absolute;left: 1040px; top: 30px;"/>
+                            <span t-if="len(company_vat) &gt; 8" t-esc="company_vat[8]" style="position: absolute;left: 1060px; top: 30px;"/>
+                            <span t-if="len(company_vat) &gt; 9" t-esc="company_vat[9]" style="position: absolute;left: 1080px; top: 30px;"/>
+
+                            <span t-if="len(company_vat) &gt; 10" t-esc="company_vat[10]" style="position: absolute;left: 1100px;top: 30px;"/>
+                            <span t-if="len(company_vat) &gt; 11" t-esc="company_vat[11]" style="position: absolute;left: 1120px;top: 30px;"/>
+
+                            <span t-if="len(company_vat) &gt; 12" t-esc="company_vat[12]" style="position: absolute;left: 1140px;top: 30px;"/>
+                        </t>
+
+                        <!--company_branch-->
+                        <t t-set="company_branch" t-value="docs[0].company_id.branch_no"/>
+                        <t t-if="company_branch">
+                            <span t-if="len(company_branch) &gt; 0" t-esc="company_branch[0]" style="position: absolute;left:1340px;top: 30px;"/>
+                            <span t-if="len(company_branch) &gt; 1" t-esc="company_branch[1]" style="position: absolute;left:1360px;top: 30px;"/>
+                            <span t-if="len(company_branch) &gt; 2" t-esc="company_branch[2]" style="position: absolute;left:1380px;top: 30px;"/>
+                            <span t-if="len(company_branch) &gt; 3" t-esc="company_branch[3]" style="position: absolute;left:1400px;top: 30px;"/>
+                            <span t-if="len(company_branch) &gt; 4" t-esc="company_branch[4]" style="position: absolute;left:1420px;top: 30px;"/>
+                        </t>
+
+                        <!--page info-->
+                        <div style="height:290px; width:100%; position:relative; font-size:24px;">
+                            <span t-esc="x+1" style="position:absolute; left:1140px; top:80px;"/>
+                            <span t-esc="num_page" style="position: absolute; left:1340px; top:80px;"/>
+                        </div>
+                    </div>
+                    <div class="content">
+
+                        <!--detail-->
+                        <t t-set="sum_amount_before_tax" t-value="0"/>
+                        <t t-set="sum_amount_total" t-value="0"/>
+                        <table class="table table-bordered" width="100%" style="height:198mm; font-size:24px; line-height: 20px;">
+                            <tr style="height:5px; line-heigth:5px; color:white;">
+                                <td width="2%">-</td>
+                                <td width="3%">-</td>
+                                <td width="42%">-</td>
+                                <td width="10%">-</td>
+                                <td width="12%">-</td>
+                                <td width="4%">-</td>
+                                <td width="11%">-</td>
+                                <td width="12%">-</td>
+                                <td width="3%">-</td>
+                                <td width="1%">-</td>
+                            </tr>
+                            <t t-foreach="range(x * 10, (x * 10)+10)" t-as="y">
+                                <tr style="height:140px;">
+                                    <t t-if="y &lt; len(docs)">
+                                        <td><span style="color:white;">-</span></td>
+                                        <td align="center"><span t-esc="y+1"/></td>
+                                        <td>
+                                            <div class="col-xs-12" style="height:40px;">
+                                                <t t-if="docs[y].partner_id.vat">
+                                                    <t t-set="ident" t-value="docs[y].partner_id.vat"/>
+                                                    <span t-if="len(ident) &gt; 0" t-esc="ident[0]" style="position: absolute;left: 100px;"/>
+                                                    <span t-if="len(ident) &gt; 1" t-esc="ident[1]" style="position: absolute;left: 130px;"/>
+                                                    <span t-if="len(ident) &gt; 2" t-esc="ident[2]" style="position: absolute;left: 155px;"/>
+                                                    <span t-if="len(ident) &gt; 3" t-esc="ident[3]" style="position: absolute;left: 185px;"/>
+                                                    <span t-if="len(ident) &gt; 4" t-esc="ident[4]" style="position: absolute;left: 210px;"/>
+                                                    <span t-if="len(ident) &gt; 5" t-esc="ident[5]" style="position: absolute;left: 235px;"/>
+                                                    <span t-if="len(ident) &gt; 6" t-esc="ident[6]" style="position: absolute;left: 265px;"/>
+                                                    <span t-if="len(ident) &gt; 7" t-esc="ident[7]" style="position: absolute;left: 295px;"/>
+                                                    <span t-if="len(ident) &gt; 8" t-esc="ident[8]" style="position: absolute;left: 330px;"/>
+                                                    <span t-if="len(ident) &gt; 9" t-esc="ident[9]" style="position: absolute;left: 355px;"/>
+                                                    <span t-if="len(ident) &gt; 10" t-esc="ident[10]" style="position: absolute;left: 385px;"/>
+                                                    <span t-if="len(ident) &gt; 11" t-esc="ident[11]" style="position: absolute;left: 410px;"/>
+                                                    <span t-if="len(ident) &gt; 12" t-esc="ident[12]" style="position: absolute;left: 435px;"/>
+                                                </t>
+                                                <t t-if="not docs[y].partner_id.vat">
+                                                    <span style="color:white;">-</span>
+                                                </t>
+                                            </div>
+                                            <div class="col-xs-12">
+                                                <span t-field="docs[y].partner_id"/><br/>
+                                                <t t-set="partner_address" t-value="docs[y].partner_id.get_partner_full_address()"/>
+                                                <span t-esc="' '.join([ address for address in partner_address ])"/>
+                                            </div>
+                                        </td>
+                                        <td align="center">
+                                            <t t-if="docs[y].date">
+                                                <t t-set="date" t-value="str(docs[y].date)"/>
+                                                <t t-set="payment_date" t-value="time.strptime(str(docs[y].date),'%Y-%m-%d')"/>
+                                                <span t-esc="payment_date.tm_mday"/>/<span t-esc="payment_date.tm_mon"/>/<span t-esc="payment_date.tm_year + 543"/>
+                                            </t>
+                                        </td>
+                                        <td align="center">
+                                            <span t-field="docs[y].name"/><br/>
+                                        </td>
+                                        <td align="center">
+                                            <t t-set="wht_tax" t-value="docs[y].wht_tax.amount"/>
+                                            <span t-esc="'{0:,.0f}'.format(wht_tax)"/>
+                                        </td>
+                                        <td align="right">
+                                            <span t-esc="'{0:,.2f}'.format(docs[y].amount_before_tax)"/>
+                                            <t t-set="sum_amount_before_tax" t-value="sum_amount_before_tax + docs[y].amount_before_tax"/>
+                                        </td>
+                                        <td align="right">
+                                            <span t-esc="'{0:,.2f}'.format(float(docs[y].debit + docs[y].credit))"/>
+                                            <t t-set="sum_amount_total" t-value="sum_amount_total + docs[y].debit + docs[y].credit"/>
+                                        </td>
+                                        <td align="center"><span>1</span></td>
+                                        <td><span style="color:white;">-</span></td>
+                                    </t>
+                                    <t t-else="">
+                                        <td colspan="10" style="color:white;">-</td>
+                                    </t>
+                                </tr>
+                            </t>
+                        </table>
+                        <table  class="table table-bordered" width="100%" style="font-size:24px; line-height: 24px; margin-top:20px;">
+                            <tr>
+                                <td width="72%"><span style="color:white;">-</span></td>
+                                <td width="12%" align="right"><span t-esc="'{0:,.0f}'.format(sum_amount_before_tax)"/></td>
+                                <td width="12%" align="right"><span t-esc="'{0:,.0f}'.format(sum_amount_total)"/></td>
+                                <td width="4%"><span style="color:white;">-</span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>
