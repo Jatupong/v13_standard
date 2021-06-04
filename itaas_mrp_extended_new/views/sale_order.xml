@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- mrp.production : inherit views -->
+    <record id="view_mrp_production_form_so_inherit" model="ir.ui.view">
+        <field name="name">view.mrp.production.form.so_inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <button name="action_view_invoice" position="after">
+                <button name="action_view_mo" type="object" class="oe_stat_button" icon="fa-pencil-square-o" attrs="{'invisible': [('count_mo', '=', 0)]}">
+                    <field name="count_mo" widget="statinfo" string="Manufacturing Order"/>
+                </button>
+
+            </button>
+
+<!--            <field name="invoice_status" position="after">-->
+<!--                <field name="count_mo"/>-->
+<!--            </field>-->
+
+        </field>
+    </record>
+
+</odoo>
