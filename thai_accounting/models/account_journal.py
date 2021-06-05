@@ -15,6 +15,7 @@ class account_journal(models.Model):
     _order = 'sequence asc'
 
     #will use in the future
+    analytic_account_id = fields.Many2one('account.analytic.account', string="Analytic Account")
     adj_journal = fields.Many2one('account.journal', string="Adjust Journal", copy=False)
     bank_cheque = fields.Boolean(string='Cheque', default=False)
     bank_for_cheque_account_id = fields.Many2one('account.account',string='Default Bank Account for Cheque')
@@ -23,6 +24,8 @@ class account_journal(models.Model):
     #########more sequence for tax_invoice and payment ###########
     tax_invoice_sequence_id = fields.Many2one('ir.sequence', string='Tax Invoice Sequence')
     payment_sequence_id = fields.Many2one('ir.sequence', string='Payment Sequence')
+    sequence_billing = fields.Many2one('ir.sequence', string="Billing Sequence")
+    # is_tax = fields.Many2one(string='Tax Report',default=False)
 
 
 

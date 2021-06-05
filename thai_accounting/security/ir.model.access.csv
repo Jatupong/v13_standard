@@ -7,3 +7,5 @@ access_customer_billing,customer.billing,model_customer_billing,account.group_ac
 access_customer_billing_accountant,customer.billing accountant,model_customer_billing,account.group_account_user,1,0,0,0
 access_customer_billing_user,customer.billing user,model_customer_billing,base.group_user,1,0,0,0
 access_writeoff_accounts_group_user,writeoff_accounts group_user,model_writeoff_accounts,account.group_account_user,1,1,1,1
+payment_refund_record,payment_refund_record,model_payment_refund_record,account.group_account_user,1,1,1,1
+account_register_payment,account_register_payment,model_account_register_payment,account.group_account_user,1,1,1,1

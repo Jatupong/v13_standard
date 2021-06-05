@@ -10,12 +10,7 @@ from . import account_move
 from . import account_cheque_statement
 from . import account_payment
 from . import customer_billing
-
-########Going to do this
-# from . import account_asset_asset
-# from . import account_register_payment
-# from . import account_payment_billing
-
+from . import account_register_payment
 
 
 
