@@ -5,6 +5,7 @@ from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 from odoo.tools.float_utils import float_is_zero, float_compare
 import odoo.addons.decimal_precision as dp
+from datetime import datetime, date
 
 MAP_INVOICE_TYPE_PARTNER_TYPE = {
     'out_invoice': 'customer',
@@ -20,6 +21,13 @@ MAP_INVOICE_TYPE_PAYMENT_SIGN = {
     'out_refund': -1,
 }
 
+class refund_record_ids(models.Model):
+    _name = 'payment.refund.record'
+
+    invoice_id = fields.Many2one('account.move', string='Invoice')
+    amount = fields.Float(string='Payment Amount')
+    date = fields.Date(string='Date')
+    payment_id = fields.Many2one('account.payment', string='Payment')
 
 class account_payment(models.Model):
     _inherit = "account.payment"
@@ -34,8 +42,8 @@ class account_payment(models.Model):
 
     ###########REMOVE ########################################
     purchase_or_sale = fields.Selection([('purchase', 'Purchase'), ('sale', 'Sale')])
-    payment_cut_off_amount = fields.Float(string='Cut Off Payment Amount', digits=dp.get_precision('Account'),
-                                          readonly=True, compute="get_payment_cut_off_amount")
+    # payment_cut_off_amount = fields.Float(string='Cut Off Payment Amount', digits='Account',
+    #                                       readonly=True, compute="get_payment_cut_off_amount")
     current_account_id = fields.Many2one('account.account', string='Current Account', compute='get_current_account_id')
     is_change_account = fields.Boolean(string='Change Account')
     payment_account_id = fields.Many2one('account.account', string='New Account')
@@ -53,14 +61,220 @@ class account_payment(models.Model):
     cheque_date = fields.Date(string="Cheque Date")
     cheque_reg_id = fields.Many2one('account.cheque.statement', string='Cheque Record')
     ################## About Cheque###############
+    payment_refund_ids = fields.One2many('payment.refund.record','payment_id',string='Refund')
+
+    all_invoice_count = fields.Integer(compute="_compute_reconciled_invoice_ids")
+    last_invoice_ids = fields.Many2many('account.move', string='Last Reconcile Invoices')
+
+    payment_for = fields.Selection([('multi_payment', 'Multiple Payment')], string='Payment Method')
+
+    @api.model
+    def default_get(self, default_fields):
+
+        # remove this due to default_get not only do default but also check invoice and cn could not mix together#
+        # rec = super(account_payment, self).default_get(default_fields)                                         #
+        ##########################################################################################################
+
+        payment_type = self._context.get('default_payment_type')
+        partner_type = self._context.get('default_partner_type')
+
+        rec = {'move_name': False, 'payment_option': 'full', 'state': 'draft', 'writeoff_label': 'Write-Off','post_diff_acc': 'single','currency_id': self.env.user.company_id.currency_id.id,'payment_date':datetime.today(),'payment_difference_handling':'open','state':'draft'}
+        if payment_type:
+            rec.update({
+                'payment_type': payment_type,
+            })
+        if partner_type:
+            rec.update({
+                'partner_type': partner_type,
+            })
+
+
+        active_ids = self._context.get('active_ids') or self._context.get('active_id')
+        active_model = self._context.get('active_model')
+
+        # Check for selected invoices ids
+        if not active_ids or active_model != 'account.move':
+            return rec
+
+        invoices = self.env['account.move'].browse(active_ids).filtered(
+            lambda move: move.is_invoice(include_receipts=True))
+
+        # Check all invoices are open
+        if not invoices or any(invoice.state != 'posted' for invoice in invoices):
+            raise UserError(_("You can only register payments for open invoices"))
+
+        #################################REMOVE THIS CONDITION by JA###################################
+        # Check if, in batch payments, there are not negative invoices and positive invoices
+        # dtype = invoices[0].type
+        # for inv in invoices[1:]:
+        #     if inv.type != dtype:
+        #         if ((dtype == 'in_refund' and inv.type == 'in_invoice') or
+        #                 (dtype == 'in_invoice' and inv.type == 'in_refund')):
+        #             raise UserError(
+        #                 _("You cannot register payments for vendor bills and supplier refunds at the same time."))
+        #         if ((dtype == 'out_refund' and inv.type == 'out_invoice') or
+        #                 (dtype == 'out_invoice' and inv.type == 'out_refund')):
+        #             raise UserError(
+        #                 _("You cannot register payments for customer invoices and credit notes at the same time-1."))
+        ###############################################################################################
+        amount_untaxed = sum([invoice.amount_untaxed for invoice in invoices])
+
+        amount = self._compute_payment_amount(invoices, invoices[0].currency_id, invoices[0].journal_id,
+                                              rec.get('payment_date') or fields.Date.today())
+
+
+        rec.update({
+            'currency_id': invoices[0].currency_id.id,
+            'amount': abs(amount),
+            'amount_untaxed': amount_untaxed,
+            'payment_type': 'inbound' if amount > 0 else 'outbound',
+            'partner_id': invoices[0].commercial_partner_id.id,
+            'partner_type': MAP_INVOICE_TYPE_PARTNER_TYPE[invoices[0].type],
+            'communication': invoices[0].invoice_payment_ref or invoices[0].ref or invoices[0].name,
+            'invoice_ids': [(6, 0, invoices.ids)],
+        })
+        return rec
+
+
+
+    def action_register_payment(self):
+        active_ids = self.env.context.get('active_ids')
+        if not active_ids:
+            return ''
+        print ('-------CONTEXT action_register_payment')
+        print (self.env.context)
+
+        return {
+            'name': _('Register Payment'),
+            'res_model': len(active_ids) == 1 and 'account.payment' or 'account.register.payment',
+            'view_mode': 'form',
+            'view_id': len(active_ids) != 1 and self.env.ref('thai_accounting.view_account_register_payment_form_multi').id or self.env.ref('account.view_account_payment_invoice_form').id,
+            'context': self.env.context,
+            'target': 'new',
+            'type': 'ir.actions.act_window',
+        }
+
+
+    def create_payment_refund_record(self):
+        for payment in self:
+            refund_move_ids = payment.invoice_ids.filtered(lambda x: x.type in ('out_refund', 'in_refund'))
+            for refund_move in refund_move_ids:
+                val = {
+                    'invoice_id': refund_move.id,
+                    'amount': refund_move.amount_residual,
+                    'date': payment.payment_date,
+                    'payment_id': payment.id,
+                }
+                print('VAL REFUND RECORD')
+                print(val)
+                self.env['payment.refund.record'].create(val)
+
+    def post(self):
+        print ('Thai accounting post')
+        print (self)
+        is_multi = False
+        if self._context.get('multi'):
+            is_multi = self._context.get('multi')
+
+        for rec in self:
+            #all new payment from invoice directly
+            if rec.invoice_ids.filtered(lambda x: x.type in ('out_refund','in_refund')):
+                print ('Payment-1')
+                rec.create_payment_refund_record
+                # print(x-1)
+                return super(account_payment, self).post()
+
+            #second post from last payment with invoice store in last_invocie_ids
+            elif not rec.invoice_ids and (rec.last_invoice_ids or rec.payment_refund_ids) and rec.payment_for != 'multi_payment':
+                print('Payment-2-1')
+                res = super(account_payment, rec).post()
+                print ('-AFter Default Post')
+                refund_line_ids = self.env['account.move.line']
+                for invoice_refund in rec.payment_refund_ids:
+                    refund_line_ids += invoice_refund.invoice_id.line_ids
+
+                move_to_reconcile = rec.move_line_ids + rec.last_invoice_ids.line_ids + refund_line_ids
+
+                move_to_reconcile.filtered(
+                    lambda line: not line.reconciled and line.account_id == rec.destination_account_id and not (
+                                line.account_id == line.payment_id.writeoff_account_id and line.name == line.payment_id.writeoff_label)).reconcile()
+
+
+                # print (x-2)
+                rec.update({
+                    'invoice_ids': [(6, 0, rec.last_invoice_ids.ids)],
+                })
+                return res
+
+            #for payment directly without invoice
+            # print (y)
+            #to fix multiple payment at the same time and payment_for != multi_payment then it will alway full amount
+            if is_multi and rec.payment_for != 'multi_payment':
+                # print (rec.amount)
+                rec.amount = sum([invoice.amount_residual_signed for invoice in rec.invoice_ids])
+
+
+            return super(account_payment, rec).post()
+
+
+    @api.depends('move_line_ids.matched_debit_ids', 'move_line_ids.matched_credit_ids')
+    def _compute_reconciled_invoice_ids(self):
+        super(account_payment, self)._compute_reconciled_invoice_ids()
+        for rec in self:
+            if rec.invoice_ids:
+                rec.all_invoice_count = len(rec.invoice_ids)
+                rec.update({
+                    'last_invoice_ids': [(6, 0, rec.invoice_ids.ids)],
+                })
+            else:
+                rec.all_invoice_count = 0
+
+            print (rec.last_invoice_ids)
+
+    def _get_invoice_payment_amount(self, inv):
+
+        if inv.type in ('out_invoice','in_invoice'):
+            amount = super(account_payment, self)._get_invoice_payment_amount(inv)
+
+            for data in inv._get_reconciled_info_JSON_values():
+                print ('DATA--')
+                print (data)
+                payment_refund_id = self.payment_refund_ids.filtered(lambda x: x.invoice_id.id == data['move_id'])
+                if not data['account_payment_id'] and payment_refund_id:
+                    amount += data['amount']
+        else:
+            amount = 0
+            payment_refund_id = self.payment_refund_ids.filtered(lambda x: x.invoice_id == inv)
+            if payment_refund_id:
+                amount = payment_refund_id.amount * MAP_INVOICE_TYPE_PAYMENT_SIGN[inv.type]
+
+
+
+        return amount
+
+
+
+    def button_invoices_and_refund(self):
+        return {
+            'name': _('Paid Invoices'),
+            'view_mode': 'tree,form',
+            'res_model': 'account.move',
+            'view_id': False,
+            'views': [(self.env.ref('account.view_move_tree').id, 'tree'),
+                      (self.env.ref('account.view_move_form').id, 'form')],
+            'type': 'ir.actions.act_window',
+            'domain': [('id', 'in', [x.id for x in self.invoice_ids])],
+            'context': {'create': False},
+        }
+
 
     @api.depends('journal_id')
     def get_current_account_id(self):
-        if self.payment_type in ('outbound',
-                              'transfer') and self.journal_id.default_debit_account_id.id:
-            self.current_account_id = self.journal_id.default_debit_account_id.id
-        else:
-            self.current_account_id = self.journal_id.default_credit_account_id.id
+        for payment_id in self:
+            if payment_id.payment_type in ('outbound','transfer') and payment_id.journal_id.default_debit_account_id.id:
+                payment_id.current_account_id = payment_id.journal_id.default_debit_account_id.id
+            else:
+                payment_id.current_account_id = payment_id.journal_id.default_credit_account_id.id
 
     @api.onchange('payment_difference')
     def check_require_write_off_account(self):
@@ -122,6 +336,9 @@ class account_payment(models.Model):
             name = journal.with_context(ir_sequence_date=self.payment_date).sequence_id.next_by_id()
 
         wht_personal_company = False
+        print ('---WRITE OFF--')
+        print (self.writeoff_multi_acc_ids)
+
         if self.writeoff_multi_acc_ids:
             for woff_payment in self.writeoff_multi_acc_ids:
                 if woff_payment.writeoff_account_id.wht and woff_payment.amt_percent and self.payment_type == 'outbound':
@@ -142,22 +359,30 @@ class account_payment(models.Model):
             'wht_personal_company' : wht_personal_company,
         }
 
-    #############call from account.payment post()############
-    def _prepare_payment_moves(self):
-        res = super(account_payment, self)._prepare_payment_moves()
-        print('--RES BEFORE--')
-        print(res)
+    def _prepare_write_off_line(self,res):
         for payment in self:
             line_ids_new = []
+            sum_write_off_amount = 0.00
             company_currency = payment.company_id.currency_id
+            print('WRITE OFF INFO')
+            print (res)
+            print(payment.writeoff_multi_acc_ids)
             if payment.payment_difference_handling == 'reconcile' and payment.writeoff_multi_acc_ids:
+                print('---GOT---writeoff_multi_acc_ids--reconcile')
                 for line in (res[0]['line_ids']):
+
                     ###########Remove odoo standard write off as detection from write off account id, this will be ignore due to they use multi write off instead##
                     ##########JA - 22/07/2020 ########
                     if (line[2]['account_id']):
                         line_ids_new.append(line)
 
                 for write_off_line in payment.writeoff_multi_acc_ids:
+                    sum_write_off_amount += write_off_line.amount
+                    print('WRITE OFF LINE--')
+                    print(write_off_line.name)
+                    print(write_off_line.amount)
+                    print(write_off_line.wht_type)
+                    print(write_off_line.writeoff_account_id.id)
                     if payment.currency_id == company_currency:
                         write_off_balance = 0.0
                         currency_id = False
@@ -167,6 +392,7 @@ class account_payment(models.Model):
                         currency_id = payment.currency_id.id
 
                     if payment.partner_type == 'customer':
+                        print('---CUSTOMER--write-off')
                         line_ids_new.append((0, 0, {
                             'name': write_off_line.name,
                             'amount_currency': write_off_balance,
@@ -196,27 +422,170 @@ class account_payment(models.Model):
                             'wht_type': write_off_line.wht_type.id or False,
                             'amount_before_tax': write_off_line.amount_untaxed or 0.00,
                         }))
-
+                # print ('--LINS NEW--')
+                # print (line_ids_new)
                 res[0]['line_ids'] = line_ids_new
+                print('--BEFORE OUTBOUND')
+                print(sum_write_off_amount)
+
+                if payment.payment_type in ('outbound', 'transfer'):
+                    if not self.invoice_ids:
+                        print('OUTBOUND')
+                        payment_payable_receive_able_id = payment.destination_account_id
+                        for line in res[0]['line_ids']:
+                            if line[2]['account_id'] == payment_payable_receive_able_id.id:
+                                line[2]['debit'] += sum_write_off_amount
+                else:
+                    if not self.invoice_ids:
+                        payment_payable_receive_able_id = payment.destination_account_id
+                        print('INBOUND')
+                        for line in res[0]['line_ids']:
+                            if line[2]['account_id'] == payment_payable_receive_able_id.id:
+                                line[2]['credit'] += sum_write_off_amount
+
+            elif payment.payment_difference_handling == 'open' and payment.writeoff_multi_acc_ids:
+                print('---GOT---writeoff_multi_acc_ids--open')
+                for line in (res[0]['line_ids']):
+
+                    ###########Remove odoo standard write off as detection from write off account id, this will be ignore due to they use multi write off instead##
+                    ##########JA - 22/07/2020 ########
+                    if (line[2]['account_id']):
+                        line_ids_new.append(line)
+
+                for write_off_line in payment.writeoff_multi_acc_ids:
+                    sum_write_off_amount += write_off_line.amount
+                    # print('WRITE OFF LINE--')
+                    # print(write_off_line.name)
+                    # print(write_off_line.amount)
+                    # print(write_off_line.wht_type)
+                    # print(write_off_line.writeoff_account_id.id)
+                    if payment.currency_id == company_currency:
+                        write_off_balance = 0.0
+                        currency_id = False
+                    else:
+                        write_off_balance = payment.currency_id._convert(write_off_line.amount, company_currency,
+                                                                         payment.company_id, payment.payment_date)
+                        currency_id = payment.currency_id.id
+
+                    if payment.partner_type == 'customer':
+                        print('---CUSTOMER--write-off')
+                        line_ids_new.append((0, 0, {
+                            'name': write_off_line.name,
+                            'amount_currency': write_off_balance,
+                            'currency_id': currency_id,
+                            'debit': -write_off_line.amount < 0.0 and write_off_line.amount or 0.0,
+                            'credit': -write_off_line.amount > 0.0 and -write_off_line.amount or 0.0,
+                            'date_maturity': payment.payment_date,
+                            'partner_id': payment.partner_id.commercial_partner_id.id,
+                            'account_id': write_off_line.writeoff_account_id.id,
+                            'payment_id': payment.id,
+                            'wht_tax': write_off_line.deduct_item_id.id or False,
+                            'wht_type': write_off_line.wht_type.id or False,
+                            'amount_before_tax': write_off_line.amount_untaxed or 0.00,
+                        }))
+                    else:
+                        line_ids_new.append((0, 0, {
+                            'name': write_off_line.name,
+                            'amount_currency': write_off_balance,
+                            'currency_id': currency_id,
+                            'debit': -write_off_line.amount > 0.0 and -write_off_line.amount or 0.0,
+                            'credit': -write_off_line.amount < 0.0 and write_off_line.amount or 0.0,
+                            'date_maturity': payment.payment_date,
+                            'partner_id': payment.partner_id.commercial_partner_id.id,
+                            'account_id': write_off_line.writeoff_account_id.id,
+                            'payment_id': payment.id,
+                            'wht_tax': write_off_line.deduct_item_id.id or False,
+                            'wht_type': write_off_line.wht_type.id or False,
+                            'amount_before_tax': write_off_line.amount_untaxed or 0.00,
+                        }))
+                # print ('--LINS NEW--')
+                # print (line_ids_new)
+                res[0]['line_ids'] = line_ids_new
+                # update credit and debit of ar and ap account
+                if payment.payment_for != 'multi_payment':
+                    if payment.payment_type in ('outbound', 'transfer'):
+                        if not self.invoice_ids or sum_write_off_amount < 0:
+                            print('OUTBOUND')
+                            payment_payable_receive_able_id = payment.destination_account_id
+                            for line in res[0]['line_ids']:
+                                if line[2]['account_id'] == payment_payable_receive_able_id.id:
+                                    line[2]['debit'] += sum_write_off_amount
+                    else:
+                        if not self.invoice_ids or sum_write_off_amount > 0:
+                            payment_payable_receive_able_id = payment.destination_account_id
+                            print('INBOUND')
+                            for line in res[0]['line_ids']:
+                                if line[2]['account_id'] == payment_payable_receive_able_id.id:
+                                    line[2]['credit'] += sum_write_off_amount
+                else:
+                    # payment.payment_for == 'multi_payment':
+                    # to update payment amount and liquidity amount
+                    if payment.payment_type in ('outbound', 'transfer'):
+                        liquidity_line_account = payment.journal_id.default_debit_account_id
+                        for line in res[0]['line_ids']:
+                            if line[2]['account_id'] == liquidity_line_account.id:
+                                line[2]['credit'] -= sum_write_off_amount
+                    else:
+                        liquidity_line_account = payment.journal_id.default_credit_account_id
+                        for line in res[0]['line_ids']:
+                            if line[2]['account_id'] == liquidity_line_account.id:
+                                line[2]['debit'] -= sum_write_off_amount
+
             res[0]['narration'] = payment.remark
+
+            # print ('-RES BEFORE--')
+            # print (res)
+            if payment.payment_account_id:
+                if payment.payment_type in ('outbound', 'transfer'):
+                    liquidity_line_account = payment.journal_id.default_debit_account_id
+                    for line in res[0]['line_ids']:
+                        if line[2]['account_id'] == liquidity_line_account.id:
+                            line[2]['account_id'] = payment.payment_account_id.id
+                else:
+                    liquidity_line_account = payment.journal_id.default_credit_account_id
+                    for line in res[0]['line_ids']:
+                        if line[2]['account_id'] == liquidity_line_account.id:
+                            line[2]['account_id'] = payment.payment_account_id.id
+            # print (payment.company_id.currency_id)
+
+        return res
+
+    #############call from account.payment post()############
+    def _prepare_payment_moves(self):
+        res = super(account_payment, self)._prepare_payment_moves()
+        # print ('---_prepare_payment_moves--')
+        # print(res)
+        # print (self)
+        for payment in self:
+            # print (payment)
+            res = payment._prepare_write_off_line(res)
+
+        #update name to avoice account generate sequence again
+        #26/04/2020
+        if payment.name:
+            res[0]['name'] = payment.name
         return res
 
 
     ############# Add payment cancel condition to cheque - by JA 08/10/2020 ##############
 
     def cancel(self):
-        print
-        "NEW Cancel"
+        print('cancel')
         for rec in self:
+            if rec.invoice_ids:
+                rec.update({
+                    'last_invoice_ids': [(6, 0, rec.invoice_ids.ids)],
+                })
+
             ############ This is for multiple check in one payment
             if rec.cheque_reg_id:
                 # print ('--CHECK FOR ONE PAYMENT')
                 ############ JA - 03/07/2020 #############
-                if rec.cheque_reg_id.state != 'confirm':
+                if rec.cheque_reg_id.state  in ('open','cancel'):
                     rec.cheque_reg_id.sudo().action_cancel()
-                    rec.cheque_reg_id.sudo().unlink()
+                    # rec.cheque_reg_id.sudo().unlink()
                 else:
-                    raise UserError(_('เช็คได้ผ่านแล้ว กรุณาตรวจสอบก่อนยกเลิก'))
+                    raise UserError(_('เช็คไม่ได้อยู่ได้สถานะ Draft or Cancel'))
                 ############ JA - 03/07/2020 #############
 
 
@@ -234,403 +603,10 @@ class account_payment(models.Model):
 
             super(account_payment, self).cancel()
 
-    #############call from account.payment post()############
-    # def _create_payment_entry(self, amount):
-    #     """ Create a journal entry corresponding to a payment, if the payment references invoice(s) they are reconciled.
-    #         Return the journal entry.
-    #     """
-    #     #print "_create_payment_entry"
-    #     #print amount
-    #     aml_obj = self.env['account.move.line'].with_context(check_move_validity=False)
-    #     invoice_currency = False
-    #     if self.invoice_ids and all([x.currency_id == self.invoice_ids[0].currency_id for x in self.invoice_ids]):
-    #         # if all the invoices selected share the same currency, record the paiement in that currency too
-    #         invoice_currency = self.invoice_ids[0].currency_id
-    #
-    #
-    #     debit, credit, amount_currency, currency_id = aml_obj.with_context(
-    #         date=self.payment_date)._compute_amount_fields(amount, self.currency_id, self.company_id.currency_id)
-    #
-    #     move = self.env['account.move'].create(self._get_move_vals())
-    #     #print "MOVE LINE"
-    #     #print len(move)
-    #     # print move.name
-    #
-    #     # Write line corresponding to invoice payment
-    #     counterpart_aml_dict = self._get_shared_move_line_vals(debit, credit, amount_currency, move.id, False)
-    #     counterpart_aml_dict.update(self._get_counterpart_move_line_vals(self.invoice_ids))
-    #     #print "PART 1"
-    #     #print counterpart_aml_dict
-    #     counterpart_aml_dict.update({'currency_id': currency_id})
-    #     counterpart_aml = aml_obj.create(counterpart_aml_dict)
-    #     #print "MOVE LINE"
-    #     #print len(move)
-    #     precision = self.env['decimal.precision'].precision_get('Product Price')
-    #
-    #     # Reconcile with the invoices
-    #     if self.payment_difference_handling == 'reconcile' and self.payment_difference:
-    #         # print "with deduction"
-    #         if self.post_diff_acc == 'single':
-    #             #print "RECONCILE, DIFF and Single"
-    #             writeoff_line = self._get_shared_move_line_vals(0, 0, 0, move.id, False)
-    #             debit_wo, credit_wo, amount_currency_wo, currency_id = aml_obj.with_context(
-    #                 date=self.payment_date)._compute_amount_fields(self.payment_difference, self.currency_id,
-    #                                                               self.company_id.currency_id)
-    #             writeoff_line['name'] = _('Counterpart')
-    #             writeoff_line['account_id'] = self.writeoff_account_id.id
-    #             writeoff_line['debit'] = debit_wo
-    #             writeoff_line['credit'] = credit_wo
-    #             writeoff_line['amount_currency'] = amount_currency_wo
-    #             writeoff_line['currency_id'] = currency_id
-    #             writeoff_line['payment_id'] = self.id
-    #             #print '9999999'
-    #             aml_obj.create(writeoff_line)
-    #             if counterpart_aml['debit']:
-    #                 counterpart_aml['debit'] += credit_wo - debit_wo
-    #             if counterpart_aml['credit']:
-    #                 counterpart_aml['credit'] += debit_wo - credit_wo
-    #             counterpart_aml['amount_currency'] -= amount_currency_wo
-    #         if self.post_diff_acc == 'multi':
-    #             #print "RECONCILE, DIFF and MULTI"
-    #             write_off_total_amount = 0
-    #             for woff_payment in self.writeoff_multi_acc_ids:
-    #                 if self.payment_type == 'inbound':
-    #                     woff_amount = woff_payment.amount
-    #                 else:
-    #                     woff_amount = - woff_payment.amount
-    #
-    #                 write_off_total_amount = woff_payment.amount
-    #                 writeoff_line = self._get_shared_move_line_vals(0, 0, 0, move.id, False)
-    #                 debit_wo, credit_wo, amount_currency_wo, currency_id = aml_obj.with_context(
-    #                     date=self.payment_date)._compute_amount_fields(woff_amount, self.currency_id,self.company_id.currency_id)
-    #                 # if not self.currency_id != self.company_id.currency_id:
-    #                 #     amount_currency_wo = 0
-    #                 writeoff_line['name'] = woff_payment.name
-    #                 writeoff_line['account_id'] = woff_payment.writeoff_account_id.id
-    #                 writeoff_line['debit'] = debit_wo
-    #                 writeoff_line['credit'] = credit_wo
-    #                 writeoff_line['amount_currency'] = amount_currency_wo
-    #                 writeoff_line['currency_id'] = woff_payment.currency_id.id
-    #                 writeoff_line['payment_id'] = self.id
-    #                 # writeoff_line['department_id'] = woff_payment.department_id.id
-    #
-    #                 if woff_payment.currency_id != self.currency_id:
-    #                     raise UserError(_('Deduction currency must be the same with payment currency'))
-    #
-    #                 ###########amount before tax will allway in company currency
-    #                 if self.currency_id != self.company_id.currency_id:
-    #                     currency_id = self.currency_id.with_context(date=self.payment_date)
-    #                     amount_before_tax = currency_id.compute(woff_payment.amount_untaxed, self.company_id.currency_id)
-    #                 else:
-    #                     amount_before_tax = woff_payment.amount_untaxed
-    #
-    #                 writeoff_line['amount_before_tax'] = amount_before_tax
-    #                 ###############################################################
-    #
-    #                 if woff_payment.writeoff_account_id.wht and woff_payment.amt_percent and self.payment_type == 'outbound':
-    #                     if woff_payment.amt_percent == 1:
-    #                         writeoff_line['wht_type'] = '1%'
-    #                     if woff_payment.amt_percent == 2:
-    #                         writeoff_line['wht_type'] = '2%'
-    #                     if woff_payment.amt_percent == 3:
-    #                         writeoff_line['wht_type'] = '3%'
-    #                     if woff_payment.amt_percent == 5:
-    #                         writeoff_line['wht_type'] = '5%'
-    #
-    #                     # print "record to journal wht personal company"
-    #                     # print woff_payment.wht_personal_company
-    #                     # writeoff_line['wht_personal_company'] = 'personal'
-    #
-    #                 #print "Write off"
-    #                 #print "PART 2"
-    #                 #print writeoff_line
-    #                 aml_obj.create(writeoff_line)
-    #                 #print "MOVE LINE"
-    #                 #print len(move)
-    #                 # print "writeoff_line after"
-    #                 # print writeoff_line
-    #
-    #                 #############to update all counter part to total payment
-    #                 if counterpart_aml['debit'] or (counterpart_aml['debit'] == 0.0 and self.payment_type == 'outbound'):
-    #                     counterpart_aml['debit'] += credit_wo - debit_wo
-    #                 if counterpart_aml['credit'] or (counterpart_aml['credit'] == 0.0 and self.payment_type == 'inbound'):
-    #                     counterpart_aml['credit'] += debit_wo - credit_wo
-    #                 counterpart_aml['amount_currency'] -= amount_currency_wo
-    #
-    #             if self.writeoff_account_id and float_compare(float(self.payment_difference), float(write_off_total_amount),
-    #                                                             precision_digits=precision) != 0:
-    #
-    #                 amount_final_diff = self.payment_difference - write_off_total_amount
-    #
-    #                 if self.payment_type != 'inbound':
-    #                     amount_final_diff = (-1)*amount_final_diff
-    #
-    #                 writeoff_final_diff_line = self._get_shared_move_line_vals(0, 0, 0, move.id, False)
-    #                 debit_wo, credit_wo, amount_currency_wo, currency_id = aml_obj.with_context(date=self.payment_date)._compute_amount_fields(amount_final_diff, self.currency_id,
-    #                                                               self.company_id.currency_id)
-    #                 writeoff_final_diff_line['name'] = self.writeoff_account_id.name
-    #                 writeoff_final_diff_line['account_id'] = self.writeoff_account_id.id
-    #                 writeoff_final_diff_line['debit'] = debit_wo
-    #                 writeoff_final_diff_line['credit'] = credit_wo
-    #                 writeoff_final_diff_line['amount_currency'] = amount_currency_wo
-    #                 writeoff_final_diff_line['currency_id'] = currency_id
-    #                 writeoff_final_diff_line['payment_id'] = self.id
-    #
-    #                 #print "Final Diff"
-    #                 #print "PART 3"
-    #                 #print writeoff_final_diff_line
-    #                 aml_obj.create(writeoff_final_diff_line)
-    #                 #print "MOVE LINE"
-    #                 #print len(move)
-    #                 if counterpart_aml['debit']:
-    #                     counterpart_aml['debit'] += credit_wo - debit_wo
-    #                 if counterpart_aml['credit']:
-    #                     counterpart_aml['credit'] += debit_wo - credit_wo
-    #                 counterpart_aml['amount_currency'] -= amount_currency_wo
-    #
-    #     # Reconcile with the invoices
-    #     if self.payment_difference_handling == 'open' and self.payment_difference:
-    #         #print "OPEN and DIFF"
-    #         if self.post_diff_acc == 'multi':
-    #             #print "OPEN and DIFF and MULTI"
-    #             for woff_payment in self.writeoff_multi_acc_ids:
-    #                 if self.payment_type == 'inbound':
-    #                     woff_amount = woff_payment.amount
-    #                 else:
-    #                     woff_amount = - woff_payment.amount
-    #
-    #                 writeoff_line = self._get_shared_move_line_vals(0, 0, 0, move.id, False)
-    #                 debit_wo, credit_wo, amount_currency_wo, currency_id = aml_obj.with_context(
-    #                     date=self.payment_date)._compute_amount_fields(woff_amount, self.currency_id,
-    #                                                                   self.company_id.currency_id)
-    #                 # if not self.currency_id != self.company_id.currency_id:
-    #                 #     amount_currency_wo = 0
-    #                 writeoff_line['name'] = woff_payment.name
-    #                 writeoff_line['account_id'] = woff_payment.writeoff_account_id.id
-    #                 writeoff_line['debit'] = debit_wo
-    #                 writeoff_line['credit'] = credit_wo
-    #                 writeoff_line['amount_currency'] = amount_currency_wo
-    #                 writeoff_line['currency_id'] = currency_id
-    #                 writeoff_line['payment_id'] = self.id
-    #                 writeoff_line['amount_before_tax'] = woff_payment.amount_untaxed
-    #
-    #                 if woff_payment.writeoff_account_id.wht and woff_payment.amt_percent and self.payment_type == 'outbound':
-    #                     if woff_payment.amt_percent == 1:
-    #                         writeoff_line['wht_type'] = '1%'
-    #                     if woff_payment.amt_percent == 2:
-    #                         writeoff_line['wht_type'] = '2%'
-    #                     if woff_payment.amt_percent == 3:
-    #                         writeoff_line['wht_type'] = '3%'
-    #                     if woff_payment.amt_percent == 5:
-    #                         writeoff_line['wht_type'] = '5%'
-    #
-    #                         # print "record to journal wht personal company"
-    #                         # print woff_payment.wht_personal_company
-    #                         # writeoff_line['wht_personal_company'] = 'personal'
-    #
-    #                 aml_obj.create(writeoff_line)
-    #
-    #                 if counterpart_aml['debit'] or (
-    #                                 counterpart_aml['debit'] == 0.0 and self.payment_type == 'outbound'):
-    #                     counterpart_aml['debit'] += credit_wo - debit_wo
-    #                 if counterpart_aml['credit'] or (
-    #                                 counterpart_aml['credit'] == 0.0 and self.payment_type == 'inbound'):
-    #                     counterpart_aml['credit'] += debit_wo - credit_wo
-    #
-    #                 counterpart_aml['amount_currency'] -= amount_currency_wo
-    #
-    #     ##############if no invoice ################## Add 26/06/2019
-    #     if not self.invoice_ids and self.writeoff_multi_acc_ids:
-    #         print ("no invoice")
-    #         write_off_total_amount = 0
-    #         for woff_payment in self.writeoff_multi_acc_ids:
-    #             if self.payment_type == 'inbound':
-    #                 woff_amount = woff_payment.amount
-    #             else:
-    #                 woff_amount = - woff_payment.amount
-    #
-    #             write_off_total_amount = woff_payment.amount
-    #             writeoff_line = self._get_shared_move_line_vals(0, 0, 0, move.id, False)
-    #             debit_wo, credit_wo, amount_currency_wo, currency_id = aml_obj.with_context(
-    #                 date=self.payment_date)._compute_amount_fields(woff_amount, self.currency_id,
-    #                                                                   self.company_id.currency_id)
-    #             # if not self.currency_id != self.company_id.currency_id:
-    #             #     amount_currency_wo = 0
-    #             writeoff_line['name'] = woff_payment.name
-    #             writeoff_line['account_id'] = woff_payment.writeoff_account_id.id
-    #             writeoff_line['debit'] = debit_wo
-    #             writeoff_line['credit'] = credit_wo
-    #             writeoff_line['amount_currency'] = amount_currency_wo
-    #             writeoff_line['currency_id'] = woff_payment.currency_id.id
-    #             writeoff_line['payment_id'] = self.id
-    #
-    #
-    #             if woff_payment.currency_id != self.currency_id:
-    #                 raise UserError(_('Deduction currency must be the same with payment currency'))
-    #
-    #             ###########amount before tax will allway in company currency
-    #             if self.currency_id != self.company_id.currency_id:
-    #                 currency_id = self.currency_id.with_context(date=self.payment_date)
-    #                 amount_before_tax = currency_id.compute(woff_payment.amount_untaxed,
-    #                                                         self.company_id.currency_id)
-    #             else:
-    #                 amount_before_tax = woff_payment.amount_untaxed
-    #
-    #             writeoff_line['amount_before_tax'] = amount_before_tax
-    #             ###############################################################
-    #
-    #             if woff_payment.writeoff_account_id.wht and woff_payment.amt_percent and self.payment_type == 'outbound':
-    #                 if woff_payment.amt_percent == 1:
-    #                     writeoff_line['wht_type'] = '1%'
-    #                 if woff_payment.amt_percent == 2:
-    #                     writeoff_line['wht_type'] = '2%'
-    #                 if woff_payment.amt_percent == 3:
-    #                     writeoff_line['wht_type'] = '3%'
-    #                 if woff_payment.amt_percent == 5:
-    #                     writeoff_line['wht_type'] = '5%'
-    #
-    #                 writeoff_line['wht_personal_company'] = woff_payment.wht_personal_company
-    #
-    #
-    #             aml_obj.create(writeoff_line)
-    #
-    #             #############to update all counter part to total payment
-    #             if counterpart_aml['debit'] or (
-    #                             counterpart_aml['debit'] == 0.0 and self.payment_type == 'outbound'):
-    #
-    #                 counterpart_aml['debit'] += credit_wo - debit_wo
-    #
-    #                 print ("11111111")
-    #
-    #             if counterpart_aml['credit'] or (
-    #                             counterpart_aml['credit'] == 0.0 and self.payment_type == 'inbound'):
-    #                 counterpart_aml['credit'] += debit_wo - credit_wo
-    #
-    #                 print("22222222")
-    #
-    #             counterpart_aml['amount_currency'] -= amount_currency_wo
-    #
-    #         if self.writeoff_account_id and float_compare(float(self.payment_difference),
-    #                                                       float(write_off_total_amount),
-    #                                                       precision_digits=precision) != 0:
-    #
-    #             amount_final_diff = self.payment_difference - write_off_total_amount
-    #
-    #             if self.payment_type != 'inbound':
-    #                 amount_final_diff = (-1) * amount_final_diff
-    #
-    #             writeoff_final_diff_line = self._get_shared_move_line_vals(0, 0, 0, move.id, False)
-    #             debit_wo, credit_wo, amount_currency_wo, currency_id = aml_obj.with_context(
-    #                 date=self.payment_date).compute_amount_fields(amount_final_diff, self.currency_id,
-    #                                                               self.company_id.currency_id,
-    #                                                               invoice_currency)
-    #             writeoff_final_diff_line['name'] = self.writeoff_account_id.name
-    #             writeoff_final_diff_line['account_id'] = self.writeoff_account_id.id
-    #             writeoff_final_diff_line['debit'] = debit_wo
-    #             writeoff_final_diff_line['credit'] = credit_wo
-    #             writeoff_final_diff_line['amount_currency'] = amount_currency_wo
-    #             writeoff_final_diff_line['currency_id'] = currency_id
-    #             writeoff_final_diff_line['payment_id'] = self.id
-    #
-    #             if counterpart_aml['debit']:
-    #                 counterpart_aml['debit'] += credit_wo - debit_wo
-    #             if counterpart_aml['credit']:
-    #                 counterpart_aml['credit'] += debit_wo - credit_wo
-    #             counterpart_aml['amount_currency'] -= amount_currency_wo
-    #
-    #     ##############---start refer from standard #################
-    #     if not self.currency_id.is_zero(self.amount):
-    #         if not self.currency_id != self.company_id.currency_id:
-    #             amount_currency = 0
-    #         liquidity_aml_dict = self._get_shared_move_line_vals(credit, debit, -amount_currency, move.id, False)
-    #         liquidity_aml_dict.update(self._get_liquidity_move_line_vals(-amount))
-    #
-    #         ##########This is to add write off account id
-    #         if self.payment_account_id:
-    #             liquidity_aml_dict.update({'account_id': self.payment_account_id.id})
-    #
-    #         aml_obj.create(liquidity_aml_dict)
-    #
-    #
-    #
-    #     # validate the payment
-    #     if not self.journal_id.post_at_bank_rec:
-    #         move.post()
-    #
-    #     # reconcile the invoice receivable/payable line(s) with the payment
-    #     if self.invoice_ids:
-    #         self.invoice_ids.register_payment(counterpart_aml)
-    #
-    #     ##############----end refer from standard #################
-    #
-    #     return move
-
-    # def get_wht_amount_pay_diff_amount(self):
-    #     # print "get wht_amount diff"
-    #     wht_amount = 0.0
-    #     bank_fee_amount = 0.0
-    #     little_amount = 0.0
-    #     move_id = self.move_line_ids[0].move_id
-    #     move_line_ids = self.env['account.move.line'].search([('move_id', '=', move_id.id)])
-    #     #print move_line_ids
-    #     if move_line_ids:
-    #         #print "found move"
-    #         for move_line in move_line_ids:
-    #             #print move_line.name
-    #             if move_line.account_id.wht:
-    #                 wht_amount += move_line.debit
-    #             if move_line.account_id.bank_fee:
-    #                 bank_fee_amount += move_line.debit
-    #             if move_line.account_id.diff_little_money:
-    #                 little_amount += move_line.debit
-    #
-    #     return wht_amount
-    #
-    # def get_bank_fee_amount_pay_diff_amount(self):
-    #     #print "get bank_fee_amount diff"
-    #
-    #     wht_amount = 0.0
-    #     bank_fee_amount = 0.0
-    #     little_amount = 0.0
-    #     move_id = self.move_line_ids[0].move_id
-    #     move_line_ids = self.env['account.move.line'].search([('move_id','=',move_id.id)])
-    #     if move_line_ids:
-    #         #print "found move"
-    #         for move_line in move_line_ids:
-    #             #print move_line.name
-    #             if move_line.account_id.wht:
-    #                 wht_amount += move_line.debit
-    #             if move_line.account_id.bank_fee:
-    #                 bank_fee_amount += move_line.debit
-    #             if move_line.account_id.diff_little_money:
-    #                 little_amount += move_line.debit
-    #
-    #
-    #     return bank_fee_amount
-    #
-    # def get_little_amount_pay_diff_amount(self):
-    #     #print "get little_amount diff"
-    #
-    #     wht_amount = 0.0
-    #     bank_fee_amount = 0.0
-    #     little_amount = 0.0
-    #     move_id = self.move_line_ids[0].move_id
-    #     move_line_ids = self.env['account.move.line'].search([('move_id', '=', move_id.id)])
-    #     if move_line_ids:
-    #         #print "found move"
-    #         for move_line in move_line_ids:
-    #             #print move_line.name
-    #             if move_line.account_id.wht:
-    #                 wht_amount += move_line.debit
-    #             if move_line.account_id.bank_fee:
-    #                 bank_fee_amount += move_line.debit
-    #             if move_line.account_id.diff_little_money:
-    #                 little_amount += move_line.debit
-    #
-    #     return little_amount
 
 class writeoff_accounts(models.Model):
     _name = 'writeoff.accounts'
+    _description = "Multi write off record"
 
     deduct_item_id = fields.Many2one('account.tax', string='Deduction Item')
     writeoff_account_id = fields.Many2one('account.account', string="Difference Account",
@@ -649,7 +625,7 @@ class writeoff_accounts(models.Model):
     wht_reference = fields.Char(string='WHT Reference')
 
     # new for payment wizard only.
-    # payment_wizard_id = fields.Many2one('account.register.payments', string='Payment Record')
+    payment_wizard_id = fields.Many2one('account.register.payment', string='Payment Record')
     # payment_billing_id = fields.Many2one('register.billing.payments', string='Payment Record')
     # department_id = fields.Many2one('hr.department', string='Department')
 
@@ -667,9 +643,16 @@ class writeoff_accounts(models.Model):
     @api.onchange('deduct_item_id')
     # @api.multi
     def _onchange_deduct_item_id(self):
-        # if self.payment_wizard_id:
-        #     payment_vals = self.payment_wizard_id.get_payment_vals()
-        #     self.amount_untaxed = payment_vals['amount_untaxed']
+        print ('UPDATE DEDUCT--')
+        if self.payment_wizard_id:
+            print ('---Payment Wizard--1')
+            print (self.payment_wizard_id.amount_untaxed)
+            self.amount_untaxed = self.payment_wizard_id.amount_untaxed
+        if self.payment_id:
+            print('---Payment Wizard--2')
+            print(self.payment_id.amount_untaxed)
+            self.amount_untaxed = self.payment_id.amount_untaxed
+
         #
         #     # new for payment billing only
         # if self.payment_billing_id:
@@ -687,7 +670,7 @@ class writeoff_accounts(models.Model):
             self.amt_percent = self.deduct_item_id.amount
             self.name = self.deduct_item_id.name
             self.wht_type = self.deduct_item_id.wht_type
-            if not self.amount_untaxed:
+            if not self.amount_untaxed and self.payment_id.invoice_ids:
                 self.amount_untaxed = self.payment_id.invoice_ids[0].amount_untaxed
             self.amount = self.amount_untaxed * self.deduct_item_id.amount / 100
 

@@ -2,64 +2,69 @@
 <odoo>
     <data>
 
-        <!--Register payment for multiple invoice at the same time-->
-        <!--        <record id="view_account_payment_from_invoices_itaas_inherit" model="ir.ui.view">-->
-        <!--            <field name="name">account.register.payments.wizard</field>-->
-        <!--            <field name="model">account.register.payments</field>-->
-        <!--            <field name="inherit_id" ref="account.view_account_payment_from_invoices"/>-->
-        <!--            <field name="arch" type="xml">-->
-        <!--                <field name="writeoff_account_id" position="replace">-->
-        <!--                    <field name="require_write_off_account" invisible="1"/>-->
-        <!--                    <field name="writeoff_account_id" string="Post Difference In-&#45;&#45;11"-->
-        <!--                           attrs="{'invisible': [('payment_difference_handling','=','open')], 'required': [('payment_difference_handling', '=', 'reconcile'),('require_write_off_account', '=', True)]}"/>-->
-        <!--                </field>-->
+        <!--        Register payment for multiple invoice at the same time-->
+        <record id="view_account_register_payment_form_multi" model="ir.ui.view">
+            <field name="name">account.payment.register.wizard</field>
+            <field name="model">account.register.payment</field>
+            <field name="arch" type="xml">
+                <form string="Register Payment">
+                    <group>
+                        <group colspan="4">
+                            <field name="payment_option" readonly="0"/>
+                        </group>
+                        <group colspan="4">
+                            <field name="writeoff_multi_acc_ids" readonly="0" nolabel="1" attrs="{'invisible': [('post_diff_acc', '=', 'single')]}">
+                                <tree string="Post Difference Accounts" editable="bottom">
+                                    <field name="deduct_item_id" domain="[('wht','=',True)]"/>
+                                    <field name="writeoff_account_id"/>
+                                    <!--<field name="department_id"/>-->
+                                    <field name="name" required="1"/>
+                                    <field name="wht" invisible="1"/>
+                                    <field name="wht_type" attrs="{'invisible': [('wht','=',False)]}"/>
+                                    <field name="amount_untaxed" attrs="{'required': [('wht','=',True)]}"/>
+                                    <field name="amt_percent" sum="Total %" attrs="{'invisible': [('wht','=',False)],'required': [('wht','=',True)]}"/>
+                                    <field name="amount" sum="Total Amount"/>
+                                    <field name="currency_id" options="{'no_create': True, 'no_open': True}" groups="base.group_multi_currency"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="payment_method_id" widget="radio" invisible="1"/>
+                            <field name="journal_id" widget="selection"/>
+                            <field name="amount"/>
+                            <field name="current_account_id" readonly="1" attrs="{'invisible': [('current_account_id','=',False)]}"/>
+                            <field name="payment_account_id" attrs="{'invisible': [('is_change_account','!=',True)]}"/>
+                            <field name="is_change_account" attrs="{'invisible': [('journal_id','=',False)]}"/>
+                            <field name="post_diff_acc" widget="radio" attrs="{'invisible': [('payment_difference_handling','=','open')]}"/>
+                            <field name="group_payment"/>
+                            <field name="payment_difference_handling" invisible="0"/>
+                        </group>
+                        <group>
+                            <field name="payment_date"/>
+                            <field name="communication"/>
+                            <label for="cheque_bank" string="Cheque Payment"/>
+                            <div>
+                                <field name="bank_cheque" invisible="1"/>
+                                <field name="cheque_bank" placeholder="Bank" class="oe_inline" width="30" attrs="{'required':[('bank_cheque','=',True)]}"/>
+                                <field name="cheque_branch" placeholder="Branch" class="oe_inline" width="10"/>
+                                <field name="cheque_number" placeholder="Number" class="oe_inline" width="10"/>
+                                <field name="cheque_date" placeholder="Date" class="oe_inline" width="10"/>
+                            </div>
+                            <field name="remark"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button string="Create Payment" name="create_payments" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="btn btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
 
-        <!--                <xpath expr="//form/group/group[1]" position="before">-->
-        <!--                    <field name="purchase_or_sale" invisible="1"/>-->
-        <!--                    <field name="amount_untaxed" invisible="1"/>-->
-        <!--                    <group colspan="4">-->
-        <!--                        <field name="payment_option" readonly="0"/>-->
-        <!--                    </group>-->
-        <!--                    <group colspan="4">-->
-        <!--                        <field name="writeoff_multi_acc_ids" readonly="0" nolabel="1" attrs="{'invisible': [('post_diff_acc', '=', 'single')]}">-->
-        <!--                            <tree string="Post Difference Accounts" editable="bottom">-->
-        <!--                                <field name="deduct_item_id" domain="[('type_tax_use','=',parent.purchase_or_sale),('wht','=',True)]" context="{'default_purchase_or_sale': parent.purchase_or_sale}"/>-->
-        <!--                                <field name="writeoff_account_id"/>-->
-        <!--                                &lt;!&ndash;<field name="department_id"/>&ndash;&gt;-->
-        <!--                                <field name="name" required="1"/>-->
-        <!--                                <field name="wht" invisible="1"/>-->
-        <!--                                <field name="wht_personal_company" attrs="{'invisible': [('wht','=',False)]}"/>-->
-        <!--                                <field name="amount_untaxed" attrs="{'required': [('wht','=',True)]}"/>-->
-        <!--                                <field name="amt_percent" sum="Total %" attrs="{'invisible': [('wht','=',False)],'required': [('wht','=',True)]}"/>-->
-        <!--                                <field name="amount" sum="Total Amount"/>-->
-        <!--                                <field name="currency_id" options="{'no_create': True, 'no_open': True}" groups="base.group_multi_currency"/>-->
-        <!--                            </tree>-->
-        <!--                        </field>-->
-        <!--                    </group>-->
-        <!--                </xpath>-->
+        </record>
 
 
-
-        <!--                <field name="journal_id" position="after">-->
-        <!--                    <field name="current_account_id" readonly="1" attrs="{'invisible': [('current_account_id','=',False)]}"/>-->
-        <!--                    <field name="payment_account_id" attrs="{'invisible': [('is_change_account','!=',True)]}"/>-->
-        <!--                    <field name="is_change_account" attrs="{'invisible': [('journal_id','=',False)]}"/>-->
-        <!--                    <field name="post_diff_acc" widget="radio" attrs="{'invisible': [('payment_difference_handling','=','open')]}"/>-->
-        <!--                </field>-->
-
-        <!--                <field name="communication" position="after">-->
-        <!--                    <label for="cheque_bank" string="Cheque Payment"/>-->
-        <!--                    <div>-->
-        <!--                        <field name="bank_cheque" invisible="1"/>-->
-        <!--                        <field name="cheque_bank" placeholder="Bank" class="oe_inline" width="30" attrs="{'required':[('bank_cheque','=',True)]}"/>-->
-        <!--                        <field name="cheque_branch" placeholder="Branch" class="oe_inline" width="10"/>-->
-        <!--                        <field name="cheque_number" placeholder="Number" class="oe_inline" width="10"/>-->
-        <!--                        <field name="cheque_date" placeholder="Date" class="oe_inline" width="10"/>-->
-        <!--                    </div>-->
-        <!--                    <field name="remark"/>-->
-        <!--                </field>-->
-        <!--            </field>-->
-        <!--        </record>-->
 
         <!-- inherit account.payment form -->
         <record id="view_account_payment_form_itaas_inherit" model="ir.ui.view">
@@ -79,14 +84,25 @@
                         <field name="cheque_reg_id" attrs="{'invisible': [('bank_cheque','=',False)],'readonly': [('state','!=','draft')]}"/>
                     </group>
                 </xpath>
+                <button name="button_invoices" position="after">
+                    <button class="oe_stat_button" name="button_invoices_and_refund" type="object" icon="fa-bars" attrs="{'invisible':[('invoice_ids','=', False)]}" groups="base.group_no_one">
+                        <field name="all_invoice_count"/>
+                    </button>
+                </button>
 
+                <field name="journal_id" position="after">
+
+                    <field name="payment_account_id" attrs="{'readonly': [('state','!=','draft')]}"/>
+                </field>
+
+                <field name="remark" position="after">
+                    <field name="post_diff_acc" invisible="0"/>
+                </field>
 
                 <xpath expr="//group[@name='payment_difference']" position="after">
-                    <group name="Payment Difference" invisible="context.get('active_model') == 'account.move'">
-                        <field name="post_diff_acc" invisible="1"/>
+                    <group name="Payment Difference" invisible="context.get('active_model') == 'account.move'" colspan="4">
                         <field name="writeoff_multi_acc_ids" nolabel="1" attrs="{'readonly': [('state','!=','draft')],'invisible': [('post_diff_acc','=','single')]}">
                             <tree string="Post Difference Accounts" editable="bottom">
-                                <!--('type_tax_use','=',parent.purchase_or_sale)-->
                                 <field name="deduct_item_id" domain="[('wht','=',True)]"/>
                                 <field name="writeoff_account_id"/>
                                 <field name="name" required="1"/>
@@ -97,6 +113,15 @@
                                 <!--                                <field name="charge_type"/>-->
                                 <field name="amount" sum="Total Amount"/>
                                 <field name="currency_id" options="{'no_create': True, 'no_open': True}" groups="base.group_multi_currency"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <group colspan="4">
+                        <field name="payment_refund_ids" attrs="{'readonly': [('state','!=','draft')],'invisible': [('state','=','draft')]}" nolabel="1" groups="base.group_no_one">
+                            <tree>
+                                <field name="invoice_id"/>
+                                <field name="amount"/>
+                                <field name="date"/>
                             </tree>
                         </field>
                     </group>
@@ -112,14 +137,13 @@
             <field name="inherit_id" ref="account.view_account_payment_invoice_form"></field>
             <field name="arch" type="xml">
                 <xpath expr="//form/sheet/group[1]" position="before">
-                    <field name="purchase_or_sale" invisible="1"/>
-                    <!--                    <group colspan="4">-->
+
                     <field name="payment_option"/>
                     <field name="post_diff_acc" invisible="1"/>
                     <field name="require_write_off" invisible="1"/>
                     <field name="writeoff_multi_acc_ids" nolabel="1" attrs="{'invisible': [('post_diff_acc', '=', 'single')]}">
                         <tree string="Post Difference Accounts" editable="bottom">
-                            <field name="deduct_item_id" domain="[('type_tax_use','=',parent.purchase_or_sale),('wht','=',True)]"/>
+                            <field name="deduct_item_id" domain="[('wht','=',True)]"/>
                             <field name="writeoff_account_id"/>
                             <!--<field name="department_id"/>-->
                             <field name="name" required="1"/>
