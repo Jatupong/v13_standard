@@ -13,14 +13,15 @@
             <field name="user_signature" eval="True"/>
             <field name="lang">${object.partner_id.lang}</field>
             <field name="body_html"><![CDATA[
-               <p> Dear Sir / Madam,</p> 
+               <p> Dear Sir / Madam,</p>
+% set requested_approve = object.get_requested_approve()
 
-% if not object.next_discount_amount:   
+% if not requested_approve:
 <p>Requesting your approval on the quotation ${object.name}.</p>
 % endif
 
-% if object.next_discount_amount:               
-<p>Kindly Requesting your approval for providing a discount of ${object.get_discount()}% on the quotation ${object.name}.</p>
+% if requested_approve:
+<p>Kindly Requesting your approval for providing ${requested_approve} on the quotation ${object.name}.</p>
 % endif
 
 <p><b>Notes:</b></p>
