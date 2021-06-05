@@ -1,14 +1,43 @@
 <openerp>
     <data>
-        <record id="view_stock_landed_cost_form_cancel_after_validate" model="ir.ui.view">
-            <field name="name">view.stock.landed.cost.form.production</field>
-            <field name="model">stock.landed.cost</field>
-            <field name="inherit_id" ref="stock_landed_costs.view_stock_landed_cost_form"/>
-            <field name="arch" type="xml">
-                <button name="button_cancel" position="after">
-                    <button name="button_cancel_after_validate" string="Cancel Entry" states="done" type="object" groups="account.group_account_manager"/>
-                </button>
+        <record id="view_account_asset_form_more_field_for_thailand" model="ir.ui.view">
+            <field name="name">view.account.asset.more.field</field>
+            <field name="model">account.asset</field>
+            <field name="inherit_id" ref="account_asset.view_account_asset_form"/>
 
+<!--account_asset.view_account_asset_form-->
+
+            <field name="arch" type="xml">
+                <field name="acquisition_date" position="after">
+                    <field name="purchase_value" attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': [('asset_type','!=','purchase')]}"/>
+                    <field name="purchase_date" attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': [('asset_type','!=','purchase')]}"/>
+                    <field name="barcode" attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': [('asset_type','!=','purchase')]}"/>
+                    <field name="serial_number" attrs="{'readonly': [('state', '!=', 'draft')],'invisible': [('asset_type','!=','purchase')]}"/>
+                    <field name="employee_id" attrs="{'readonly': [('state', '!=', 'draft')],'invisible': [('asset_type','!=','purchase')]}"/>
+                    <field name="department_id" attrs="{'readonly': [('state', '!=', 'draft')],'invisible': [('asset_type','!=','purchase')]}"/>
+                </field>
+
+                <field name="first_depreciation_date" position="after">
+                    <field name="asset_disposal_date" attrs="{'readonly': [('state', '!=', 'draft')],'invisible': [('asset_type','!=','purchase')]}"/>
+                    <field name="note" attrs="{'readonly': [('state', '!=', 'draft')],'invisible': [('asset_type','!=','purchase')]}"/>
+                </field>
+
+                <field name="book_value" position="after">
+                    <field name="depreciated_amount" attrs="{'invisible': [('asset_type','!=','purchase')]}"/>
+                </field>
+
+                <field name="model_id" position="replace"/>
+                <field name="original_value" position="before">
+                    <field name="model_id" string="Asset Model" help="Category of asset" domain="[('state', '=', 'model'), ('user_type_id', '=?', user_type_id), ('asset_type', '=', asset_type)]"/>
+                </field>
+
+                <field name="journal_id" position="after">
+                    <field name="default_salvage_value" attrs="{'invisible': [('state','!=','model')]}"/>
+                </field>
+
+                <xpath expr="//field[@name='depreciation_move_ids']/tree/field[@name='asset_manually_modified']" position="after">
+                    <field name="auto_post"/>
+                </xpath>
             </field>
         </record>
 

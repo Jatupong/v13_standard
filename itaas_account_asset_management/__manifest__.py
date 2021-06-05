@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2016-Today  ITAAS (<http://www.itaas.co.th/>).
-# fix เรื่อง reverse move ของ V13
+# 13.0.1.0 - first asset for v13
+# 13.0.2.0 - update version
 {
-    "name": "Stock Valuation Unit Price in Tree",
-    'version': '13.0.1.0',
+    "name": "Thailand Asset Management by ITAAS",
+    'version': '13.0.2.0',
     "category": 'itaas',
-    'summary': 'Stock Valuation Unit Price',
+    'summary': 'Asset Management',
     "description": """
         .
     """,
     "sequence": 1,
     "author": "IT as a Service Co., Ltd.",
     "website": "http://www.itaas.co.th/",
-    "version": '1.0',
-    "depends": ['base','stock','stock_account'],
+    "depends": ['base','account','account_asset','hr'],
     "data": [
-        'views/stock_valuation_layer_tree_view.xml',
+        'views/view_account_asset_form.xml',
 
     ],
     'qweb': [],
