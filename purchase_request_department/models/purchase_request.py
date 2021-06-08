@@ -14,6 +14,7 @@ class PurchaseRequest(models.Model):
             else self.env["hr.department"] or False
         )
 
+    employee_id = fields.Many2one("hr.employee", "Employee")
     department_id = fields.Many2one(
         "hr.department", "Department", default=_get_my_department
     )
@@ -21,11 +22,21 @@ class PurchaseRequest(models.Model):
     @api.onchange("requested_by")
     def onchange_requested_by(self):
         employees = self.requested_by.employee_ids
+        self.employee_id = (
+            employees[0].id
+            if employees
+            else self.env["hr.employee"] or False
+        )
         self.department_id = (
             employees[0].department_id
             if employees
             else self.env["hr.department"] or False
         )
+
+    @api.onchange("employee_id")
+    def onchange_employee_id(self):
+        if self.employee_id:
+            self.department_id = self.employee_id.department_id.id
 
 
 class PurchaseRequestLine(models.Model):

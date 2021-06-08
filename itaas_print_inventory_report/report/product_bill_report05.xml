@@ -5,21 +5,6 @@
             <t t-foreach="docs" t-as="o">
                 <div class="header">
                     <style>
-                        @font-face
-                            {
-                            font-family: SarabunPSK;
-                            src: local('United'), url("/itaas_print_inventory_report/static/THSarabun.ttf") format('opentype');
-                            }
-                            .font_fam{
-                            font-family: SarabunPSK;
-                            src: local('United'), url("/itaas_print_inventory_report/static/THSarabun.ttf") format('opentype');
-                            }
-                        table.table-bordered1{
-                        border:1px solid black;
-                        width: 100%;
-                        font-family: SarabunPSK;
-                        src: local('United'), url("/itaas_print_inventory_report/static/THSarabun.ttf") format('opentype');
-                        }
                         table.table-bordered1{
                         border:1px solid white;
                         margin-top:10px;
@@ -119,9 +104,7 @@
                         <tr>
                             <td align="right" style="padding-right:5px;"><span>วันที่</span></td>
                             <td>
-                                <t t-if="o.scheduled_date">
-                                    <span t-esc="o.scheduled_date.strftime('%d/%m/%Y')"/>
-                                </t>
+                                <span t-field="o.scheduled_date" t-options="{'widget': 'date'}"/>
                             </td>
                         </tr>
                     </table>
@@ -161,65 +144,28 @@
 
                 <div class="page">
                     <style>
-                        @font-face
-                            {
-                            font-family: SarabunPSK;
-                            src: local('United'), url("/itaas_print_inventory_report/static/THSarabun.ttf") format('opentype');
-                            }
-                            .font_fam{
-                            font-family: SarabunPSK;
-                            src: local('United'), url("/itaas_print_inventory_report/static/THSarabun.ttf") format('opentype');
-                            }
-                        table.table-bordered1{
-                        border:1px solid black;
-                        width: 100%;
-                        font-family: SarabunPSK;
-                        src: local('United'), url("/itaas_print_inventory_report/static/THSarabun.ttf") format('opentype');
-                        }
-                        table.table-bordered1{
-                        border:1px solid black;
-                        width: 100%;
-                        }
-                        table.table-bordered1 &gt; thead &gt; tr &gt; th{
+                        table.table-bordered {
                         border:1px solid black;
                         }
-                        table.table-bordered1 &gt; thead &gt; tr &gt; td{
+                        table.table-bordered &gt; thead &gt; tr &gt; th{
                         border:1px solid black;
-                        border-left: 1px solid black;
-                        }
-                        table.table-bordered1 &gt; tbody &gt; tr &gt; td{
-                        border:0px solid white;
-                        border-left: 1px solid black;
-                        }
-                        table.table-bordered1 &gt; tfoot &gt; tr &gt; td{
-                        border:1px solid black;
-                        }
-                        table.table-bordered &gt; thead &gt; tr &gt; td{
-                        border:1px solid black;
-                        border-left: 1px solid black;
-                        border-collapse: collapse;
+                        text-align:center;
+                        word-wrap: break-word;
                         }
                         table.table-bordered &gt; tbody &gt; tr &gt; td{
-                        border:1px solid black;
-                        <!--                                border:0px solid white;-->
-                        border-left:1px solid black;
+                        border:0px solid white;
+                        border-left: 1px solid black;
                         border-collapse: collapse;
+                        word-wrap: break-word;
                         }
                         table.table-bordered &gt; tfoot &gt; tr &gt; td{
                         border:1px solid black;
                         border-collapse: collapse;
+                        word-wrap: break-word;
                         }
-                        .td_top{
-                        border-top:#000 solid 1px;
-                        }
-                        .td_left{
-                        border-left:#000 solid 1px;
-                        }
-                        .td_right{
-                        border-right:#000 solid 1px;
-                        }
-                        .td_bott{
-                        border-bottom:#000 solid 1px;
+                        .word_wrap{
+                        word-wrap: break-word;
+                        line-height:18px;
                         }
                     </style>
 
@@ -233,7 +179,8 @@
                     <t t-set="end" t-value="0"/>
 
                     <t t-foreach="range(0,len(break_line),1)" t-as="x">
-                        <table width="100%" style="height:165mm;"  class="font_fam table table-bordered ">
+                        <table style="height:165mm;font-family:TH SarabunPSK;
+                    src:url(/itaas_print_stock_picking_report/static/THSarabun.ttf);" class="table table-bordered">
                             <thead style="font-size:20px; line-height:20px; text-align:center">
                                 <tr>
                                     <th width="5%">ลำดับ</th>

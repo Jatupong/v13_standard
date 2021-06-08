@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <record id="seq_inventory_adjustment_id" model="ir.sequence">
+            <field name="name">Inventory Adjustment Sequence</field>
+            <field name="code">inv.adjust.sequence</field>
+            <field name="prefix">AJ%(year)s-</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+
+
+    stock.view_inventory_form
+
+</openerp>

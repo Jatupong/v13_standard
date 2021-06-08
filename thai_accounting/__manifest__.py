@@ -50,32 +50,6 @@
 # add invoice multiple register with deduction
 # 13.0.1.4
 # change cheque validate sequence number
-# 13.0.1.5
-# fix payment_new_change_account
-# fix write_off_with_open invoice
-# 13.0.1.6
-# fix write_off_with_open invoice and final invoice
-# fix amount before tax when add deduct item
-#------------------------------------------------------------
-#13.0.1.7
-# gen seq wht_reference for witholding tax
-#-----------------Well Known Issue---------------#
-# register payment from customer billing issue when has credit note
-#13.0.1.8
-# Move button gen tax (invoice) to itaas_gen_tax_invoice_date
-#13.0.1.9 - 24/04/2021
-# fix payment with keep open on multiple invoice payment
-# record payment with multiple write-off account
-#13.0.2.0 - 26/04/2021
-#fix payment normal, deduction and possible to change from payment, validate and auto reconcile both ar and ap
-#fix payment name will assign correctly both register from invoice and directly from payment journal
-#13.0.2.1 - 02/05/2021 - remove partner bank id to group payment
-#fix - partial payment and with
-#fix - full and partial payment with grouping and not-group
-#fix - add multiple-cheque validation
-#13.0.2.2 - 20/05/2021 - fix onchange deduction item
-#13.0.2.3 - 31/05/2021 Edit field Ref in model account.move and account.move.line
-
 {
     "name": "Thailand Accounting Enhancement for Odoo Enterprise",
     "category": 'Accounting',
@@ -86,7 +60,7 @@
     "sequence": 1,
     "author": "IT as a Service Co., Ltd.",
     "website": "http://www.itaas.co.th/",
-    "version": '13.0.3.0',
+    "version": '13.0.1.3',
     "depends": ['account','account_payment','account_asset','account_accountant'],
     "external_dependencies" : {
         'python' : ['bahttext',
@@ -105,7 +79,6 @@
         'views/account_payment_view.xml',
         'views/customer_billing_view.xml',
         'views/account_cheque_statement_view.xml',
-        'wizard/check_multiple_confirm_views.xml',
 
         # data fro preload ###
         'data/account_wht_data.xml',

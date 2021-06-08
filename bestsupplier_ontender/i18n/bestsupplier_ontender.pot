@@ -1,0 +1,294 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* bestsupplier_ontender
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 12.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-12-08 10:45+0000\n"
+"PO-Revision-Date: 2018-12-08 10:45+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bestsupplier_ontender
+#: code:addons/bestsupplier_ontender/model/purchase.py:214
+#, python-format
+msgid "Approved Orders"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: code:addons/bestsupplier_ontender/model/purchase.py:74
+#, python-format
+msgid "At least one supplier quote should be generated.\n"
+" Please click to \"New Quotation\" button to generate a quote for supplier"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model:ir.actions.act_window,name:bestsupplier_ontender.action_bid_line_qty
+msgid "Bid Line Qty"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model:ir.actions.act_window,name:bestsupplier_ontender.action_purchase_linetree
+msgid "Bid Lines"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model:ir.model.fields,field_description:bestsupplier_ontender.field_purchase_order_line__bid_subtotal
+msgid "Bid Subtotal"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model_terms:ir.ui.view,arch_db:bestsupplier_ontender.view_bid_line_qty
+#: model_terms:ir.ui.view,arch_db:bestsupplier_ontender.view_generate_po
+msgid "Cancel"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model_terms:ir.ui.view,arch_db:bestsupplier_ontender.purchase_order_line_tree_tender
+msgid "Cancel Choice"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: code:addons/bestsupplier_ontender/model/purchase.py:138
+#, python-format
+msgid "Cancelled by the call for bids associated to this request for quotation."
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model:ir.model,name:bestsupplier_ontender.model_bid_line_qty
+msgid "Change Bid line quantity"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model_terms:ir.ui.view,arch_db:bestsupplier_ontender.purchase_order_line_tree_tender
+#: model_terms:ir.ui.view,arch_db:bestsupplier_ontender.view_bid_line_qty
+msgid "Change Quantity"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model_terms:ir.ui.view,arch_db:bestsupplier_ontender.view_purchase_requisition_bestsuppl
+msgid "Compare RFQ(s)/Bid(s)"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model_terms:ir.ui.view,arch_db:bestsupplier_ontender.purchase_order_line_tree_tender
+msgid "Confirm Order"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model_terms:ir.ui.view,arch_db:bestsupplier_ontender.purchase_order_line_tree_tender
+msgid "Confirmed Subtotal"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model_terms:ir.ui.view,arch_db:bestsupplier_ontender.view_generate_po
+msgid "Create Purchase Order"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model:ir.model.fields,field_description:bestsupplier_ontender.field_bid_line_qty__create_uid
+#: model:ir.model.fields,field_description:bestsupplier_ontender.field_generate_po__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model:ir.model.fields,field_description:bestsupplier_ontender.field_bid_line_qty__create_date
+#: model:ir.model.fields,field_description:bestsupplier_ontender.field_generate_po__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model:ir.model.fields,field_description:bestsupplier_ontender.field_bid_line_qty__display_name
+#: model:ir.model.fields,field_description:bestsupplier_ontender.field_generate_po__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model_terms:ir.ui.view,arch_db:bestsupplier_ontender.view_generate_po
+msgid "Do you want to create the Purchase Order?"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: selection:purchase.order.line,internal_state:0
+msgid "Draft"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model:ir.actions.act_window,name:bestsupplier_ontender.action_view_generate_po
+msgid "Generate PO"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model:ir.model,name:bestsupplier_ontender.model_generate_po
+#: model_terms:ir.ui.view,arch_db:bestsupplier_ontender.view_generate_po
+msgid "Generate Purchase Order"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model_terms:ir.ui.view,arch_db:bestsupplier_ontender.purchase_order_tenderline_search
+msgid "Group By"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model_terms:ir.ui.view,arch_db:bestsupplier_ontender.purchase_order_tenderline_search
+msgid "Hide cancelled lines"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model:ir.model.fields,field_description:bestsupplier_ontender.field_bid_line_qty__id
+#: model:ir.model.fields,field_description:bestsupplier_ontender.field_generate_po__id
+msgid "ID"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model:ir.model.fields,field_description:bestsupplier_ontender.field_bid_line_qty____last_update
+#: model:ir.model.fields,field_description:bestsupplier_ontender.field_generate_po____last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model:ir.model.fields,field_description:bestsupplier_ontender.field_bid_line_qty__write_uid
+#: model:ir.model.fields,field_description:bestsupplier_ontender.field_generate_po__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model:ir.model.fields,field_description:bestsupplier_ontender.field_bid_line_qty__write_date
+#: model:ir.model.fields,field_description:bestsupplier_ontender.field_generate_po__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: selection:purchase.order.line,internal_state:0
+msgid "Locked"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model_terms:ir.ui.view,arch_db:bestsupplier_ontender.purchase_order_tenderline_search
+msgid "Order Reference"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: selection:purchase.order.line,internal_state:0
+msgid "Positive"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model_terms:ir.ui.view,arch_db:bestsupplier_ontender.purchase_order_tenderline_search
+msgid "Product"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model:ir.model,name:bestsupplier_ontender.model_purchase_order_line
+msgid "Purchase Order Line"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model_terms:ir.ui.view,arch_db:bestsupplier_ontender.purchase_order_line_tree_tender
+msgid "Purchase Order Lines"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model:ir.model,name:bestsupplier_ontender.model_purchase_requisition
+msgid "Purchase Requisition"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: code:addons/bestsupplier_ontender/wizard/bid_line_qty.py:23
+#, python-format
+msgid "Purchase record not found!"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model:ir.model.fields,field_description:bestsupplier_ontender.field_bid_line_qty__qty
+#: model_terms:ir.ui.view,arch_db:bestsupplier_ontender.view_bid_line_qty
+msgid "Quantity"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model:ir.model.fields,field_description:bestsupplier_ontender.field_purchase_order_line__quantity_bid
+msgid "Quantity Bid"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: code:addons/bestsupplier_ontender/wizard/bid_line_qty.py:29
+#, python-format
+msgid "Quantity must be positive."
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model_terms:ir.ui.view,arch_db:bestsupplier_ontender.purchase_order_tenderline_search
+msgid "Search Purchase Order"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: code:addons/bestsupplier_ontender/wizard/generate_purchase.py:21
+#, python-format
+msgid "Selected lines Tender must be on \"Bid Selection\" State."
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: code:addons/bestsupplier_ontender/wizard/generate_purchase.py:17
+#, python-format
+msgid "Selected lines must be from same tender."
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: code:addons/bestsupplier_ontender/wizard/generate_purchase.py:19
+#, python-format
+msgid "Selected lines tender must be on \"Bid Selection\" State."
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model:ir.model.fields,field_description:bestsupplier_ontender.field_purchase_order_line__internal_state
+#: model_terms:ir.ui.view,arch_db:bestsupplier_ontender.purchase_order_tenderline_search
+msgid "Status"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model_terms:ir.ui.view,arch_db:bestsupplier_ontender.purchase_order_line_tree_tender
+#: model_terms:ir.ui.view,arch_db:bestsupplier_ontender.purchase_order_tenderline_search
+msgid "Supplier"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model:ir.model.fields,help:bestsupplier_ontender.field_purchase_order_line__quantity_bid
+msgid "Technical field for not loosing the initial information about the quantity proposed in the bid"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: code:addons/bestsupplier_ontender/wizard/generate_purchase.py:15
+#, python-format
+msgid "You are only generate purchase order for tender."
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: code:addons/bestsupplier_ontender/model/purchase.py:153
+#, python-format
+msgid "You have already generate the purchase order(s)."
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: code:addons/bestsupplier_ontender/model/purchase.py:162
+#, python-format
+msgid "You have no line selected for buying."
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: code:addons/bestsupplier_ontender/wizard/generate_purchase.py:40
+#, python-format
+msgid "You should select only single tender lines"
+msgstr ""
+
+#. module: bestsupplier_ontender
+#: model_terms:ir.ui.view,arch_db:bestsupplier_ontender.view_bid_line_qty
+#: model_terms:ir.ui.view,arch_db:bestsupplier_ontender.view_generate_po
+msgid "or"
+msgstr ""
+

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-
-        <!--Quotation-->
+        <!-- QWeb Reports for Product -->
+        <!--sale-->
         <record id="paperformat_A4_Zero_Margin_quotations" model="report.paperformat">
             <field name="name">A4_Zero_Margin_quotations</field>
             <field name="default" eval="False"/>
@@ -17,43 +17,17 @@
             <field name="dpi">90</field>
         </record>
 
+        <!--Quotation-->
         <report
                 id="quotations_report"
                 model="sale.order"
                 menu="True"
                 report_type="qweb-pdf"
-                string="ใบเสนอราคา/Quotation"
+                string="ใบเสนอราคา / ใบสั่งขาย"
                 paperformat="paperformat_A4_Zero_Margin_quotations"
                 name="itaas_print_sale_report.quotations_report_id"
                 file="itaas_print_sale_report.quotations_report_id"
-                print_report_name="'Quotation - %s' % (object.name)"
-        />
-
-        <!--SaleOrder-->
-        <record id="paperformat_A4_Zero_Margin_sale" model="report.paperformat">
-            <field name="name">A4_Zero_Margin_quotations</field>
-            <field name="default" eval="False"/>
-            <field name="format">A4</field>
-            <field name="orientation">Portrait</field>
-            <field name="margin_top">97</field>
-            <field name="margin_bottom">45</field>
-            <field name="margin_left">5</field>
-            <field name="margin_right">5</field>
-            <field name="header_line" eval="False"/>
-            <field name="header_spacing">92</field>
-            <field name="dpi">90</field>
-        </record>
-
-        <report
-                id="sale_order_report"
-                model="sale.order"
-                menu="True"
-                report_type="qweb-pdf"
-                string="ใบสั่งขาย/Sale Order"
-                paperformat="paperformat_A4_Zero_Margin_sale"
-                name="itaas_print_sale_report.sale_order_report_id"
-                file="itaas_print_sale_report.sale_order_report_id"
-                print_report_name="'Order - %s' % (object.name)"
+                print_report_name="(object.state in ('draft', 'sent') and 'Quotation - %s' % (object.name)) or 'Order - %s' % (object.name)"
         />
 
         <record id="paperformat_A4_Zero_Margin_quotations_temporary" model="report.paperformat">
@@ -73,7 +47,7 @@
         <report
                 id="quotations_temporary_report"
                 model="sale.order"
-                menu="False"
+                menu="True"
                 report_type="qweb-pdf"
                 string="ใบส่งของชั่วคราว"
                 paperformat="paperformat_A4_Zero_Margin_quotations_temporary"

@@ -24,7 +24,6 @@ class AccountMove(models.Model):
 
     billing_number = fields.Char(string="Billing",default='',copy=False)
     billing_id = fields.Many2one('customer.billing',string="Billing Number",copy=False)
-    date_billing = fields.Date(string='Billing Date',related='billing_id.date_billing')
 
 class CustomerBilling(models.Model):
     _name = 'customer.billing'

@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<odoo>
+
+        <record id="view_purchase_requisition_bestsuppl" model="ir.ui.view">
+            <field name="name">purchase.requisition.bestsuppl</field>
+            <field name="model">purchase.requisition</field>
+            <field name="inherit_id"
+                ref="purchase_requisition.view_purchase_requisition_form" />
+            <field name="arch" type="xml">
+                <button name="action_done" position="before">
+                    <button name="open_bid_lines" states="open"
+                        string="Compare RFQ(s)/Bid(s)" type="object" class="btn-primary" />
+                </button>
+                <button name="action_done" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </button>
+                <field name="user_id" position="attributes">
+                    <attribute name='attrs'>{'readonly': [('state', 'not in', ('draft','in_progress'))]}</attribute>
+                </field>
+                <field name="type_id" position="attributes">
+                    <attribute name='attrs'>{'readonly': [('state', 'not in', ('draft','in_progress'))]}</attribute>
+                </field>
+                <field name="vendor_id" position="attributes">
+                    <attribute name='attrs'>{'readonly': [('state', 'not in', ('draft','in_progress'))]}</attribute>
+                </field>
+                <!-- 
+                <field name="account_analytic_id" position="attributes">
+                    <attribute name='attrs'>{'readonly': [('state', 'not in', ('draft','in_progress'))]}</attribute>
+                </field>
+                -->
+                <field name="date_end" position="attributes">
+                    <attribute name='attrs'>{'readonly': [('state', 'not in', ('draft','in_progress'))]}</attribute>
+                </field>
+                <field name="ordering_date" position="attributes">
+                    <attribute name='attrs'>{'readonly': [('state', 'not in', ('draft','in_progress'))]}</attribute>
+                </field>
+                <field name="schedule_date" position="attributes">
+                    <attribute name='attrs'>{'readonly': [('state', 'not in', ('draft','in_progress'))]}</attribute>
+                </field>
+                <field name="schedule_date" position="attributes">
+                    <attribute name='attrs'>{'readonly': [('state', 'not in', ('draft','in_progress'))]}
+                    </attribute>
+                </field>
+            </field>
+        </record>
+
+        <record id="purchase_order_line_tree_tender" model="ir.ui.view">
+            <field name="name">purchase.order.line.tree.tender</field>
+            <field name="model">purchase.order.line</field>
+            <field eval="55" name="priority" />
+            <field name="arch" type="xml">
+                <tree string="Purchase Order Lines" create="false"
+                    decoration-bf="(internal_state == 'lock')" decoration-muted="internal_state == 'draft'" decoration-info="internal_state == 'positive'">
+                    <field name="name" />
+                    <field name="partner_id" string="Supplier" />
+                    <field name="product_id" />
+                    <field name="price_unit" />
+                    <field name="product_qty" />
+                    <field name="quantity_bid" />
+                    <field name="product_uom" groups="product.group_uom" />
+                    <field name="bid_subtotal" string="Confirmed Subtotal" />
+                    <field name="price_subtotal" invisible="1" />
+                    <button name="action_internal_draft"
+                        attrs="{'invisible': [('internal_state', 'not in', ('lock', 'positive'))]}"
+                        type="object" string="Cancel Choice" icon="fa-times" />
+                    <button name="%(action_bid_line_qty)d" type="action"
+                        attrs="{'invisible': [('internal_state', 'not in', ('draft', 'positive'))]}"
+                        string="Change Quantity" icon="fa-cart-plus" />
+                    <button name="action_internal_confirm"
+                        attrs="{'invisible': [('internal_state', '!=', 'draft')]}"
+                        type="object" string="Confirm Order" icon="fa-check" />
+                    <field name="internal_state" invisible="1" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="purchase_order_tenderline_search" model="ir.ui.view">
+            <field name="name">purchase.order.tenderline.search</field>
+            <field name="priority" eval="55"/>
+            <field name="model">purchase.order.line</field>
+            <field name="arch" type="xml">
+                <search string="Search Purchase Order">
+                    <field name="order_id" />
+                    <field name="product_id" />
+                    <field name="partner_id" string="Supplier" filter_domain="[('partner_id', 'child_of', self)]" />
+                    <filter name="hide_cancelled" string="Hide cancelled lines" domain="[('state', '!=', 'cancel')]" />
+                    <group expand="0" string="Group By">
+                        <filter name="groupby_supplier" domain="[]" string="Supplier" context="{'group_by' : 'partner_id'}" />
+                        <filter name="groupby_product" domain="[]" string="Product" context="{'group_by' : 'product_id'}" />
+                        <filter name="order_reference" string="Order Reference" domain="[]" context="{'group_by' :'order_id'}" />
+                        <filter name="internal_state" string="Status" domain="[]" context="{'group_by' : 'internal_state'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_purchase_linetree" model="ir.actions.act_window">
+            <field name="name">Bid Lines</field>
+            <field name="res_model">purchase.order.line</field>
+            <field name="context">{"search_default_groupby_product" : True}</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="purchase_order_line_tree_tender" />
+            <field name="search_view_id" ref="purchase_order_tenderline_search" />
+        </record>
+
+</odoo>

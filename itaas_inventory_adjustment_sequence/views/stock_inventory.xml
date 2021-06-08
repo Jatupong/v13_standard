@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_inventory_form_add_sequence" model="ir.ui.view">
+        <field name="name">stock.inventory.adjustment.inherit</field>
+        <field name="model">stock.inventory</field>
+        <field name="inherit_id" ref="stock.view_inventory_form"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="number" readonly="1" class="oe_inline oe_right"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_inventory_tree_add_sequence" model="ir.ui.view">
+        <field name="name">stock.inventory.adjustment.tree.inherit</field>
+        <field name="model">stock.inventory</field>
+        <field name="inherit_id" ref="stock.view_inventory_tree"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="number"/>
+            </field>
+        </field>
+    </record>
+
+
+
+
+
+</odoo>

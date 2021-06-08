@@ -4,7 +4,7 @@
 
 {
     'name' : 'Itaas Print Sales Report',
-    'version' : '13.0.1.2',
+    'version' : '13.0.1.1',
     'price' : 'Free',
     'currency': 'THB',
     'category': 'Sales Report',
@@ -27,7 +27,6 @@ Stock report
         'report/report_reg.xml',
         'report/quotation_report.xml',
         'report/quotation_temporary_report.xml',
-        'report/sale_order_report.xml',
 
         'security/ir.model.access.csv',
     ],
