@@ -41,6 +41,8 @@ class aspl_stock_inventory_report_ee(models.AbstractModel):
         return res
 
     def get_location(self, records, warehouses=None):
+        # print('Start GET LOCATION')
+        # print(fields.datetime.now())
         stock_ids = []
         location_obj = self.env['stock.location']
         domain = [('company_id', '=', records.company_id.id), ('usage', 'in', ['internal', 'customer'])]
@@ -53,6 +55,8 @@ class aspl_stock_inventory_report_ee(models.AbstractModel):
                 stock_ids.append(warehouse.view_location_id.id)
             domain.append(('location_id', 'child_of', stock_ids))
         final_stock_ids = location_obj.search(domain).ids
+        # print('END GET LOCATION')
+        # print(fields.datetime.now())
         return final_stock_ids
 
     def convert_withtimezone(self, userdate):
@@ -68,19 +72,42 @@ class aspl_stock_inventory_report_ee(models.AbstractModel):
         return user_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
 
     def _get_products(self, record):
-        product_product_obj = self.env['product.product']
-        domain = [('type', '=', 'product')]
-        product_ids = False
-        if record.category_ids:
-            domain.append(('categ_id', 'in', record.category_ids.ids))
-            product_ids = product_product_obj.search(domain)
-        if record.product_ids:
-            product_ids = record.product_ids
-        if not product_ids:
-             product_ids = product_product_obj.search(domain)
+        # print('Start GET PRODUCT')
+        # print(fields.datetime.now())
+        # all = True
+        if not record.is_only_movement:
+            product_product_obj = self.env['product.product']
+            domain = [('type', '=', 'product')]
+            product_ids = False
+            if record.category_ids:
+                domain.append(('categ_id', 'in', record.category_ids.ids))
+                product_ids = product_product_obj.search(domain)
+            if record.product_ids:
+                product_ids = record.product_ids
+            if not product_ids:
+                 product_ids = product_product_obj.search(domain)
+        else:
+            self._cr.execute(''' 
+                                    SELECT DISTINCT product_id From stock_move where date <= %s and company_id = %s
+                                    
+                                ''',
+                             (record.end_date,record.company_id.id,))
+
+            res = self._cr.dictfetchall()
+            product_s = []
+            for product in res:
+                product_s.append(product['product_id'])
+            product_ids = self.env['product.product'].browse(product_s)
+
+
+        # print ('END GET PRODUCT')
+        # print (product_ids)
+        # print (fields.datetime.now())
         return product_ids
 
     def _get_beginning_inventory(self, record, product,warehouses=None):
+        # print('Start _get_beginning_inventory-1')
+        # print(fields.datetime.now())
         locations = [record.location_id.id] if record.location_id else self.get_location(record, warehouses)
         if isinstance(product, int):
             product_data = product
@@ -89,6 +116,8 @@ class aspl_stock_inventory_report_ee(models.AbstractModel):
 
         start_date = str(date.today()) if record.is_today_movement else str(record.start_date)
         from_date = self.convert_withtimezone(start_date + ' 00:00:00')
+        # print('Start _get_beginning_inventory-2')
+        # print(fields.datetime.now())
         self._cr.execute(''' 
                         SELECT id as product_id,coalesce(sum(qty), 0.0) as qty
                         FROM
@@ -139,10 +168,16 @@ class aspl_stock_inventory_report_ee(models.AbstractModel):
                         GROUP BY id
                     ''', (from_date, tuple(locations), product_data, from_date, tuple(locations), product_data))
 
+        # print('Start _get_beginning_inventory-3')
+        # print(fields.datetime.now())
         res = self._cr.dictfetchall()
+        # print('Start _get_beginning_inventory-4')
+        # print(fields.datetime.now())
         return res[0].get('qty', 0.00) if res else 0.00
 
     def get_product_sale_qty(self, record, product=None, warehouses=None):
+        # print('Start get_product_sale_qty')
+        # print(fields.datetime.now())
         if not product:
             product = self._get_products(record)
         if isinstance(product, list):
@@ -216,13 +251,19 @@ class aspl_stock_inventory_report_ee(models.AbstractModel):
                         ','.join(map(str, locations)), ','.join(map(str, locations)),
                         ','.join(map(str, locations)), ','.join(map(str, locations)),
                            start_date, end_date, ','.join(map(str, product_data)))
+            # print('Start get_product_sale_qty-1')
+            # print(fields.datetime.now())
             self._cr.execute(SQL)
             values = self._cr.dictfetchall()
+            # print('Start get_product_sale_qty-2')
+            # print(fields.datetime.now())
             if record.group_by_categ:
                 sort_by_categories = sorted(values, key=itemgetter('categ_id'))
                 records_by_categories = dict((k, [v for v in itr]) for k, itr in groupby(sort_by_categories, itemgetter('categ_id')))
                 if not record.with_zero:
                     today_record_by_cat = {}
+                    # print('Start get_product_sale_qty-3')
+                    # print(fields.datetime.now())
                     for key, value in records_by_categories.items():
                         for each in value:
                             product_beg_qty = self._get_beginning_inventory(record, each['product_id'])
@@ -238,6 +279,9 @@ class aspl_stock_inventory_report_ee(models.AbstractModel):
                                     today_record_by_cat.update({key:[each]})
                                 else:
                                     today_record_by_cat[key] += [each]
+
+                    # print('Start get_product_sale_qty-4')
+                    # print(fields.datetime.now())
                     return today_record_by_cat
                 else:
                     return records_by_categories

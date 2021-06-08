@@ -62,6 +62,7 @@ class stock_inventory_wizard(models.TransientModel):
     product_ids = fields.Many2many('product.product', 'product_stock_inv_rel', string="Products")
     category_ids = fields.Many2many('product.category', 'product_categ_stock_inv_rel', string="Categories")
     is_today_movement = fields.Boolean(string="Today Movement")
+    is_only_movement = fields.Boolean(string="Only Movement")
 
     @api.onchange('warehouse_ids')
     def onchange_warehouse_ids(self):
@@ -184,16 +185,33 @@ class stock_inventory_wizard(models.TransientModel):
             worksheet.write_merge(rows-1, rows-1, 0, 2, "Products", style=header_style)
             prod_beginning_qty = prod_qty_in = prod_qty_out = prod_qty_int = prod_qty_adjust = prod_ending_qty = 0.00
             if not self.group_by_categ:
+                print('Wizard-1')
+                print(fields.datetime.now())
                 product_ids = report_stock_inv_obj._get_products(self)
+                print('Wizard-2')
+                print(fields.datetime.now())
+                # print(len(product_ids))
+                count = 0
                 for product in product_ids:
+                    count +=1
+                    print('Wizard-3')
+                    print(str(count) + ':' + str(len(product_ids)))
+                    print (product.default_code)
+                    # print(fields.datetime.now())
                     beginning_qty = report_stock_inv_obj._get_beginning_inventory(self, product, warehouses=warehouse)
+                    # print('Wizard-4')
+                    # print(fields.datetime.now())
                     product_val = report_stock_inv_obj.get_product_sale_qty(self, product, warehouses=warehouse)
+                    # print('Wizard-5')
+                    # print(fields.datetime.now())
                     today_movment_qty = product_val.get('product_qty_in') + product_val.get('product_qty_out') \
                                         + product_val.get('product_qty_internal') + product_val.get(
                         'product_qty_adjustment')
 
                     ending_qty = beginning_qty + product_val.get('product_qty_in') + product_val.get('product_qty_out') \
                                  + product_val.get('product_qty_internal') + product_val.get('product_qty_adjustment')
+                    # print('Wizard-6')
+                    # print(fields.datetime.now())
                     if not self.with_zero and beginning_qty == 0.0 and product_val.get(
                             'product_qty_in') == 0.0 and product_val.get('product_qty_out') == 0.0 and \
                             product_val.get('product_qty_internal') == 0.0 and product_val.get(
@@ -232,6 +250,8 @@ class stock_inventory_wizard(models.TransientModel):
                     prod_ending_qty += ending_qty
                     prod_beginning_qty += beginning_qty
                     rows += 1
+                    print('Wizard-7-1')
+                    print(fields.datetime.now())
                 if global_data.get('Total'):
                     global_data['Total'].update({warehouse: [prod_beginning_qty,
                                                              prod_qty_in,
@@ -253,6 +273,8 @@ class stock_inventory_wizard(models.TransientModel):
                 worksheet.write(rows + 1, base_col + 6, prod_qty_int, style=header_style)
                 worksheet.write(rows + 1, base_col + 7, prod_qty_adjust, style=header_style)
                 worksheet.write(rows + 1, base_col + 8, prod_ending_qty, style=header_style)
+                print('Wizard-8')
+                print(fields.datetime.now())
             else:
                 rows += 1
                 product_val = report_stock_inv_obj.get_product_sale_qty(self, warehouses=warehouse)

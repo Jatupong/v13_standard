@@ -25,6 +25,7 @@
                         <field name="group_by_categ" class="oe_inline"/>
                         <field name="with_zero" attrs="{'invisible':[('is_today_movement','=',True)]}" class="oe_inline"/>
                         <field name="is_today_movement" attrs="{'invisible':[('with_zero','=',True)]}"/>
+                        <field name="is_only_movement"/>
                         <field name="filter_by" class="oe_inline"/>
                     </group>
                     <notebook attrs="{'invisible':[('filter_by','=',False)]}">

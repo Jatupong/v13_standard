@@ -8,16 +8,16 @@
 # You can`t redistribute it and/or modify it.
 #
 #################################################################################
+#13.0.2.0 - 06/06/2021 - add option to select only movement stock
 {
     'name': 'Odoo Stock Inventory Report (Enterprise)',
-    'version': '1.0',
+    'version': '13.0.2.0',
     'author': 'Acespritech Solutions Pvt. Ltd.',
     'summary': 'This module allows you to generate Stock Inventory Report with PDF and XLS format.',
     'description' :"""This module allows you to generate Stock Inventory Report with PDF and XLS format.""",
     'category': 'Stock',
     'website': 'http://www.acespritech.com',
     'depends': ['base', 'stock'],
-    'price': 40,
     'currency': 'EUR',
     'images': [
         'static/description/main_screenshot.png',
