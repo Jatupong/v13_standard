@@ -4,7 +4,7 @@
 
 {
     'name' : 'Print Purchase Report',
-    'version' : '11.0.1',
+    'version' : '13.0.1.1',
     'price' : 'Free',
     'currency': 'THB',
     'category': 'Purchase Report',
