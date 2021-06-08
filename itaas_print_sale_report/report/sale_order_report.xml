@@ -89,8 +89,7 @@
 
                     <table width="100%" class="font_fam">
                         <td width="20%" style="vertical-align: middle;">
-                            <img t-if="o.company_id.logo" t-att-src="'data:image/png;base64,%s' % to_text(o.company_id.logo)"
-                                 style="height: 100px; width: 150px;"/>
+                            <img t-if="o.company_id.logo" t-att-src="'data:image/png;base64,%s' % to_text(o.company_id.logo)" style="height: 100px; width: 150px;"/>
                         </td>
                         <td width="55%" style="vertical-align: middle;">
                             <div style="width:500px; word-wrap: break-word;">
@@ -102,7 +101,7 @@
                                     </B><br/>
                                     <B>
                                         <span t-field="o.company_id.eng_name"/>&amp;nbsp;
-                                        <t t-if="o.company_id.branch_no == '00000'"><span>(HEAD OFFICE)</span><br/></t>
+                                        <t t-if="o.company_id.branch_no == '00000'"><span>(Head office)</span><br/></t>
                                         <t t-if="o.company_id.branch_no != '00000'"><span t-field="o.company_id.branch_no"/><br/></t>
                                     </B>
                                 </font>
@@ -110,19 +109,20 @@
                                     <t t-set="company_address" t-value="o.company_id.get_company_full_address()"/>
                                     <span t-esc="' '.join([ address for address in company_address ])"/><br/>
                                     <t t-if="o.company_id.eng_address"><span t-field="o.company_id.eng_address"/><br/></t>
-                                    <span t-if="o.company_id.phone">โทรศัพท์&amp;nbsp;<span t-esc="o.company_id.phone"/>&amp;nbsp;</span>
-                                    <span t-if="o.company_id.email">อีเมล&amp;nbsp;<span t-esc="o.company_id.email"/>&amp;nbsp;<br/></span>
-                                    <span t-if="o.company_id.vat">เลขประจำตัวผู้เสียภาษีอากร&amp;nbsp;<span t-esc="o.company_id.vat"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.phone">Tel&amp;nbsp;<span t-esc="o.company_id.phone"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.email">Email&amp;nbsp;<span t-esc="o.company_id.email"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.phone">Website Link&amp;nbsp;<span t-esc="o.company_id.website"/>&amp;nbsp;<br/></span>
+                                    <span t-if="o.company_id.vat">เลขประจำตัวผู้เสียภาษี&amp;nbsp;<span t-esc="o.company_id.vat"/>&amp;nbsp;</span>
                                 </font>
                             </div>
                         </td>
                         <td width="25%" style="text-align:left; vertical-align: middle;">
                             <div style="text-align:center;">
-                                <font style="font-size: 20px;">
+                                <font style="font-size: 22px;">
                                     <strong>ใบสั่งขาย</strong><br/>
                                     <span>Sales Order</span>
                                 </font><br/>
-                                <font style="font-size: 18px;">
+                                <font style="font-size: 20px;">
                                     <span>หน้า</span>
                                     <span class="page"/>/<span class="topage"/><br/>
                                 </font>
@@ -144,7 +144,7 @@
                                         <td colspan="2">
                                             <table width="100%" class="table table-nobordered">
                                                 <tr>
-                                                    <td >
+                                                    <td>
                                                         <B><span>ที่อยู่/Address</span></B>
                                                     </td>
                                                     <td>
@@ -155,6 +155,16 @@
                                                     </td>
                                                 </tr>
                                             </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <B><span>ผู้ติดต่อ. </span></B>
+                                            <t t-if="o.user_id.name">
+                                                <span t-esc="o.user_id.name"/>
+                                            </t>
+                                            <t t-if="not o.user_id.name">
+                                            </t>
                                         </td>
                                     </tr>
                                     <tr>
@@ -189,30 +199,27 @@
                                             <span t-esc="o.partner_id.vat"/>
                                         </td>
                                     </tr>
-                                     <tr>
+                                    <tr>
                                         <td colspan="2">
-                                            <!--<table width="100%" style="border:1px solid black;" class="table table-nobordered">-->
-                                                <!--<tr>-->
-                                                    <!--<td>-->
-                                                    <div style="min-height:70px;">
-                                                        <B><span>สถานที่จัดส่ง/Delivery Address</span></B>&amp;nbsp; <t t-set="partner_shipping_address" t-value="o.partner_shipping_id.get_partner_full_address()"/>
+                                            <table width="100%" class="table table-nobordered">
+                                                <tr>
+                                                    <td>
+                                                        <B><span>สถานที่จัดส่ง</span></B>
+                                                    </td>
+                                                    <td>
+                                                        <div style="min-height:55px; min-width:430px;">
+                                                            <t t-set="partner_shipping_address" t-value="o.partner_shipping_id.get_partner_full_address()"/>
                                                             <span t-esc="' '.join([ address for address in partner_shipping_address ])"/>
-                                                            </div>
-<!--                                                    </td>-->
-<!--                                                    <td>-->
-                                                        <!--<div style="min-height:55px; min-width:430px;">-->
-                                                        <!--    <t t-set="partner_shipping_address" t-value="o.partner_shipping_id.get_partner_full_address()"/>-->
-                                                        <!--    <span t-esc="' '.join([ address for address in partner_shipping_address ])"/>-->
-                                                        <!--</div>-->
-                                                    <!--</td>-->
-                                                <!--</tr>-->
-                                            <!--</table>-->
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
                                         </td>
                                     </tr>
 
                                 </table>
                             </td>
-                            <td width="40%" >
+                            <td width="40%">
                                 <table width="100%" class="table table-nobordered">
                                     <tr>
                                         <td>
@@ -227,7 +234,7 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                            <B><span>พนักงานขาย/Salesperson </span></B><span t-field="o.user_id"/>
+                                            <B><span>พนักงานขาย/Sales person </span></B><span t-field="o.user_id"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -237,16 +244,15 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                            <B><span>เลขที่ใบสั่งซื้อ P/O No. </span></B> <span t-esc="o.client_order_ref"/>
+                                            <B><span>Validate/มีผลถึงวันที่ </span></B>
+                                            <span t-field="o.validity_date" t-options="{&quot;widget&quot;: &quot;date&quot;}"/>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <B><span>วันที่จัดส่ง/Delivery Date </span></B>
-                                            <span t-field="o.commitment_date" t-options="{&quot;widget&quot;: &quot;date&quot;}"/>
+                                            <B><span>เลขที่อ้างอิง/Reference No. </span></B> <span t-esc="o.client_order_ref"/>
                                         </td>
                                     </tr>
-
                                 </table>
                             </td>
                         </tr>
@@ -348,8 +354,7 @@
 
                     <t t-foreach="range(0,len(break_line),1)" t-as="x">
                         <!-->147 plus 5 line of untax, discount, after discount, tax, total = 7.9 * 5 = 40 = 187, remove some space then = 170-->
-                        <table width="100%" class="font_fam table table-bordered "
-                               style=" height:180mm; font-size: 18px; line-height:16px;">
+                        <table width="100%" class="font_fam table table-bordered " style=" height:180mm; font-size: 18px; line-height:16px;">
                             <thead>
                                 <tr>
                                     <t t-if="show_product_code">
@@ -358,8 +363,8 @@
                                         <th width="30%"><span>รายละเอียดสินค้า<br/>DESCRIPTION</span></th>
                                         <th width="9%"><span>จำนวน<br/>QUANTITY</span></th>
                                         <th width="9%"><span>หน่วย<br/>UNIT</span></th>
-                                        <th width="10%" ><span>ราคา/หน่วยละ<br/>UNIT PRICE</span></th>
-                                        <th width="7%" ><span>ส่วนลด<br/>DISCOUNT</span></th>
+                                        <th width="10%"><span>ราคา/หน่วยละ<br/>UNIT PRICE</span></th>
+                                        <th width="7%"><span>ส่วนลด<br/>DISCOUNT</span></th>
                                         <th width="14%"><span>จำนวนเงิน<br/>AMOUNT</span></th>
                                     </t>
                                     <t t-if="not show_product_code">
@@ -367,8 +372,8 @@
                                         <th width="40%"><span>รายละเอียดสินค้า<br/>Description</span></th>
                                         <th width="10%"><span>จำนวน<br/>Quantity</span></th>
                                         <th width="10%"><span>หน่วย<br/>Unit</span></th>
-                                        <th width="12%" ><span>ราคาหน่วยละ<br/>Unit Price</span></th>
-                                        <th width="10%" ><span>ส่วนลด<br/>DISCOUNT</span></th>
+                                        <th width="12%"><span>ราคาหน่วยละ<br/>Unit Price</span></th>
+                                        <th width="10%"><span>ส่วนลด<br/>DISCOUNT</span></th>
                                         <th width="15%"><span>จำนวนเงิน<br/>Amount</span></th>
                                     </t>
                                 </tr>
@@ -507,7 +512,7 @@
                                     </td>
                                     <td style="line-height:14px;"><span>รวม</span><br/><span>Total</span></td>
                                     <td colspan="2" align="right">
-                                        <span  t-if="end ==(break_line[len(break_line)-1])" t-esc="'{0:,.2f}'.format(float(o.amount_untaxed))"/>
+                                        <span t-if="end ==(break_line[len(break_line)-1])" t-esc="'{0:,.2f}'.format(float(o.amount_untaxed))"/>
                                     </td>
                                 </tr>
                                 <tr>
@@ -544,6 +549,10 @@
                                 </tr>
                             </tfoot>
                         </table>
+                        <t t-if="o.tax_discount_policy == 'untax'">
+                            <span t-if="end ==(break_line[len(break_line)-1])" class="font_fam" style="position: absolute;right: 150px;top: 540px; font-size: 18px;">(<span t-esc="'{0:,.2f}'.format(float(o.discount_value))"/>%)</span>
+                        </t>
+
                         <t t-set="start" t-value="break_line[x]"/>
                         <p style="page-break-after:always;"/>
                     </t>
@@ -576,8 +585,9 @@
                         }
                         table.table-bordered &gt; tbody &gt; tr &gt; td{
                         border:1px solid black;
-                        padding-left:15px;
-                        padding-right:15px;
+                        padding:5px;
+                        padding-left:10px;
+                        padding-right:10px;
                         }
                         table.table-bordered &gt; tfoot &gt; tr &gt; td{
                         border:1px solid black;
@@ -589,10 +599,7 @@
                         <tr>
                             <td width="50%" align="center">
                                 <div style="width:100%; height:90px; position:relative; border-bottom:1px solid black;">
-                                    <img t-if="o.create_uid.image_signature"
-                                         t-att-src="'data:image/png;base64,%s' % to_text(o.create_uid.image_signature)"
-                                         style="position: absolute; left:0px; right:0; left: 0; margin-left: auto; margin-right: auto; top:10px;
-                                                              max-height: 75px;  max-width:150px"/>
+                                    <img t-if="o.create_uid.image_signature" t-att-src="'data:image/png;base64,%s' % to_text(o.create_uid.image_signature)" style="position: absolute; left:0px; right:0; left: 0; margin-left: auto; margin-right: auto; top:10px;                                                               max-height: 75px;  max-width:150px"/>
                                 </div>
                                 <div>
                                     <span>ผู้เสนอราคา</span><br/>

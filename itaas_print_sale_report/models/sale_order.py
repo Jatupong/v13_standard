@@ -124,6 +124,29 @@ class SaleOrder_inherit(models.Model):
         }
 
     def baht_text(self, amount_total):
+        if amount_total >= 100:
+            amount_total_text = str(amount_total).split('.')
+
+            amount_text_before_point = amount_total_text[0]
+            amount_text_after_point = amount_total_text[1]
+            before_point_ten = int(amount_text_before_point[len(amount_text_before_point) - 2])
+            after_point = int(amount_text_after_point)
+            if before_point_ten == 0:
+                amount_before_point = float(amount_text_before_point) - 1
+                amount_text_before_point = bahttext(amount_before_point)
+                baht_text = amount_text_before_point.split('บาทถ้วน')
+                if after_point != 0:
+                    after_point = float(after_point) * 0.01
+                    amount_text_after_point = bahttext(after_point).split('บาท')
+                    baht_text = baht_text[0] + 'หนึ่งบาท' + amount_text_after_point[1]
+                else:
+                    baht_text = baht_text[0] + 'หนึ่งบาทถ้วน'
+                return baht_text
+        else:
+            baht_text = bahttext(amount_total)
+
+        return baht_text
+
         return bahttext(amount_total)
 
     def num2_words(self, amount_total):
