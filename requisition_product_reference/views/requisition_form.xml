@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_requisition_inherit_form" model="ir.ui.view">
+            <field name="name">requisition.form.inherit</field>
+            <field name="model">material.purchase.requisition</field>
+            <field name="inherit_id" ref="bi_material_purchase_requisitions.material_purchase_requisition_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet/group[1]" position="inside">
+                    <group>
+                        <field name="doc_reference" string="อ้างอิงเอกสาร"/>
+                        <label for="request_id" attrs="{'invisible': [('doc_reference', '!=', 'pr')],}"/>
+                        <div class="o_row" attrs="{'invisible': [('doc_reference', '!=', 'pr')],}">
+                            <field name="request_id" domain="[('state', '=', 'approved')]" attrs="{'required': [('doc_reference', '=', 'pr')],}"/>
+                            <button name="action_product_reference" context="{'doc': 'pr'}" type="object" class="oe_link" string="(Add)"/>
+                        </div>
+                        <label for="purchase_id" attrs="{'invisible': [('doc_reference', '!=', 'po')],}"/>
+                        <div class="o_row" attrs="{'invisible': [('doc_reference', '!=', 'po')],}">
+                            <field name="purchase_id" attrs="{'required': [('doc_reference', '=', 'po')],}" />
+                            <button name="action_product_reference" context="{'doc': 'po'}" type="object" class="oe_link" string="(Add)"/>
+                        </div>
+                        <label for="production_id" attrs="{'invisible': [('doc_reference', '!=', 'mo')],}"/>
+                        <div class="o_row" attrs="{'invisible': [('doc_reference', '!=', 'mo')],}">
+                            <field name="production_id" attrs="{'required': [('doc_reference', '=', 'mo')],}"/>
+                            <button name="action_product_reference"  context="{'doc': 'mo'}" type="object" class="oe_link" string="(Add)"/>
+                        </div>
+                        <field name="operation_id" domain="[('routing_id', '=', routing_id)]" attrs="{'invisible': [('doc_reference', '!=', 'mo')],}"/>
+                        <field name="routing_id"   attrs="{'invisible': [('doc_reference', '!=', 'mo')],}"/>
+
+                        <label for="repair_id" attrs="{'invisible': [('doc_reference', '!=', 'repair')],}"/>
+                        <div class="o_row" attrs="{'invisible': [('doc_reference', '!=', 'repair')],}">
+                            <field name="repair_id" attrs="{'required': [('doc_reference', '=', 'repair')],}"/>
+                            <button name="action_product_reference"  context="{'doc': 'repair'}" type="object" class="oe_link" string="(Add)"/>
+                        </div>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>
+
+

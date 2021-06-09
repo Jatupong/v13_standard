@@ -13,7 +13,7 @@
 				<field name="sequence"/>
 				<field name="adj_journal" attrs="{'required': [('bank_cheque','=',True)]}"/>
 				<field name="bank_cheque"/>
-
+				<field name="is_tax"/>
 			</field>
 			<field name="default_credit_account_id" position="after">
 				<field name="bank_for_cheque_account_id" attrs="{'invisible': [('bank_cheque','=',False)],'required': [('bank_cheque','=',True)]}"/>

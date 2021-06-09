@@ -78,17 +78,12 @@ class StockPicking_inherit(models.Model):
         print(break_page_line)
         return break_page_line
 
-    def baht_text(self, amount_total):
-        return bahttext(amount_total)
-
     def get_break_line_02(self, max_body_height, new_line_height, row_line_height, max_line_lenght):
         break_page_line = []
         count_height = 0
         count = 1
         line_default_code = 0
 
-        # print('get_break_line_02:', break_page_line)
-        # for line in self.move_lines.filtered(lambda x: x.quantity_done > 0.0):
         for line in self.move_lines:
 
             # count += 1
@@ -116,49 +111,6 @@ class StockPicking_inherit(models.Model):
             # if (line_move_line_ids > line_default_code and line_move_line_ids > line_name):
             else:
                 get_line = line_move_line_ids
-                # print("3")
-
-            print("get_line")
-            print(get_line)
-            line_height = row_line_height + ((get_line) * new_line_height)
-            print("line_height")
-            print(line_height)
-            count_height += line_height
-            if count_height > max_body_height:
-                break_page_line.append(count - 1)
-                count_height = line_height
-            count += 1
-        # last page
-        break_page_line.append(count - 1)
-
-        print(break_page_line)
-        return break_page_line
-
-
-
-    def get_break_line_without_package(self, max_body_height, new_line_height, row_line_height, max_line_lenght):
-        break_page_line = []
-        count_height = 0
-        count = 1
-        line_default_code = 0
-
-        # print('get_break_line_02:', break_page_line)
-        # for line in self.move_lines.filtered(lambda x: x.quantity_done > 0.0):
-        for line in self.move_line_ids:
-
-            # count += 1
-            # print(count)
-            # print(line.product_id.default_code)
-            # print(line.name)
-            if(line.product_id.default_code):
-                line_default_code = self.get_lines(line.product_id.default_code, 15)
-            line_name = self.get_lines(line.product_id.name, max_line_lenght)
-
-            if (line_default_code > line_name):
-                # print("1")
-                get_line = line_default_code
-            else:
-                get_line = line_name
                 # print("3")
 
             print("get_line")

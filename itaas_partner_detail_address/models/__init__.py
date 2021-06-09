@@ -4,3 +4,4 @@
 from.import res_district
 from.import res_subdistrict
 from.import res_partner
+from.import res_company

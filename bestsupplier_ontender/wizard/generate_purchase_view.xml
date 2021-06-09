@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_generate_po" model="ir.ui.view">
+        <field name="name">Generate Purchase Order</field>
+        <field name="model">generate.po</field>
+        <field name="arch" type="xml">
+            <form string="Generate Purchase Order">
+                <group string="Do you want to create the Purchase Order?" />
+                <footer>
+                    <button name="generate_po" string="Create Purchase Order"
+                        type="object" class="btn-primary" />
+                    or
+                    <button string="Cancel" class="oe_link"
+                        special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <act_window name="Generate PO"
+                res_model="generate.po"
+                binding_model="purchase.order.line"
+                binding_views="list"
+                view_mode="form"
+                target="new"
+                id="action_view_generate_po" />
+
+</odoo>
+

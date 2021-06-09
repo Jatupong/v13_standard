@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_order_stock_form" model="ir.ui.view">
+        <field name="name">sale.order.stock.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr='//header' position='inside'>
+                <button name="action_validate_delivered" states="sale,done" type="object" string="Delivery Validate"/>
+                <button name="%(sale.action_view_sale_advance_payment_inv)d" string="Create Invoice"
+                            type="action" context="{'default_advance_payment_method': 'percentage'}"
+                            attrs="{'invisible': ['|',('invoice_status', '!=', 'no'), ('state', '!=', 'delivery')]}"/>
+                <button name="action_cancel" states="delivery" type="object" string="Cancel"/>
+            </xpath>
+
+            <xpath expr='//field[@name="order_line"]/tree/field[@name="qty_delivered"]' position='attributes'>
+                <attribute name="attrs">{
+                    'column_invisible': [('parent.state', 'not in', ['sale', 'done','delivery'])],
+                    'readonly': [('qty_delivered_method', '!=', 'manual')]}</attribute>
+            </xpath>
+
+            <xpath expr='//field[@name="order_line"]' position='attributes'>
+                <attribute name="attrs">{'readonly': [('state', 'in', ('delivery','done','cancel'))]}</attribute>
+            </xpath>
+
+            <xpath expr='//field[@name="order_line"]/tree/field[@name="qty_to_invoice"]' position='after'>
+                <field name="qty_backorder" string="ค้างส่ง" attrs="{
+                'column_invisible': [('parent.state', 'not in', ['sale', 'done','delivery'])],
+                'readonly': [('qty_delivered_method', '!=', 'manual')]}" optional="show"/>
+            </xpath>
+
+            <xpath expr='//field[@name="order_line"]/tree/field[@name="price_unit"]' position='after'>
+                <field name="delivered_price_subtotal" string="มูลค่าส่งที่แล้ว" attrs="{
+                'column_invisible': [('parent.state', 'not in', ['sale', 'done', 'delivery'])],
+                'readonly': [('qty_delivered_method', '!=', 'manual')]}" optional="show" />
+                <field name="backorder_price_subtotal" string="มูลค่าค้างส่ง" attrs="{
+                'column_invisible': [('parent.state', 'not in', ['sale', 'done', 'delivery'])],
+                'readonly': [('qty_delivered_method', '!=', 'manual')]}" optional="show" />
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="view_order_line_stock_tree" model="ir.ui.view">
+        <field name="name">sale.order.line.stock.tree</field>
+        <field name="model">sale.order.line</field>
+        <field name="inherit_id" ref="sale.view_order_line_tree"/>
+        <field name="arch" type="xml">
+
+            <xpath expr='//tree/field[@name="qty_to_invoice"]' position='after'>
+                <field name="qty_backorder" string="ค้างส่ง" optional="show"/>
+            </xpath>
+
+            <xpath expr='//tree/field[@name="product_uom"]' position='after'>
+                <field name="delivered_price_subtotal" string="มูลค่าส่งที่แล้ว" optional="show"/>
+                <field name="backorder_price_subtotal" string="มูลค่าค้างส่ง" optional="show"/>
+            </xpath>
+
+            <xpath expr='//tree/field[@name="price_subtotal"]' position='replace'>
+                <field name="price_total" string="Total" optional="show"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="sale_order_line_action" model="ir.actions.act_window">
+        <field name="name">Sale Order Line</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.order.line</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="sale.view_order_line_tree"/>
+    </record>
+
+    <menuitem id="sale.report_sales_team"
+              name="Sale Order Line"
+              parent="sale.sale_order_menu"
+              action="sale_order_line_action"
+              sequence="10"/>
+
+    <menuitem id="menu_sale_stock_valuation"
+              name="Inventory Report"
+              parent="sale.menu_sale_report"
+              sequence="100"
+              groups="stock.group_stock_user"
+              action="stock.action_view_quants"/>
+
+    <menuitem action="stock.stock_move_action"
+              id="sale_stock_move_menu"
+              parent="sale.menu_sale_report"
+              sequence="140"
+              groups="stock.group_stock_user"/>
+
+
+</odoo>

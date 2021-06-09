@@ -8,9 +8,13 @@
         <field name="inherit_id" ref="product.product_template_form_view"/>
         <field name="arch" type="xml">
 
-            <field name="uom_po_id" position="after">
+            <field name="uom_id" position="after">
                 <field name="uom_category_id"/>
                 <field name="uom_class_ids" groups="uom.group_uom" options="{'no_create': True}" widget="many2many_tags"/>
+            </field>
+            <field name="uom_po_id" position="after">
+                <field name="uom_po_category_id"/>
+                <field name="uom_po_class_ids" groups="uom.group_uom" options="{'no_create': True}" widget="many2many_tags"/>
             </field>
 
         </field>

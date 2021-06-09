@@ -150,41 +150,42 @@ from ${object.company_id.name}.
                     </style>
 
                     <table width="100%" class="font_fam">
-                        <td width="20%" style="vertical-align: middle;">
-                            <img t-if="o.company_id.logo" t-att-src="'data:image/png;base64,%s' % to_text(o.company_id.logo)"
-                                 style="height: 100px; width: 150px;"/>
+                        <td width="22%" style="vertical-align: middle;">
+                            <img t-if="o.company_id.logo" t-att-src="'data:image/png;base64,%s' % to_text(o.company_id.logo)" style="max-height: 80px; max-width: 80px;"/>
                         </td>
-                        <td width="55%" style="vertical-align: middle;">
+                        <td width="60%" style="vertical-align: middle;">
                             <div style="width:500px; word-wrap: break-word;">
                                 <font style="font-size: 22px;">
                                     <B>
                                         <span t-field="o.company_id.name"/>&amp;nbsp;
                                         <t t-if="o.company_id.branch_no == '00000'"><span>(สำนักงานใหญ่)</span></t>
                                         <t t-if="o.company_id.branch_no != '00000'">(<span t-field="o.company_id.branch_no"/>)</t>
-                                    </B><br/>
-                                    <B>
-                                        <span t-field="o.company_id.eng_name"/>&amp;nbsp;
-                                        <t t-if="o.company_id.branch_no == '00000'"><span>(Head office)</span><br/></t>
-                                        <t t-if="o.company_id.branch_no != '00000'"><span t-field="o.company_id.branch_no"/><br/></t>
                                     </B>
-                                </font>
+                                </font><br/>
                                 <font style="font-size: 20px; line-height:18px;">
-                                    <t t-set="company_address" t-value="o.company_id.get_company_full_address()"/>
-                                    <span t-esc="' '.join([ address for address in company_address ])"/><br/>
-                                    <t t-if="o.company_id.eng_address"><span t-field="o.company_id.eng_address"/><br/></t>
-                                    <span t-if="o.company_id.phone">โทรศัพท์&amp;nbsp;<span t-esc="o.company_id.phone"/>&amp;nbsp;</span>
-                                    <span t-if="o.company_id.email">อีเมล&amp;nbsp;<span t-esc="o.company_id.email"/>&amp;nbsp;<br/></span>
+                                    <span t-if="o.company_id.building"><span t-field="o.company_id.building"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.roomnumber">ห้องที่&amp;nbsp;<span t-field="o.company_id.roomnumber"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.floornumber">ชั้นที่&amp;nbsp;<span t-field="o.company_id.floornumber"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.village">หมู่บ้าน&amp;nbsp;<span t-field="o.company_id.village"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.house_number"><span t-field="o.company_id.house_number"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.moo_number">หมู่&amp;nbsp;<span t-field="o.company_id.moo_number"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.soi_number">ซอย&amp;nbsp;<span t-field="o.company_id.soi_number"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.street"><span t-esc="o.company_id.street"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.street2"><span t-esc="o.company_id.street2"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.city and o.company_id.state_id and o.company_id.state_id.code == 'BKK'">เขต<span t-field="o.company_id.city"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.city and o.company_id.state_id and o.company_id.state_id.code != 'BKK'">อ.<span t-field="o.company_id.city"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.state_id and o.company_id.state_id.code == 'BKK'">&amp;nbsp;<span t-field="o.company_id.state_id.name"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.state_id and o.company_id.state_id.code != 'BKK'">จ.&amp;nbsp;<span t-field="o.company_id.state_id.name"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.zip"><span t-esc="o.company_id.zip"/>&amp;nbsp;</span>
+                                    <span t-if="o.company_id.phone">โทรศัพท์&amp;nbsp;<span t-esc="o.company_id.phone"/>&amp;nbsp;</span><br/>
+                                    <span t-if="o.company_id.email">อีเมล&amp;nbsp;<span t-esc="o.company_id.email"/>&amp;nbsp;</span>
                                     <span t-if="o.company_id.vat">เลขประจำตัวผู้เสียภาษีอากร&amp;nbsp;<span t-esc="o.company_id.vat"/>&amp;nbsp;</span>
                                 </font>
                             </div>
                         </td>
-                        <td width="25%" style="text-align:left; vertical-align: middle;">
+                        <td width="18%" style="text-align:left; vertical-align: middle;">
                             <div style="text-align:center;">
-                                <font style="font-size: 20px;">
-                                    <strong>ใบเสนอราคา</strong><br/>
-                                    <span>QUOTATION</span>
-                                </font><br/>
-                                <font style="font-size: 18px;">
+                                <font style="font-size: 16px;">
                                     <span>หน้า</span>
                                     <span class="page"/>/<span class="topage"/><br/>
                                 </font>
@@ -192,120 +193,91 @@ from ${object.company_id.name}.
                         </td>
                     </table>
 
+                    <div class="col-12 font_fam" style="text-align:center; margin-top:10px;">
+                        <font style="font-size: 24px;">
+                            <t t-if="o.state != 'sale'">
+                                <B><span>ใบเสนอราคา QUOTATION</span></B>
+                            </t>
+                            <t t-if="o.state == 'sale'">
+                                <B><span>ใบสั่งขาย ORDER</span></B>
+                            </t>
+                        </font>
+                    </div>
+
                     <table width="100%" class="font_fam table table-bordered" style="font-size: 18px; margin-top:10px;">
                         <tr>
-                            <td width="60%">
+                            <td width="65%" rowspan="5">
                                 <table width="100%" class="table table-nobordered">
                                     <tr>
                                         <td colspan="2">
-                                            <B><span>ชื่อลูกค้า/Customer Name</span></B>
+                                            <B><span>ชื่อลูกค้า Customer Name</span></B>
                                             <span t-field="o.partner_id"/>
                                         </td>
                                     </tr>
                                     <tr>
+                                        <td colspan="2"><B><span>ที่อยู่ Address</span></B></td>
+                                    </tr>
+                                    <tr>
                                         <td colspan="2">
-                                            <table width="100%" class="table table-nobordered">
-                                                <tr>
-                                                    <td >
-                                                        <B><span>ที่อยู่/Address</span></B>
-                                                    </td>
-                                                    <td>
-                                                        <div style="min-height:55px; max-width:420px; word-break: break-word;">
-                                                            <t t-set="partner_address" t-value="o.partner_id.get_partner_full_address()"/>
-                                                            <span t-esc="' '.join([ address for address in partner_address ])"/>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </table>
+                                            <div style="line-height:16px; height:60px; width:580px; word-wrap: break-word;">
+                                                <t t-if="o.partner_id.street"><span t-field="o.partner_id.street"/>&amp;nbsp;</t>
+                                                <t t-if="o.partner_id.street2"><span t-field="o.partner_id.street2"/>&amp;nbsp;</t>
+                                                <span t-if="o.partner_id.sub_district_id.name and o.partner_id.state_id.code == 'BKK'"><span t-field="o.partner_id.sub_district_id.name"/>&amp;nbsp;</span>
+                                                <span t-if="o.partner_id.sub_district_id.name and o.partner_id.state_id.code != 'BKK'"><span t-field="o.partner_id.sub_district_id.name"/>&amp;nbsp;</span>
+                                                <span t-if="o.partner_id.district_id.name and o.partner_id.state_id.code == 'BKK'"><span t-field="o.partner_id.district_id.name"/>&amp;nbsp;</span>
+                                                <span t-if="o.partner_id.district_id.name and o.partner_id.state_id.code != 'BKK'"><span t-field="o.partner_id.district_id.name"/>&amp;nbsp;</span>
+                                                <span t-if="o.partner_id.state_id.name and o.partner_id.state_id.code == 'BKK'"><span t-field="o.partner_id.state_id.name"/>&amp;nbsp;</span>
+                                                <span t-if="o.partner_id.state_id.name and o.partner_id.state_id.code != 'BKK'"><span t-field="o.partner_id.state_id.name"/>&amp;nbsp;</span>
+                                                <t t-if="o.partner_id.zip"><span t-esc="o.partner_id.zip"/>&amp;nbsp;</t>
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td width="50%">
-                                            <B><span>โทร/Tel. </span></B>
-                                            <t t-if="o.partner_id.phone">
-                                                <t t-set="partner_phone" t-value="o.partner_id.phone.split(' ')"/>
-                                                <t t-if="partner_phone[0] == '+66'">
-                                                    0<span t-esc="' '.join([ phone for phone in partner_phone[1:] ])"/>
-                                                </t>
-                                                <t t-else="">
-                                                    <span t-esc="o.partner_id.phone"/>
-                                                </t>
-                                            </t>
+                                        <td>
+                                            <B><span>โทร/Tel. </span></B><span t-esc="o.partner_id.phone"/>
                                         </td>
-                                        <td width="50%">
-                                            <B><span>แฟกซ์/Fax. </span></B>
-                                            <t t-if="o.partner_id.fax">
-                                                <t t-set="partner_fax" t-value="o.partner_id.fax.split(' ')"/>
-                                                <t t-if="partner_fax[0] == '+66'">
-                                                    0<span t-esc="' '.join([ fax for fax in partner_fax[1:] ])"/>
-                                                </t>
-                                                <t t-else="">
-                                                    <span t-esc="o.partner_id.fax"/>
-                                                </t>
-                                            </t>
+                                        <td>
+                                            <B><span>แฟกซ์/Fax. </span></B><span t-esc="o.partner_id.fax"/>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td colspan="2">
-                                            <B><span>เลขประจำตัวผู้เสียภาษีอากร/Tax ID No.</span></B>
+                                            <B><span>เลขประจำตัวผู้เสียภาษีอากร/Tax ID </span></B>
                                             <span t-esc="o.partner_id.vat"/>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td colspan="2">
-                                            <table width="100%" class="table table-nobordered">
-                                                <tr>
-                                                    <td>
-                                                        <B><span>สถานที่จัดส่ง</span></B>
-                                                    </td>
-                                                    <td>
-                                                        <div style="min-height:55px; min-width:430px;">
-                                                            <t t-set="partner_shipping_address" t-value="o.partner_shipping_id.get_partner_full_address()"/>
-                                                            <span t-esc="' '.join([ address for address in partner_shipping_address ])"/>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-
-                                </table>
-                            </td>
-                            <td width="40%" >
-                                <table width="100%" class="table table-nobordered">
-                                    <tr>
-                                        <td>
-                                            <B><span>วันที่/Date </span></B>
-                                            <span t-field="o.date_order" t-options="{&quot;widget&quot;: &quot;date&quot;}"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <B><span>เลขที่ใบQuotation/เสนอราคา No. </span></B><span t-field="o.name"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <B><span>พนักงานขาย/Sales person </span></B><span t-field="o.user_id"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <B><span>เงื่อนไขการชำระเงิน/Term of Payment </span></B><span t-field="o.payment_term_id"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <B><span>ราคานี้ถึงวันที่ครบกำหนดวันที่/Expiry Date </span></B>
-                                            <span t-field="o.validity_date" t-options="{&quot;widget&quot;: &quot;date&quot;}"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
                                             <B><span>เลขที่ใบสั่งซื้อ P/O No. </span></B> <span t-esc="o.client_order_ref"/>
                                         </td>
                                     </tr>
                                 </table>
+                            </td>
+                            <td width="35%" >
+                                <B><span>วันที่ Date </span></B>
+                                <t t-if="o.date_order">
+                                    <span t-field="o.date_order" t-options="{&quot;widget&quot;: &quot;date&quot;}"/>
+                                </t>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <B><span>เลขที่ใบสั่งขาย No. </span></B><span t-field="o.name"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <B><span>พนักงานขาย Sales man No. </span></B><span t-field="o.user_id"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <B><span>กำหนดชำระเงิน Term </span></B><span t-field="o.payment_term_id"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <B><span>ครบกำหนด Due Date </span></B><span t-field="o.validity_date" t-options="{&quot;widget&quot;: &quot;date&quot;}"/>
                             </td>
                         </tr>
                     </table>
@@ -395,9 +367,9 @@ from ${object.company_id.name}.
                     <!-- unit is mm --> <!-- max height a4 = 297, deduct margin and bottom 100, 50 and left 147, 30px per line then max = 15 line-->
                     <!--t t-set="max_body_line" t-value="15"-->
                     <!-- header of tbody take 2 new light = 15, then 147 - 15 = 132-->
-                    <t t-set="max_body_height" t-value="120"/>
-                    <t t-set="new_line_height" t-value="5"/>
-                    <t t-set="row_line_height" t-value="5"/> <!--- 30px = 7.9375 mm -->
+                    <t t-set="max_body_height" t-value="132"/>
+                    <t t-set="new_line_height" t-value="2"/>
+                    <t t-set="row_line_height" t-value="7.94"/> <!--- 30px = 7.9375 mm -->
                     <!--#############it may reduce to 30 from invoice as 40, due to it has code column-->
 
                     <t t-set="break_line" t-value="o.get_break_line(max_body_height,new_line_height,row_line_height,max_line_lenght)"/>
@@ -407,26 +379,24 @@ from ${object.company_id.name}.
                     <t t-foreach="range(0,len(break_line),1)" t-as="x">
                         <!-->147 plus 5 line of untax, discount, after discount, tax, total = 7.9 * 5 = 40 = 187, remove some space then = 170-->
                         <table width="100%" class="font_fam table table-bordered "
-                               style=" height:180mm; font-size: 18px; line-height:16px;">
+                               style=" height:170mm; font-size: 18px; line-height:16px;">
                             <thead>
                                 <tr>
                                     <t t-if="show_product_code">
-                                        <th width="5%"><span>ลำดับ<br/>No.</span></th>
-                                        <th width="15%"><span>รหัส<br/>CODE</span></th>
-                                        <th width="30%"><span>รายละเอียดสินค้า<br/>DESCRIPTION</span></th>
-                                        <th width="9%"><span>จำนวน<br/>QUANTITY</span></th>
-                                        <th width="9%"><span>หน่วย<br/>UNIT</span></th>
-                                        <th width="10%" ><span>ราคา/หน่วยละ<br/>UNIT PRICE</span></th>
-                                        <th width="7%" ><span>ส่วนลด<br/>DISCOUNT</span></th>
-                                        <th width="14%"><span>จำนวนเงิน<br/>AMOUNT</span></th>
-                                    </t>
-                                    <t t-if="not show_product_code">
-                                        <th width="5%"><span>ลำดับ<br/>No.</span></th>
-                                        <th width="40%"><span>รายละเอียดสินค้า<br/>Description</span></th>
+                                        <th width="5%"><span>ลำดับ<br/>Item</span></th>
+                                        <th width="15%"><span>รหัส<br/>Code</span></th>
+                                        <th width="30%"><span>รายการ<br/>Description</span></th>
                                         <th width="10%"><span>จำนวน<br/>Quantity</span></th>
                                         <th width="10%"><span>หน่วย<br/>Unit</span></th>
-                                        <th width="12%" ><span>ราคาหน่วยละ<br/>Unit Price</span></th>
-                                        <th width="10%" ><span>ส่วนลด<br/>DISCOUNT</span></th>
+                                        <th width="15%" ><span>ราคา/หน่วยละ<br/>Unit Price</span></th>
+                                        <th width="15%"><span>จำนวนเงิน<br/>Amount</span></th>
+                                    </t>
+                                    <t t-if="not show_product_code">
+                                        <th width="5%"><span>ลำดับ<br/>Item</span></th>
+                                        <th width="45%"><span>รายการ<br/>Description</span></th>
+                                        <th width="10%"><span>จำนวน<br/>Quantity</span></th>
+                                        <th width="10%"><span>หน่วย<br/>Unit</span></th>
+                                        <th width="15%" ><span>ราคา/หน่วยละ<br/>Unit Price</span></th>
                                         <th width="15%"><span>จำนวนเงิน<br/>Amount</span></th>
                                     </t>
                                 </tr>
@@ -469,18 +439,6 @@ from ${object.company_id.name}.
                                             <td align="right">
                                                 <span t-esc="'{0:,.2f}'.format(float(o.order_line[y].price_unit))"/>
                                             </td>
-                                            <td align="center">
-                                                <t t-if="o.order_line[y].discount_fixed and not o.order_line[y].discount">
-                                                    <span t-esc="'{0:,.2f}'.format(abs(float(o.order_line[y].discount_fixed)))"/>
-                                                </t>
-                                                <t t-if="o.order_line[y].discount and not o.order_line[y].discount_fixed">
-                                                    <span t-esc="'{0:,.0f}'.format(abs(float(o.order_line[y].discount)))"/>%
-                                                </t>
-                                                <t t-if="o.order_line[y].discount_fixed and o.order_line[y].discount">
-                                                    <span t-esc="'{0:,.0f}'.format(abs(float(o.order_line[y].discount)))"/>% +
-                                                    <span t-esc="'{0:,.2f}'.format(abs(float(o.order_line[y].discount_fixed)))"/>
-                                                </t>
-                                            </td>
                                             <td align="right" class="td_right">
                                                 <span t-esc="'{0:,.2f}'.format(abs(float(o.order_line[y].price_total)))" t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;o.currency_id&quot;}"/>
                                             </td>
@@ -522,18 +480,6 @@ from ${object.company_id.name}.
                                             <td align="right">
                                                 <span t-esc="'{0:,.2f}'.format(float(o.order_line[y].price_unit))"/>
                                             </td>
-                                            <td align="center">
-                                                <t t-if="o.order_line[y].discount_fixed and not o.order_line[y].discount">
-                                                    <span t-esc="'{0:,.2f}'.format(abs(float(o.order_line[y].discount_fixed)))"/>
-                                                </t>
-                                                <t t-if="o.order_line[y].discount and not o.order_line[y].discount_fixed">
-                                                    <span t-esc="'{0:,.0f}'.format(abs(float(o.order_line[y].discount)))"/>%
-                                                </t>
-                                                <t t-if="o.order_line[y].discount_fixed and o.order_line[y].discount">
-                                                    <span t-esc="'{0:,.0f}'.format(abs(float(o.order_line[y].discount)))"/>% +
-                                                    <span t-esc="'{0:,.2f}'.format(abs(float(o.order_line[y].discount_fixed)))"/>
-                                                </t>
-                                            </td>
                                             <td align="right" class="td_right">
                                                 <span t-esc="'{0:,.2f}'.format(abs(float(o.order_line[y].price_total)))" t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;o.currency_id&quot;}"/>
                                             </td>
@@ -564,41 +510,40 @@ from ${object.company_id.name}.
                                         </table>
                                     </td>
                                     <td style="line-height:14px;"><span>รวม</span><br/><span>Total</span></td>
-                                    <td colspan="2" align="right">
+                                    <td align="right">
                                         <span  t-if="end ==(break_line[len(break_line)-1])" t-esc="'{0:,.2f}'.format(float(o.amount_untaxed))"/>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td t-att-colspan="colspan_foot" rowspan="5">
+                                    <td t-att-colspan="colspan_foot" rowspan="2">
                                         <strong>หมายเหตุ/Remark</strong><br/>
                                         <t t-if="end ==(break_line[len(break_line)-1])">
                                             <span t-field="o.note"/>
                                         </t>
                                     </td>
                                     <td style="line-height:14px;"><span>ส่วนลด</span><br/><span>Discount</span></td>
-                                    <td colspan="2" align="right">
+                                    <td align="right">
                                         <span t-if="end ==(break_line[len(break_line)-1])" t-esc="'{0:,.2f}'.format(float(o.discounted_amount))"/>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td style="line-height:14px;"><span>คงเหลือ</span><br/><span>Subtotal</span></td>
-                                    <td colspan="2" align="right"><span t-if="end ==(break_line[len(break_line)-1])" t-esc="'{0:,.2f}'.format(float(o.amount_untaxed - o.discounted_amount))"/></td>
+                                    <td align="right"><span t-if="end ==(break_line[len(break_line)-1])" t-esc="'{0:,.2f}'.format(float(o.amount_untaxed - o.discounted_amount))"/></td>
                                 </tr>
+
                                 <tr>
-                                    <td style="line-height:14px;"><span>ภาษีมูลค่าเพิ่ม </span><br/><span>VAT </span>
-                                        <t t-set="tax_line_ids" t-value="o.order_line.mapped('tax_id')"/>
-                                        <t t-if="tax_line_ids">
-                                            <span t-esc="'%, '.join(map(lambda x: (str(int(x.amount)) or x.name), tax_line_ids))"/>%
-                                        </t>
-                                        <t t-if="not tax_line_ids">
-                                            <span t-field="o.company_id.standard_tax"/>%
-                                        </t>
+                                    <td t-att-colspan="colspan_foot" rowspan="2" style="line-height:16px; vertical-align: middle;">
+                                        <span>- สินค้าตามรายการข้างต้น แม้จะได้ส่งมอบแก่ผู้ซื้อแล้วก็ยังคงเป็นทรัพย์สินของผู้ขายกว่าผู้ซื้อได้ชำระเงินเสร็จเรียบร้อย</span>
+                                        <br/>
+                                        <span>- ได้รับสินค้าดังรายการข้างต้นไว้ถูกต้องในสภาพเรียบร้อยดีแล้ว</span>
                                     </td>
-                                    <td colspan="2" align="right"><span t-if="end ==(break_line[len(break_line)-1])" t-esc="'{0:,.2f}'.format(float(o.amount_tax))"/></td>
+                                    <td style="line-height:14px;"><span>ภาษีมูลค่าเพิ่ม </span><br/><span>VAT </span>
+                                        <span t-field="o.company_id.standard_tax"/>%</td>
+                                    <td align="right"><span t-if="end ==(break_line[len(break_line)-1])" t-esc="'{0:,.2f}'.format(float(o.amount_tax))"/></td>
                                 </tr>
                                 <tr>
                                     <td style="line-height:14px;"><span>ยอดเงินสุทธิ </span><br/><span>Net Total</span></td>
-                                    <td colspan="2" align="right"><span t-if="end ==(break_line[len(break_line)-1])" t-esc="'{0:,.2f}'.format(float(o.amount_total))"/></td>
+                                    <td align="right"><span t-if="end ==(break_line[len(break_line)-1])" t-esc="'{0:,.2f}'.format(float(o.amount_total))"/></td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -634,9 +579,8 @@ from ${object.company_id.name}.
                         }
                         table.table-bordered &gt; tbody &gt; tr &gt; td{
                         border:1px solid black;
-                        padding:5px;
-                        padding-left:10px;
-                        padding-right:10px;
+                        padding:3px;
+                        height:35px;
                         }
                         table.table-bordered &gt; tfoot &gt; tr &gt; td{
                         border:1px solid black;
@@ -646,33 +590,46 @@ from ${object.company_id.name}.
 
                     <table width="100%" class="font_fam table table-bordered" style="font-size:20px; line-height:20px;">
                         <tr>
-                            <td width="33%" align="center" >
-                                <div style="width:100%; height:90px; position:relative; border-bottom:1px solid black;">
+                            <td class="col-xs-3" align="center">
+                                <div style="width:100%; height:80px; position:relative;">
                                     <br/><br/><br/><br/>
                                 </div>
-                                <div>
-                                    <span>ผู้อนุมัติสั่งซื้อ</span><br/>
+                                <div style="line-height:16px;">
+                                    <span>__________________________</span><br/>
+                                    <span>ผู้รับสินค้า</span><br/>
                                     <span>Received By</span><br/>
                                 </div>
                             </td>
-                            <td width="34%" align="center">
-                                <div style="width:100%; height:90px; position:relative; border-bottom:1px solid black;">
+                            <td class="col-xs-3" align="center">
+                                <div style="width:100%; height:80px; position:relative;">
+                                    <br/><br/><br/><br/>
+                                </div>
+                                <div style="line-height:16px;">
+                                    <span>__________________________</span><br/>
+                                    <span>ผู้ส่งสินค้า</span><br/>
+                                    <span>Delivered By</span><br/>
+                                </div>
+                            </td>
+                            <td class="col-xs-3" align="center">
+                                <div style="width:100%; height:80px; position:relative;">
                                     <img t-if="o.create_uid.image_signature"
                                          t-att-src="'data:image/png;base64,%s' % to_text(o.create_uid.image_signature)"
                                          style="position: absolute; left:0px; right:0; left: 0; margin-left: auto; margin-right: auto; top:10px;
                                                               max-height: 75px;  max-width:150px"/>
                                 </div>
-                                <div>
-                                    <span>ผู้เสนอราคา</span><br/>
+                                <div style="line-height:16px;">
+                                    <span>__________________________</span><br/>
+                                    <span>ผู้ออกเอกสาร</span><br/>
                                     <span>Created By</span><br/>
                                 </div>
                             </td>
-                            <td width="33%" align="center">
-                                <div style="width:100%; height:90px; position:relative; border-bottom:1px solid black;">
+                            <td class="col-xs-3" align="center">
+                                <div style="width:100%; height:80px; position:relative;">
                                     <br/><br/><br/><br/>
                                 </div>
-                                <div>
-                                    <span>ลายเซ็นผู้มีอำนาจ</span><br/>
+                                <div style="line-height:16px;">
+                                    <span>__________________________</span><br/>
+                                    <span>ลายเซ็นผู้รับมอบอำนาจ</span><br/>
                                     <span>Authorized Signature</span><br/>
                                 </div>
                             </td>

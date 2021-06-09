@@ -9,7 +9,10 @@
     "category": "Purchase Management",
     "post_init_hook": "post_init_hook",
     "depends": ["hr", "purchase_request"],
-    "data": ["views/purchase_request_department_view.xml"],
+    "data": [
+        "views/purchase_request_department_view.xml",
+        "wizard/purchase_request_line_make_purchase_order_view.xml"
+    ],
     "license": "LGPL-3",
     "installable": True,
 }
