@@ -2,9 +2,10 @@
 # Copyright (C) 2016-Today  ITAAS (<http://www.itaas.co.th/>).
 # fix perpetual create account entry one by one
 # fix perpetual create account entry all
+#13.0.1.3 - 11/06/2021 - add multiple record from menu action
 {
     "name": "Itaas Cheque Return",
-    'version': '13.0.1.2',
+    'version': '13.0.1.3',
     "category": 'itaas',
     'summary': 'Itaas Cheque Return.',
     "description": """
