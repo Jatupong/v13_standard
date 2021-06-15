@@ -6,7 +6,7 @@
 {
     "name": "Sale order revisions",
     "summary": "Keep track of revised quotations",
-    "version": "13.0.1.0.0",
+    "version": "13.0.2.0",
     "category": "Sale Management",
     "author": "Agile Business Group,"
               "Dreambits,"

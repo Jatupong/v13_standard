@@ -10,7 +10,7 @@
     "sequence": 1,
     "author": "IT as a Service Co., Ltd.",
     "website": "http://www.itaas.co.th/",
-    "version": '13.0.0.2',
+    "version": '13.0.2.0',
     "depends": ['product','purchase','sale','account'],
     "data": [
 

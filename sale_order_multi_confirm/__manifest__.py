@@ -3,7 +3,7 @@
 
 {
     'name': 'Quotations/Sales Orders Multiple Confirm',
-    'version': '13.0.1',
+    'version': '13.0.2.0',
     'category': 'Sales',
     'author': 'ITAAS',
     'sequence': 0.00,

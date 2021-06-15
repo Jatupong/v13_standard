@@ -20,7 +20,7 @@
   Pricelist Security App, Pricelist Allocation Module, User Pricelist, Pricelist Visiblity Odoo.
 
                    """,
-    "version": "13.0.1",
+    "version": "13.0.2.0",
     "depends": ['base', 'sale', 'sale_management'],
     "application" : True,
     "data": [

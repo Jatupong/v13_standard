@@ -21,7 +21,7 @@
 {
     'name': 'Sale Order Line Number',
     'description': 'Add automatic numeration for Sale Order lines',
-    'version': '13.0.0.1',
+    'version': '13.0.2.0',
     'category': 'Sale',
     'sequence': 14,
     'summary': '',
