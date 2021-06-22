@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="pot_view_purchase_request_line_make_purchase_order" model="ir.ui.view">
+        <field name="name">POT Purchase Request Line Make Purchase Order</field>
+        <field name="model">purchase.request.line.make.purchase.order</field>
+        <field name="inherit_id" ref="purchase_request.view_purchase_request_line_make_purchase_order"/>
+        <field name="arch" type="xml">
+
+            <field name="supplier_id" position="after">
+                <field name="purchase_type_id" required="1"/>
+            </field>
+
+        </field>
+    </record>
+
+</odoo>
