@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="purchase_order_form_evaluation" model="ir.ui.view">
+        <field name="name">purchase.order.form.evaluation</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//notebook" position="inside">
+                <page name="evaluation" string="Evaluation">
+                    <field name="evaluation_ids" readonly="1">
+                        <tree create="0" delete="0" >
+                            <field name="date_evaluation"/>
+                            <field name="picking_id"/>
+                            <field name="type_id"/>
+                            <field name="score"/>
+                            <field name="score_deduct"/>
+                            <field name="score_total"/>
+                            <field name="description"/>
+                            <field name="picking_state"/>
+                        </tree>
+                        <form>
+                            <group>
+                                <group>
+                                    <field name="date_evaluation"/>
+                                    <field name="picking_id" />
+                                    <field name="type_id"/>
+                                </group>
+                                <group>
+                                    <field name="score"/>
+                                    <field name="score_deduct"/>
+                                    <field name="score_total"/>
+                                </group>
+                                <group colspan="2">
+                                    <field name="description"/>
+                                </group>
+                            </group>
+                        </form>
+                    </field>
+                    <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
+                        <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                            <label for="score_evaluation" />
+                        </div>
+                        <field name="score_evaluation" nolabel="1" class="oe_subtotal_footer_separator"/>
+                    </group>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

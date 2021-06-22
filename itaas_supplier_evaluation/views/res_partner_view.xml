@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_partner_evaluation_form_inherit" model="ir.ui.view">
+        <field name="name">view.partner.evaluation.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Stock Evaluation">
+                    <field name="evaluation_ids" readonly="1">
+                        <tree editable="bottom" create="0">
+                            <field name="date_evaluation"/>
+                            <field name="picking_id"/>
+                            <field name="purchase_id"/>
+                            <field name="type_id"/>
+                            <field name="score"/>
+                            <field name="score_deduct"/>
+                            <field name="score_total"/>
+                            <field name="description"/>
+                            <field name="picking_state"/>
+                        </tree>
+                        <form>
+                            <group>
+                                <group>
+                                    <field name="date_evaluation"/>
+                                    <field name="purchase_id"/>
+                                    <field name="purchase_id"/>
+                                    <field name="type_id"/>
+                                </group>
+                                <group>
+                                    <field name="score"/>
+                                    <field name="score_deduct"/>
+                                    <field name="score_total"/>
+                                </group>
+                                <group colspan="2">
+                                    <field name="description"/>
+                                </group>
+                            </group>
+                        </form>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
