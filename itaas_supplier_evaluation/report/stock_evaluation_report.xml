@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="summary_stock_evaluation_id">
+        <t t-call="web.basic_layout">
+            <t t-foreach="docs" t-as="o">
+
+                <div class="header">
+                    <style>
+                        @font-face
+                        {
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_supplier_evaluation/static/THSarabun.ttf") format('opentype');
+                        }
+                        .font_fam{
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_supplier_evaluation/static/THSarabun.ttf") format('opentype');
+                        }
+                        table.table-bordered {
+                        border:1px solid black;
+                        padding:3px;
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_supplier_evaluation/static/THSarabun.ttf") format('opentype');
+                        margin:0px;
+                        }
+                        table.table-bordered &gt; thead &gt; tr &gt; th{
+                        border:1px solid black;
+                        padding:3px;
+                        text-align:center;
+                        }
+                        table.table-bordered &gt; tbody &gt; tr &gt; td{
+                        border:1px solid black;
+                        padding:3px;
+                        }
+                        table.table-bordered &gt; tfoot &gt; tr &gt; td{
+                        border:1px solid black;
+                        padding:3px;
+                        }
+                    </style>
+
+                    <div class="col-xs-12 font_fam" style="text-align:right; font-size: 16px;">
+                        <span>Page</span>
+                        <span class="page"/>/<span class="topage"/>
+                    </div>
+
+                    <table width="100%" class="table table-bordered">
+                        <tr>
+                            <td width="15%" rowspan="2" style="vertical-align:middle; border:0px solid white;">
+                                <div>
+                                    <img t-if="o.company_id.logo" t-att-src="'data:image/png;base64,%s' % to_text(o.company_id.logo)" style="height:60px; width: 110px;"/>
+                                </div>
+                            </td>
+                            <td width="85%" rowspan="2" style="vertical-align:middle; border:0px solid white; border-right:1px solid black;">
+                                <div style="font-size: 20px;">
+                                    <span t-field="o.company_id.name"/>&amp;nbsp;
+                                    <t t-if="o.company_id.branch_no == '00000' and o.company_id.partner_id.lang == 'en_US'">
+                                        <span>( Head Office )</span>
+                                    </t>
+                                    <t t-if="o.company_id.branch_no == '00000' and o.company_id.partner_id.lang != 'en_US'">
+                                        <span>( สำนักงานใหญ่ )</span>
+                                    </t>
+                                    <t t-if="o.company_id.branch_no != '00000'">
+                                        (<span t-field="o.company_id.branch_no"/>)
+                                    </t>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <table width="100%" class="table table-bordered" style="margin-top:-1px;">
+                        <tr>
+                            <td rowspan="2" width="40%" align="center" style="vertical-align:middle; font-size:16px; line-height:16px;">
+                                <span>ใบประเมินผลงานผู้ขายสินค้า / บริการ</span><br/>
+                                <span>Vendor Evaluation Form</span>
+                            </td>
+                            <td width="20%" align="center">
+                                <span>วัน/เดือน/ปี</span>
+                            </td>
+                            <td width="20%" align="center">
+                                <span>วันที่ประเมิน</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center">
+                                <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')"/>
+                            </td>
+                            <td align="center">
+                                <t t-if="o.date_from">
+                                    <t t-set="date" t-value="time.strptime(str(o.date_from),'%Y-%m-%d')"/>
+                                    <t t-if="date.tm_mon == 1"><span t-esc="date.tm_mday"/> <span>มกราคม</span> <span t-esc="date.tm_year"/></t>
+                                    <t t-if="date.tm_mon == 2"><span t-esc="date.tm_mday"/> <span>กุมภาพันธ์</span> <span t-esc="date.tm_year"/></t>
+                                    <t t-if="date.tm_mon == 3"><span t-esc="date.tm_mday"/> <span>มีนาคม</span> <span t-esc="date.tm_year"/></t>
+                                    <t t-if="date.tm_mon == 4"><span t-esc="date.tm_mday"/> <span>เมษายน</span> <span t-esc="date.tm_year"/></t>
+                                    <t t-if="date.tm_mon == 5"><span t-esc="date.tm_mday"/> <span>พฤษภาคม</span> <span t-esc="date.tm_year"/></t>
+                                    <t t-if="date.tm_mon == 6"><span t-esc="date.tm_mday"/> <span>มิถุนายน</span> <span t-esc="date.tm_year"/></t>
+                                    <t t-if="date.tm_mon == 7"><span t-esc="date.tm_mday"/> <span>กรกฎาคม</span> <span t-esc="date.tm_year"/></t>
+                                    <t t-if="date.tm_mon == 8"><span t-esc="date.tm_mday"/> <span>สิงหาคม</span> <span t-esc="date.tm_year"/></t>
+                                    <t t-if="date.tm_mon == 9"><span t-esc="date.tm_mday"/> <span>กันยายน</span> <span t-esc="date.tm_year"/></t>
+                                    <t t-if="date.tm_mon == 10"><span t-esc="date.tm_mday"/> <span>ตุลาคม</span> <span t-esc="date.tm_year"/></t>
+                                    <t t-if="date.tm_mon == 11"><span t-esc="date.tm_mday"/> <span>พฤศจิกายน</span> <span t-esc="date.tm_year"/></t>
+                                    <t t-if="date.tm_mon == 12"><span t-esc="date.tm_mday"/> <span>ธันวาคม</span> <span t-esc="date.tm_year"/></t>
+                                </t>
+                                -
+                                <t t-if="o.date_to">
+                                    <t t-set="date" t-value="time.strptime(str(o.date_to),'%Y-%m-%d')"/>
+                                    <t t-if="date.tm_mon == 1"><span t-esc="date.tm_mday"/> <span>มกราคม</span> <span t-esc="date.tm_year"/></t>
+                                    <t t-if="date.tm_mon == 2"><span t-esc="date.tm_mday"/> <span>กุมภาพันธ์</span> <span t-esc="date.tm_year"/></t>
+                                    <t t-if="date.tm_mon == 3"><span t-esc="date.tm_mday"/> <span>มีนาคม</span> <span t-esc="date.tm_year"/></t>
+                                    <t t-if="date.tm_mon == 4"><span t-esc="date.tm_mday"/> <span>เมษายน</span> <span t-esc="date.tm_year"/></t>
+                                    <t t-if="date.tm_mon == 5"><span t-esc="date.tm_mday"/> <span>พฤษภาคม</span> <span t-esc="date.tm_year"/></t>
+                                    <t t-if="date.tm_mon == 6"><span t-esc="date.tm_mday"/> <span>มิถุนายน</span> <span t-esc="date.tm_year"/></t>
+                                    <t t-if="date.tm_mon == 7"><span t-esc="date.tm_mday"/> <span>กรกฎาคม</span> <span t-esc="date.tm_year"/></t>
+                                    <t t-if="date.tm_mon == 8"><span t-esc="date.tm_mday"/> <span>สิงหาคม</span> <span t-esc="date.tm_year"/></t>
+                                    <t t-if="date.tm_mon == 9"><span t-esc="date.tm_mday"/> <span>กันยายน</span> <span t-esc="date.tm_year"/></t>
+                                    <t t-if="date.tm_mon == 10"><span t-esc="date.tm_mday"/> <span>ตุลาคม</span> <span t-esc="date.tm_year"/></t>
+                                    <t t-if="date.tm_mon == 11"><span t-esc="date.tm_mday"/> <span>พฤศจิกายน</span> <span t-esc="date.tm_year"/></t>
+                                    <t t-if="date.tm_mon == 12"><span t-esc="date.tm_mday"/> <span>ธันวาคม</span> <span t-esc="date.tm_year"/></t>
+                                </t>
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+
+                <div class="page">
+                    <style>
+                        @font-face
+                        {
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_supplier_evaluation/static/THSarabun.ttf") format('opentype');
+                        }
+                        .font_fam{
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_supplier_evaluation/static/THSarabun.ttf") format('opentype');
+                        }
+
+                        table.table-bordered {
+                        border:1px solid black;
+                        padding:3px;
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_supplier_evaluation/static/THSarabun.ttf") format('opentype');
+                        margin:0px;
+                        }
+                        table.table-bordered &gt; thead &gt; tr &gt; th{
+                        border:1px solid black;
+                        padding:3px;
+                        text-align:center;
+                        }
+                        table.table-bordered &gt; tbody &gt; tr &gt; td{
+                        border:1px solid black;
+                        padding:3px;
+                        }
+                        table.table-bordered &gt; tfoot &gt; tr &gt; td{
+                        border:1px solid black;
+                        padding:3px;
+                        }
+
+                        table.table-nobordered {
+                        border:0px solid red;
+                        padding:2px;
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_supplier_evaluation/static/THSarabun.ttf") format('opentype');
+                        margin:0px;
+                        }
+                        table.table-nobordered &gt; thead &gt; tr &gt; th{
+                        border:0px solid white;
+                        padding:2px;
+                        text-align:center;
+                        margin-top:0px;
+                        }
+                        table.table-nobordered &gt; tbody &gt; tr &gt; td{
+                        border:0px solid white;
+                        padding:2px;
+                        }
+                        table.table-nobordered &gt; tfoot &gt; tr &gt; td{
+                        border:0px solid white;
+                        padding:2px;
+                        }
+
+                        .box1{
+                        width:30px;
+                        <!--background-color:#cccccc;-->
+                        }
+                        .box2{
+                        width:160px;
+                        <!--background-color:#cccccc;-->
+                        }
+                        .box3{
+                        width:440px;
+                        <!--background-color:#cccccc;-->
+                        }
+                        .box4{
+                        width:160px;
+                        <!--background-color:#cccccc;-->
+                        }
+                    </style>
+
+                    <table width="100%" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th width="5%"><span>No.</span></th>
+                                <th width="20%"><span>Vendor</span></th>
+                                <th width="55%"><span>หัวข้อการประเมิน</span></th>
+                                <th width="20%"><span>Score</span></th>
+                            </tr>
+                        </thead>
+                    </table>
+
+                    <table width="100%" class="table table-bordered" style="margin-top:-1px;">
+                        <tbody>
+                            <t t-set="supplier_i" t-value="0"/>
+                            <t t-foreach="supplier_ids" t-as="line">
+                                <t t-set="vender_score" t-value="0.0"/>
+                                <t t-set="vender_score_percent" t-value="0.0"/>
+
+                                <t t-set="evaluation_type" t-value="o.env['stock.evaluation.type'].sudo().search([])"/>
+                                <t t-set="evaluation_type_i" t-value="0"/>
+                                <t t-set="evaluation_score_total" t-value="0.0"/>
+
+                                <t t-foreach="evaluation_type" t-as="et">
+                                    <t t-set="vender_evaluation_ids" t-value="evaluation_ids.filtered(lambda x: x.partner_id.id == line.id)"/>
+                                    <tr>
+                                        <t t-set="evaluation_type_i" t-value="evaluation_type_i + 1"/>
+                                        <t t-if="evaluation_type_i == 1">
+                                            <td width="5%" align="center" t-att-rowspan="len(evaluation_type)">
+                                                <div class="box1">
+                                                    <t t-set="supplier_i" t-value="supplier_i + 1"/>
+                                                    <span t-esc="supplier_i"/>
+                                                </div>
+                                            </td>
+                                            <td width="20%" t-att-rowspan="len(evaluation_type)">
+                                                <div class="box2">
+                                                    <span t-field="line.name"/>
+                                                </div>
+                                            </td>
+                                        </t>
+                                        <td width="55%">
+                                            <div class="box3">
+                                                <span t-field="et.name"/>
+                                            </div>
+                                        </td>
+                                        <td width="20%" align="right">
+                                            <div class="box4">
+                                                <t t-set="vender_evaluation_types" t-value="vender_evaluation_ids.filtered(lambda x: x.type_id == et)"/>
+                                                <t t-set="evaluation_picking" t-value="vender_evaluation_types.mapped('picking_id')"/>
+                                                <t t-if="not evaluation_picking">
+                                                    <t t-set="len_evaluation_picking" t-value="1"/>
+                                                </t>
+                                                <t t-if="evaluation_picking">
+                                                    <t t-set="len_evaluation_picking" t-value="len(evaluation_picking)"/>
+                                                </t>
+                                                <t t-set="score" t-value="sum(vender_evaluation_types.mapped('score'))"/>
+                                                <t t-set="score_deduct" t-value="sum(vender_evaluation_types.mapped('score_deduct'))"/>
+                                                <t t-set="evaluation_type_score" t-value="((score - score_deduct)) / len_evaluation_picking"/>
+                                                <t t-set="vender_score" t-value="vender_score + evaluation_type_score"/>
+                                                <t t-set="evaluation_score_total" t-value="evaluation_score_total + (score / len_evaluation_picking)"/>
+
+                                                <span t-esc="'{0:,.2f}'.format(float(evaluation_type_score))"/>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <tr>
+                                    <td colspan="2" align="center">
+                                        <t t-set="vender_score_percent" t-value="(vender_score / evaluation_score_total) * 100"/>
+                                        <t t-set="grade" t-value="o.env['stock.score.grade'].sudo().search([('max_score','&gt;=',vender_score_percent)],limit = 1 ,order = 'max_score asc')"/>
+                                        <table width="100%" class="table table-nobordered">
+                                            <tr>
+                                                <td width="50%" align="center"><B><span t-esc="grade.name"/></B></td>
+                                                <td width="50%" align="center"><span t-esc="grade.result"/></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        ประเมินโดย : <span t-field="o.evaluate_by"/>
+                                    </td>
+                                    <td align="right">
+                                        <div class="box4">
+                                            <span t-esc="'{0:,.2f}'.format(float(vender_score))"/>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <div class="row">
+                        <div class="col-6 font_fam" style="text-align:center">
+                            <div style="width:100%; height:90px; position:relative;">
+                                <img t-if="o.evaluate_by.image_signature"
+                                     t-att-src="'data:image/png;base64,%s' % to_text(o.evaluate_by.image_signature)"
+                                     style="position: absolute; left:0px; right:0; left: 0; margin-left: auto; margin-right: auto; top:10px;
+                                                              max-height: 80px;  max-width:150px"/>
+                            </div>
+                            <t t-if="o.evaluate_by">
+                                <span>( </span><span t-esc="o.evaluate_by.name"/><span> )</span> <br/>
+                            </t>
+                            <t t-if="not o.evaluate_by">
+                                <span>( _______________________________ )</span> <br/>
+                            </t>
+                            <span>ผู้ประเมิน / Evaluate by</span><br/>
+                            <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')"/>
+                        </div>
+                        <div class="col-6 font_fam" style="text-align:center">
+                            <div style="width:100%; height:90px; position:relative;">
+                                <img t-if="o.validate_by.image_signature"
+                                     t-att-src="'data:image/png;base64,%s' % to_text(o.validate_by.image_signature)"
+                                     style="position: absolute; left:0px; right:0; left: 0; margin-left: auto; margin-right: auto; top:10px;
+                                                              max-height: 80px;  max-width:150px"/>
+                            </div>
+                            <t t-if="o.validate_by">
+                                <span>( </span><span t-esc="o.validate_by.name"/><span> )</span> <br/>
+                            </t>
+                            <t t-if="not o.validate_by">
+                                <span>( _______________________________ )</span> <br/>
+                            </t>
+                            <span>ผู้จัดการฝ่ายจัดซื้อ/คลังพัสดุ</span><br/>
+                            <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')"/>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </t>
+        </t>
+    </template>
+</odoo>

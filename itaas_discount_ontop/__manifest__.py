@@ -3,7 +3,7 @@
 # - © Technaureus Info Solutions Pvt. Ltd 2020. All rights reserved.
 {
     'name': 'Itaas Discount Ontop',
-    'version': '13.0.0.6',
+    'version': '13.0.2.0',
     'summary': 'Itaas Discount Ontop',
     'sequence': 1,
     'author': 'Itaas Discount Ontop.',

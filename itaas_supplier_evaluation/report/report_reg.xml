@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="paperformat_A4_Zero_Margin_assessment_result_report" model="report.paperformat">
+            <field name="name">A4_Zero_Margin_assessment_result_report</field>
+            <field name="default" eval="False"/>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">30</field>
+            <field name="margin_bottom">50</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">25</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <report
+                id="assessment_result_report"
+                model="stock.evaluation.report"
+                menu="True"
+                report_type="qweb-pdf"
+                string="Vendor Assessment Result"
+                paperformat="paperformat_A4_Zero_Margin_assessment_result_report"
+                name="itaas_supplier_evaluation.assessment_result_report_id"
+                file="itaas_supplier_evaluation.assessment_result_report_id"
+        />
+
+        <record id="paperformat_A4_Zero_Margin_summary_stock_form" model="report.paperformat">
+            <field name="name">paperformat_A4_Zero_Margin_summary_stock_form</field>
+            <field name="default" eval="False"/>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">50</field>
+            <field name="margin_bottom">5</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">45</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <report
+                id="summary_stock_evaluation"
+                model="stock.evaluation"
+                menu="False"
+                report_type="qweb-pdf"
+                string="Summary Stock Evaluation Form"
+                paperformat="paperformat_A4_Zero_Margin_summary_stock_form"
+                name="itaas_supplier_evaluation.summary_stock_evaluation_id"
+                file="itaas_supplier_evaluation.summary_stock_evaluation_id"
+        />
+
+    </data>
+</odoo>

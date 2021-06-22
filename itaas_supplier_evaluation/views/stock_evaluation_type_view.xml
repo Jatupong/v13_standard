@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_stock_evaluation_type_form" model="ir.ui.view">
+        <field name="name">stock.evaluation.type.form</field>
+        <field name="model">stock.evaluation.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name" required="1"/>
+                        <field name="score" required="1"/>
+                        <field name="description"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_stock_evaluation_type_tree" model="ir.ui.view">
+        <field name="name">stock.evaluation.type.tree</field>
+        <field name="model">stock.evaluation.type</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="score"/>
+                <field name="description"/>
+            </tree>
+        </field>
+    </record>
+
+    <act_window id="action_stock_evaluation_type"
+                name="Evalution"
+                res_model="stock.evaluation.type"
+                view_mode="tree,form"/>
+
+    <menuitem id="menu_stock_evaluation_type"
+              name="Evalution Type"
+              parent="stock.menu_stock_config_settings"
+              action="action_stock_evaluation_type"
+              sequence="5"
+              groups="stock.group_stock_manager"/>
+
+</odoo>

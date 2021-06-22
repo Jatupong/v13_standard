@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="assessment_result_report_id">
+        <t t-foreach="docs" t-as="o">
+            <t t-set="o" t-value="o.with_context(lang=o.partner_id.lang)" />
+            <t t-call="web.basic_layout">
+                <div class="header">
+                    <style>
+                        @font-face
+                        {
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_supplier_evaluation/static/THSarabun.ttf") format('opentype');
+                        }
+                        .font_fam{
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_supplier_evaluation/static/THSarabun.ttf") format('opentype');
+                        }
+                        table.table-bordered {
+                        border:1px solid black;
+                        padding:3px;
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_supplier_evaluation/static/THSarabun.ttf") format('opentype');
+                        margin:0px;
+                        }
+                        table.table-bordered &gt; thead &gt; tr &gt; th{
+                        border:1px solid black;
+                        padding:3px;
+                        page-break-inside: avoid;
+                        text-align:center;
+                        }
+                        table.table-bordered &gt; tbody &gt; tr &gt; td{
+                        border:1px solid black;
+                        page-break-inside: avoid;
+                        padding:3px;
+                        }
+                        table.table-bordered &gt; tfoot &gt; tr &gt; td{
+                        border:1px solid black;
+                        page-break-inside: avoid;
+                        padding:3px;
+                        }
+                    </style>
+
+                    <div class="col-12 font_fam" style="text-align:right; font-size: 16px;">
+                        <span>Page</span>
+                        <span class="page"/>/<span class="topage"/>
+                    </div>
+                    <table width="100%" class="table table-bordered">
+                        <tr>
+                            <td width="15%" style="vertical-align:middle; border:0px solid white;">
+                                <div>
+                                    <img t-if="o.company_id.logo" t-att-src="'data:image/png;base64,%s' % to_text(o.company_id.logo)"
+                                         style="height:60px; width: 110px;"/>
+                                </div>
+                            </td>
+                            <td width="35%" style="vertical-align:middle; border:0px solid white; border-right:1px solid black;">
+                                <div style="font-size: 20px;">
+                                    <span t-field="o.company_id.name"/>&amp;nbsp;
+                                    <t t-if="o.company_id.branch_no == '00000' and o.company_id.partner_id.lang == 'en_US'">
+                                        <span>( Head Office )</span>
+                                    </t>
+                                    <t t-if="o.company_id.branch_no == '00000' and o.company_id.partner_id.lang != 'en_US'">
+                                        <span>( สำนักงานใหญ่ )</span>
+                                    </t>
+                                    <t t-if="o.company_id.branch_no != '00000'">
+                                        (<span t-field="o.company_id.branch_no"/>)
+                                    </t>
+                                </div>
+                            </td>
+                            <td width="50%" align="center" style="line-height:28px; vertical-align:middle;">
+                                <B><span style="font-size: 30px;">Vendor Assessment Result</span></B><br/>
+                                <span style="font-size: 24px;">
+                                    <B><span>Date from: </span></B><span t-field="o.date_from"/>
+                                    <B><span>  Date to: </span></B><span t-field="o.date_to"/>
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="page">
+                    <style>
+                        @font-face
+                        {
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_supplier_evaluation/static/THSarabun.ttf") format('opentype');
+                        }
+                        .font_fam{
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_supplier_evaluation/static/THSarabun.ttf") format('opentype');
+                        }
+                        table.table-bordered {
+                        border:1px solid black;
+                        padding:3px;
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_supplier_evaluation/static/THSarabun.ttf") format('opentype');
+                        }
+                        table.table-bordered &gt; thead &gt; tr &gt; th{
+                        border:1px solid black;
+                        padding:3px;
+                        text-align:center;
+                        font-size:19px;
+                        vertical-align:middle;
+                        }
+                        table.table-bordered &gt; tbody &gt; tr &gt; td{
+                        border:1px solid black;
+                        padding:3px;
+                        font-size:18px;
+                        line-height:16px;
+                        }
+                        table.table-bordered &gt; tfoot &gt; tr &gt; td{
+                        border:1px solid black;
+                        padding:3px;
+                        }
+
+                        table.table-nobordered {
+                        border:1px solid white;
+                        padding:3px;
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_supplier_evaluation/static/THSarabun.ttf") format('opentype');
+                        margin-top:3px;
+                        }
+                        table.table-nobordered &gt; thead &gt; tr &gt; th{
+                        border:1px solid white;
+                        padding:3px;
+                        text-align:center;
+                        font-size:19px;
+                        vertical-align:middle;
+                        }
+                        table.table-nobordered &gt; tbody &gt; tr &gt; td{
+                        border:1px solid white;
+                        padding:3px;
+                        font-size:18px;
+                        line-height:16px;
+                        }
+                        table.table-nobordered &gt; tfoot &gt; tr &gt; td{
+                        border:1px solid white;
+                        padding:3px;
+                        }
+                    </style>
+
+                    <t t-set="evaluation_ids" t-value="o.get_evaluation_range(o.date_from ,o.date_to ,o.partner_id)"/>
+                    <t t-set="score_vender" t-value="o.get_score_vender_date(evaluation_ids)"/>
+                    <table width="100%" class="table table-bordered">
+                        <tr style="font-size:18px;text-align:center;">
+                            <t t-set="evaluation_type" t-value="o.env['stock.evaluation.type'].sudo().search([])"/>
+                            <t t-foreach="evaluation_type" t-as="et">
+                                <td style="line-height:16px; vertical-align:middle; width:10%">
+                                    <span t-field="et.name"/>
+                                </td>
+                            </t>
+                            <td style="line-height:16px; vertical-align:middle; width:15%"><B>Point<br/>(Average / Year)</B></td>
+                            <td style="line-height:16px; vertical-align:middle; width:15%"><B>Grade</B></td>
+                        </tr>
+                        <tr style="font-size:20px; line-height:16px; text-align:center;">
+                            <t t-foreach="evaluation_type" t-as="et">
+                                <t t-set="evaluation_types" t-value="evaluation_ids.filtered(lambda x: x.type_id == et)"/>
+                                <t t-set="evaluation_type_score" t-value="sum(evaluation_types.mapped('score')) - sum(evaluation_types.mapped('score_deduct'))"/>
+                                <td style="vertical-align:middle;">
+                                    <span t-esc="'{0:,.2f}'.format(float(evaluation_type_score))"/>
+                                </td>
+                            </t>
+                            <td style="vertical-align:middle;"><span t-esc="'{0:,.2f}'.format(float(score_vender['score_total']))"/></td>
+                            <td style="vertical-align:middle;"><B><span style="font-size: 48px; line-height:40px;" t-esc="score_vender['score_grade']"/></B></td>
+                        </tr>
+                    </table>
+
+                    <table width="100%" class="table table-nobordered">
+                        <tr>
+                            <td width="8%"><span>Vendor</span></td>
+                            <td width="42%">
+                                <span>: </span>
+                                <span t-field="o.partner_id"/>
+                            </td>
+                            <td width="15%"><span>Evaluation Date</span></td>
+                            <td width="35%">
+                                <span>: </span>
+                                <span t-esc="datetime.datetime.strptime(str(o.evaluate_date), '%Y-%m-%d').strftime('%d-%b-%Y')"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span>Tel</span></td>
+                            <td>
+                                <span>: </span>
+                                <span t-field="o.partner_id.phone"/>
+                            </td>
+                            <td rowspan="2"><span>Evaluate by</span></td>
+                            <td rowspan="2">
+                                <span>: </span>
+                                <span t-field="o.evaluate_by"/>
+                                <span> (Purchasing staff)</span>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div class="row">
+                        <div class="col-6" style="padding-left:0px;">
+                            <table width="100%" class="table table-bordered" style="height:130mm;">
+                                <thead>
+                                    <tr>
+                                        <th>Vendor (Corrective Action)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <span>Product Quality : </span>
+                                            <span t-field="o.product_quality_vendor"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span>Delivery : </span>
+                                            <span t-field="o.delivery_vendor"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span>Responsibility : </span>
+                                            <span t-field="o.responsibility_vendor"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span>Service / Price : </span>
+                                            <span t-field="o.service_price_vendor"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+
+                            </table>
+                        </div>
+                        <div class="col-6" style="padding-right:0px;">
+                            <table width="100%" class="table table-bordered" style="height:130mm;">
+                                <thead>
+                                    <tr>
+                                        <th><span t-field="o.company_id.name"/> (Error Details)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <span>Product Quality : </span>
+                                            <span t-field="o.product_quality_company"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span>Delivery : </span>
+                                            <span t-field="o.delivery_company"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span>Responsibility : </span>
+                                            <span t-field="o.responsibility_company"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span>Service / Price : </span>
+                                            <span t-field="o.service_price_company"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6" style="padding-left:0px;">
+                            <table width="100%" class="table table-nobordered" style="height:20mm;">
+                                <tr style="font-size:16px; line-height:14px;">
+                                    <td>
+                                        <span>Remark : </span>
+                                        <span t-field="o.evaluation_remark_vendor"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-6" style="padding-right:0px;">
+                            <table width="100%" class="table table-nobordered" style="height:20mm;">
+                                <tr style="font-size:16px; line-height:14px;">
+                                    <td>
+                                        <span>Suggestion : </span>
+                                        <span t-field="o.evaluation_remark_company"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6" style="padding-left:0px;">
+                            <table width="100%" class="table table-bordered" style="height:38mm">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Assessment Criteria</th>
+                                    </tr>
+                                </thead>
+                                <tbody style="font-size:16px; line-height:14px;">
+                                    <t t-set="type_score" t-value="0"/>
+                                    <t t-set="evaluation_type" t-value="o.env['stock.evaluation.type'].sudo().search([])"/>
+                                    <t t-foreach="evaluation_type" t-as="et">
+                                        <tr>
+                                            <td style="vertical-align:middle;">
+                                                <span t-field="et.name"/>
+                                            </td>
+                                            <td align="center" style="vertical-align:middle;">
+                                                <span t-esc="'{0:,.0f}'.format(float(et.score))"/>
+                                                <t t-set="type_score" t-value="type_score + et.score"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <tr>
+                                        <td width="50%" style="vertical-align:middle;">
+                                            <B>Total Score</B>
+                                        </td>
+                                        <td width="50%" align="center" style="vertical-align:middle;">
+                                            <B><span t-esc="'{0:,.0f}'.format(float(type_score))"/></B>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-6" style="padding-right:0px;">
+                            <table width="100%" class="table table-bordered" style="height:38mm;">
+                                <thead>
+                                    <tr>
+                                        <th colspan="3"><span t-field="o.company_id.name"/> (After correct the error)</th>
+                                    </tr>
+                                </thead>
+                                <tbody style="font-size:16px; line-height:14px;">
+                                    <tr>
+                                        <td align="center">
+                                            <t t-if="o.state != 'accept'">
+                                                <span> &#x2610; </span>
+                                            </t>
+                                            <t t-if="o.state == 'accept'">
+                                                <span> &#x2612; </span>
+                                            </t>
+                                        </td>
+                                        <td>Accept (Continue)</td>
+                                    </tr>
+                                    <tr>
+                                        <td align="center">
+                                            <t t-if="o.state != 'not_accept'">
+                                                <span> &#x2610; </span>
+                                            </t>
+                                            <t t-if="o.state == 'not_accept'">
+                                                <span> &#x2612; </span>
+                                            </t>
+                                        </td>
+                                        <td>Not Accept (Discontinue)</td>
+                                    </tr>
+                                    <tr height="60px;">
+                                        <td colspan="2">Remark : <span t-field="o.remark"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="footer">
+                    <style>
+                        @font-face
+                        {
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_supplier_evaluation/static/THSarabun.ttf") format('opentype');
+                        }
+                        .font_fam{
+                        font-family: SarabunPSK;
+                        src: local('United'), url("/itaas_supplier_evaluation/static/THSarabun.ttf") format('opentype');
+                        font-size: 20px;
+                        }
+                    </style>
+                    <div class="row">
+                        <div class="col-6 row">
+                            <div class="col-5"></div>
+                            <div class="col-7">
+                                <div style="width:100%; height:90px; position:relative; color:white;">
+                                    -
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 row">
+                            <div class="col-5"></div>
+                            <div class="col-7">
+                                <!-- <div style="width:100%; height:90px; position:relative;">-->
+                                <!--     <t t-if="o.validate_by">-->
+                                <!--         <img t-if="o.validate_by.image_signature"-->
+                                <!--              t-att-src="'data:image/png;base64,%s' % to_text(o.validate_by.image_signature)"-->
+                                <!--              style="position: absolute; left:0px; right:0; left: 0; margin-left: auto; margin-right: auto; top:10px;-->
+                                <!--                                   max-height: 90px;  max-width:150px"/>-->
+                                <!--     </t>-->
+                                <!-- </div>-->
+                                <div style="width:100%; height:90px; position:relative; color:white;">
+                                    -
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 font_fam row">
+                            <div class="col-4"><span style="line-height:18px; text-align:right;">Vendor Representative</span></div>
+                            <div class="col-1"><span>:</span></div>
+                            <div class="col-7" style="text-align:center;">
+                                <span>________________________</span><br/>
+                                <span>(<span style="color:white">_____________________</span>)</span>
+                            </div>
+                        </div>
+                        <div class="col-6 font_fam row" >
+                            <div class="col-4" style="text-align:right;"><span>Signature</span></div>
+                            <div class="col-1"><span>:</span></div>
+                            <div class="col-7" style="text-align:center;">
+                                <span>________________________</span><br/>
+                                <t t-if="not o.validate_by">
+                                    <span>(<span style="color:white">_____________________</span>)</span><br/>
+                                </t>
+                                <t t-if="o.validate_by">
+                                    <span>( <span t-field="o.validate_by"/> )</span><br/>
+                                </t>
+                                <span>Purchasing and Storage Manager</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </t>
+        </t>
+    </template>
+</odoo>

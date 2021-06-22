@@ -31,39 +31,34 @@ class stock_move(models.Model):
                 stock_move.update_account_entry_action_done()
 
     def update_account_entry_action_done(self):
-        am_id = self.env['account.move'].search([('stock_move_id','=',self.id)],limit=1)
-        if not am_id:
-            # print ('Create Account Entry:')
-            # print(self.id)
-            # print(self.name)
-            # Init a dict that will group the moves by valuation type, according to `move._is_valued_type`.
-            valued_moves = {valued_type: self.env['stock.move'] for valued_type in self._get_valued_types()}
-            for move in self:
+        for move in self:
+            print ('update_account_entry_action_done')
+            print (move.id)
+            am_id = self.env['account.move'].search([('stock_move_id','=',move.id)],limit=1)
+            print (am_id)
+            if not am_id:
+                valued_moves = {valued_type: self.env['stock.move'] for valued_type in move._get_valued_types()}
                 if float_is_zero(move.quantity_done, precision_rounding=move.product_uom.rounding):
+                    print ('CONTINUE-1')
                     continue
-                for valued_type in self._get_valued_types():
+                for valued_type in move._get_valued_types():
                     if getattr(move, '_is_%s' % valued_type)():
                         valued_moves[valued_type] |= move
+                        print('CONTINUE-2')
                         continue
 
-            # AVCO application
-            #valued_moves['in'].product_price_update_before_done()
-
-            #res = super(stock_move, self)._action_done(cancel_backorder=cancel_backorder)
-
-            # '_action_done' might have created an extra move to be valued
-            for move in self:
-                for valued_type in self._get_valued_types():
+                for valued_type in move._get_valued_types():
                     if getattr(move, '_is_%s' % valued_type)():
                         valued_moves[valued_type] |= move
+                        print('CONTINUE-3')
                         continue
 
-            stock_valuation_layers = self.env['stock.valuation.layer'].sudo()
-            # Create the valuation layers in batch by calling `moves._create_valued_type_svl`.
+                stock_valuation_layers = self.env['stock.valuation.layer'].sudo()
+                # Create the valuation layers in batch by calling `moves._create_valued_type_svl`.
 
-            for move in self:
                 if not move.stock_valuation_layer_ids or (move.stock_valuation_layer_ids and not sum(layer.value for layer in move.stock_valuation_layer_ids)):
-                    for valued_type in self._get_valued_types():
+
+                    for valued_type in move._get_valued_types():
                         todo_valued_moves = valued_moves[valued_type]
                         if todo_valued_moves:
                             todo_valued_moves._sanity_check_for_valuation()
@@ -72,14 +67,14 @@ class stock_move(models.Model):
 
                 stock_valuation_layers = move.stock_valuation_layer_ids
 
-            for svl in stock_valuation_layers.with_context(active_test=False):
-                if not svl.product_id.valuation == 'real_time':
-                    continue
-                if svl.currency_id.is_zero(svl.value):
-                    continue
+                for svl in stock_valuation_layers.with_context(active_test=False):
+                    if not svl.product_id.valuation == 'real_time':
+                        continue
+                    if svl.currency_id.is_zero(svl.value):
+                        continue
 
-                # print ('--DO--')
-                svl.stock_move_id._account_entry_move(svl.quantity, svl.description, svl.id, svl.value)
+                    # print ('--DO--')
+                    svl.stock_move_id._account_entry_move(svl.quantity, svl.description, svl.id, svl.value)
 
     def _create_account_move_line(self, credit_account_id, debit_account_id, journal_id, qty, description, svl_id, cost):
         self.ensure_one()

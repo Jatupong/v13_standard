@@ -3,7 +3,7 @@
 
 {
     'name': 'Quotations/Sales Orders Approval',
-    'version': '12.0',
+    'version': '13.0.2.0',
     'category': 'Sales',
     'author': 'PPTS',
     'sequence': 15,
