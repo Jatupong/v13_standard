@@ -17,7 +17,7 @@
     # Check https://github.com/odoo/odoo/blob/master/openerp/addons/base/module/module_data.xml
     # for the full list
     'category': 'Sales Management',
-    'version': '13.0.1.0',
+    'version': '13.0.2.0',
 
     'images': ['static/description/main.png'],
     'price': 0,

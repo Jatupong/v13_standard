@@ -4,7 +4,7 @@
 
 {
     'name' : 'Itaas Partner Delivery Note',
-    'version' : '13.0.0.1',
+    'version' : '13.0.2.0',
     'price' : 'Free',
     'currency': 'THB',
     'category': 'delivery',

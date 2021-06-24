@@ -4,7 +4,7 @@
 {
     "name": "Purchase Order Type",
     "author": "ITAAS",
-    "version": "13.0.0.1",
+    "version": "13.0.2.0",
     "category": "mrp",
     "website": "www.itaas.co.th",
     "depends": ['purchase','stock','account','purchase_request'],

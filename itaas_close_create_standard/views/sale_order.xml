@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="sale_order_inherit11" model="ir.ui.view">
+        <field name="name">sale.order.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_create':True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="options">{'no_create':True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='user_id']" position="attributes">
+                <attribute name="options">{'no_create':True}</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='campaign_id']" position="attributes">
+                <attribute name="options">{'no_create':True}</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='medium_id']" position="attributes">
+                <attribute name="options">{'no_create':True}</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='source_id']" position="attributes">
+                <attribute name="options">{'no_create':True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="sale_order_inherit_management" model="ir.ui.view">
+        <field name="name">sale.order.management.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale_management.sale_order_form_quote"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='sale_order_option_ids']/tree/field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_create':True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="crm_team_inherit_management" model="ir.ui.view">
+        <field name="name">crm.team.management.inherit</field>
+        <field name="model">crm.team</field>
+        <field name="inherit_id" ref="sales_team.crm_team_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="attributes">
+                <attribute name="options">{'no_create':True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='user_id']" position="attributes">
+                <attribute name="options">{'no_create':True}</attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="sale_order_template_inherit_management" model="ir.ui.view">
+        <field name="name">sale.order.template.inherit</field>
+        <field name="model">sale.order.template</field>
+        <field name="inherit_id" ref="sale_management.sale_order_template_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='sale_order_template_line_ids']/tree/field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_create':True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='sale_order_template_option_ids']/tree/field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_create':True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='mail_template_id']" position="attributes">
+                <attribute name="options">{'no_create':True}</attribute>
+            </xpath>
+
+
+        </field>
+    </record>
+
+    <record id="mail_activity_type_inherit_management" model="ir.ui.view">
+        <field name="name">mail.activity.type.inherit</field>
+        <field name="model">mail.activity.type</field>
+        <field name="inherit_id" ref="mail.mail_activity_type_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='res_model_id']" position="attributes">
+                <attribute name="options">{'no_create':True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='default_next_type_id']" position="attributes">
+                <attribute name="options">{'no_create':True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='next_type_ids']" position="attributes">
+                <attribute name="options">{'no_create':True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='mail_template_ids']" position="attributes">
+                <attribute name="options">{'no_create':True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+
+
+
+
+
+
+
+
+</odoo>
