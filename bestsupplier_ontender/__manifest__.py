@@ -3,7 +3,7 @@
 
 {
     'name': 'Choose Best Supplier On Tender',
-    'version': '1.0',
+    'version': '13.0.2.0',
     'category': 'purchase',
     'summary': 'Choose The Best Supplier At The Best Price',
     'description': """

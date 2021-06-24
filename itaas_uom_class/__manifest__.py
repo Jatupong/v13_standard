@@ -6,7 +6,7 @@
     'description': """
 
     """,
-    'version': '13.0.1.1',
+    'version': '13.0.2.0',
     'category': 'uom',
     'auto_install': True,
     'depends': ['sale','purchase','bi_material_purchase_requisitions','purchase_request','account'],

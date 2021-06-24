@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Open PDF Reports and PDF Attachments in Browser',
-    'version': '13.0.1.1',
+    'version': '13.0.2.0',
     'summary': """Open PDF Reports and PDF Attachments in Browser""",
     'author': 'Ivan Sokolov, Cetmix',
     'category': 'Productivity',

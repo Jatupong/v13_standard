@@ -3,7 +3,7 @@
 
 {
     "name": "Sale Order Type",
-    "version": "13.0.1.0.0",
+    "version": "13.0.2.1",
     "category": "Sales Management",
     "author": "ITAAS",
     "website": "https://itaas.co.th",
